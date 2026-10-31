@@ -142,10 +142,24 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #fade.out{animation:none;transition:opacity .26s ease-in}
 @keyframes fadeIn{from{opacity:1}to{opacity:0}}
 #fps{position:fixed;right:18px;top:12px;z-index:9;font:18px "Press Start 2P",monospace;color:#7dffd2;text-shadow:2px 2px 0 #000;pointer-events:none}
-/* TV: the emulator draws half-size and the screen stretches it, far cheaper than painting every pixel. */
-.lite.playing #game{inset:auto;left:0;top:0;width:50vw;height:50vh;transform:scale(2);transform-origin:0 0}
+/* TV: the emulator draws at a third of the size and the screen stretches it, far cheaper than painting every pixel. */
+.lite.playing #game{inset:auto;left:0;top:0;width:33.334vw;height:33.334vh;transform:scale(3);transform-origin:0 0}
 .con{padding-bottom:128px}
 .con>img.real{margin-bottom:34px;transition:transform .2s ease-out}
+/* Retro TV: painted once and kept behind the game, so it adds no work while playing. */
+#tv{position:fixed;left:0;top:0;outline:2000px solid #0b0705;width:1920px;height:1080px;display:none;transform-origin:0 0;background:radial-gradient(70% 70% at 50% 45%,#2a1d16,#0b0705)}
+.playing #tv{display:block}
+#cab{position:absolute;left:96px;top:30px;width:1728px;height:1020px;border-radius:56px;background:repeating-linear-gradient(92deg,rgba(0,0,0,.14) 0 3px,transparent 3px 11px,rgba(255,200,130,.05) 11px 14px,transparent 14px 26px),linear-gradient(180deg,#8a5428,#5f3517 58%,#3f2210);box-shadow:inset 0 3px 0 rgba(255,220,170,.45),inset 0 -8px 0 rgba(0,0,0,.45)}
+#bezel{position:absolute;left:150px;top:70px;width:1292px;height:940px;border-radius:44px;background:#111014;box-shadow:inset 0 0 0 8px #2c2a30,inset 0 0 0 11px #000}
+#panel{position:absolute;left:1476px;top:70px;width:312px;height:940px;border-radius:24px;background:linear-gradient(180deg,#332f36,#1b191e);box-shadow:inset 0 0 0 3px #4b4650;display:flex;flex-direction:column;align-items:center;padding-top:44px;gap:34px}
+.knob{width:138px;height:138px;border-radius:50%;background:radial-gradient(circle at 42% 34%,#efe6d4,#9a8e7a 62%,#4b4438);box-shadow:0 6px 0 #000;position:relative}
+.knob::after{content:"";position:absolute;left:64px;top:8px;width:10px;height:50px;background:#1b191e}
+.knob+.knob::after{transform:rotate(38deg);transform-origin:5px 61px}
+#grill{width:216px;height:300px;background:repeating-linear-gradient(0deg,#050506 0 11px,#3b3740 11px 22px);border-radius:8px}
+#panel span{font:17px "Press Start 2P",monospace;color:#ffd34d}
+#panel u{width:30px;height:30px;border-radius:50%;background:#ff3b34;box-shadow:0 0 16px #ff3b34}
+.playing #game{inset:auto;left:calc(180px*var(--s));top:calc(90px*var(--s));width:calc(1232px*var(--s));height:calc(900px*var(--s));background:#000;overflow:hidden}
+.lite.playing #game{width:calc(410.667px*var(--s));height:calc(300px*var(--s));transform:scale(3);transform-origin:0 0}
 </style>
 </head>
 <body>
@@ -180,6 +194,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
   </div>
 </div>
 <input id="file" type="file" multiple accept=".md,.gen,.smd,.bin,.gba,.zip">
+<div id="tv" aria-hidden="true">
+  <div id="cab"></div><div id="bezel"></div>
+  <div id="panel"><b class="knob"></b><b class="knob"></b><i id="grill"></i><span>GAME ZONE</span><u></u></div>
+</div>
 <div id="game"></div>
 <div id="fps"></div>
 <div id="toast"></div>
@@ -199,7 +217,7 @@ const $=id=>document.getElementById(id);
 const HOME='./'+(/github\.io$/.test(location.hostname)?'':'?tv=1&live=1&demo=1');
 let playing=false,tt=0,con=null,removing=false,conFocus='c-segaMD';
 if(/github\.io$/.test(location.hostname)||/[?&]lite/.test(location.search))document.documentElement.classList.add('lite');   // the TV gets the same design without its heavy layers
-function fit(){$('app').style.transform='scale('+Math.min(innerWidth/1920,innerHeight/1080)+')'}
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080),t='scale('+k+')';$('app').style.transform=t;$('tv').style.transform=t;document.documentElement.style.setProperty('--s',k)}   // the frame and the game share one scale
 addEventListener('resize',fit);fit();
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
 const sess={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}}};
@@ -369,22 +387,33 @@ function play(g){
     EJS_player:'#game',EJS_core:g.core==='segaMD'?'picodrive':g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
     EJS_pathtodata:EJS_DATA,EJS_startOnLoaded:true,EJS_color:'#ffd34d',EJS_language:'es-ES',EJS_threads:false,
     /* Speed first: lighter builds, no video effects, and skip drawing frames rather than slow the game down. */
-    EJS_defaultOptions:{webgl2Enabled:'disabled',shader:'disabled',rewindEnabled:'disabled',picodrive_frameskip:'auto',mgba_frameskip:'auto'},
+    EJS_defaultOptions:{webgl2Enabled:'disabled',shader:'disabled',rewindEnabled:'disabled',picodrive_renderer:'fast',picodrive_sound_rate:'22050',picodrive_frameskip:'auto',mgba_frameskip:'fixed_interval',mgba_frameskip_interval:'1',mgba_idle_optimization:'Detect and Remove'},
     EJS_Buttons:{playPause:false,restart:false,mute:false,settings:false,fullscreen:false,saveState:false,loadState:false,screenRecord:false,gamepad:false,cheat:false,volume:false,saveSavFiles:false,loadSavFiles:false,quickSave:false,quickLoad:false,screenshot:false,cacheManager:false,exitEmulation:false}
   });
-  meter();
+  meter(g.name);
   const s=document.createElement('script');s.src=EJS_DATA+'loader.js';s.onerror=()=>{toast('No se pudo cargar el emulador');setTimeout(()=>location.reload(),2000)};document.head.append(s);
 }
 
 /* Measured speed of the running game, in the corner, while we tune it for the TV. */
-function meter(){
-  let last=0;
+function meter(name){
+  let last=0;const samples=[];
   setInterval(()=>{
     const m=window.EJS_emulator&&EJS_emulator.gameManager;
     if(!m||!EJS_emulator.started)return;
     const n=m.getFrameNum();
-    $('fps').textContent=(n-last)+' FPS';last=n;
+    $('fps').textContent=(n-last)+' FPS';
+    if(last)samples.push(n-last);
+    last=n;
+    if(samples.length===40)report(name,samples);
   },1000);
+}
+
+/* The TV saves its own speed numbers to the private Drive, so tuning relies on the real hardware, not on the PC. */
+async function report(name,samples){
+  if(!dTok)return;
+  const meta={name:'medicion-tv.json',mimeType:'application/json'},data={game:name,core:EJS_emulator.getCore(),when:new Date().toISOString(),ua:navigator.userAgent,screen:[innerWidth,innerHeight,devicePixelRatio],samples};
+  const b='salaglass',body='--'+b+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(data)+'\r\n--'+b+'--';
+  try{await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+await dToken(),'Content-Type':'multipart/related; boundary='+b},body})}catch(e){}
 }
 
 /* 8-bit menu sounds, synthesized live: no audio files to download. Silent during a game. */

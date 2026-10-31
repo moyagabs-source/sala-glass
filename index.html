@@ -91,10 +91,6 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #railCap{font-size:27px;font-weight:500;color:var(--ink-soft);margin-bottom:34px}
 #railWrap{overflow:hidden;margin:-12px -12px;padding:12px}
 #rail{display:flex;gap:20px;will-change:transform;transition:transform .2s ease-out}
-#saverBtn{width:62px;padding:0;justify-content:center}
-#saverBtn svg{width:28px;height:28px;fill:currentColor;display:block}
-.nothing #pills #saverBtn{width:50px;padding:0}
-.nothing #pills #saverBtn svg{width:24px;height:24px}
 /* Screensaver */
 #saver{position:absolute;inset:0;z-index:8;display:none;color:#fff;overflow:hidden}
 .idle #saver{display:block}
@@ -230,6 +226,13 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 .nothing #gzArrow{color:var(--nInk)}
 #gzArrow{opacity:.38;transition:opacity .15s linear}
 #gzArrow:focus,#gzArrow:hover{opacity:1}
+#svArrow{position:absolute;left:50%;top:6px;margin-left:-41px;width:82px;height:60px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink-soft,#fff);background:none;opacity:.38;transition:opacity .15s linear}
+.nothing #svArrow{color:var(--nInk)}
+#svArrow svg:first-child{width:26px;height:13px;animation:svBob 2.4s ease-in-out infinite}
+#svArrow svg:last-child{width:30px;height:22px}
+#svArrow:focus,#svArrow:hover{opacity:1;outline:3px solid currentColor}
+@keyframes svBob{50%{transform:translate3d(0,-5px,0)}}
+.calm #svArrow svg:first-child{animation:none}
 #gzPad{width:36px;height:23px;flex:none}
 #gzChev{width:26px;height:13px;flex:none;animation:gzBob 2.4s ease-in-out infinite}
 #gzArrow:focus,#gzArrow:hover{outline:3px solid currentColor}
@@ -465,7 +468,6 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
         <button class="pill glass" data-f data-input data-go="HDMI 2">HDMI 2</button>
         <button class="pill glass" id="settings" data-f data-go="Ajustes" data-key="KEY_SETTINGS">Ajustes</button>
         <button class="pill glass" id="edit" data-f>Personalizar</button>
-        <button class="pill glass" id="saverBtn" data-f aria-label="Fondo de pantalla"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zm1.9 1.9v8.7l4.5-4.5 3.3 3.3 2.3-2.3 4.1 4.1V6.900zM15.800 8.200a1.800 1.800 0 1 1 0 3.600 1.800 1.800 0 0 1 0-3.600z" fill-rule="evenodd"/></svg></button>
       </div>
     </div>
 
@@ -523,6 +525,7 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
     </div>
 
     <div id="wipe"></div>
+    <button id="svArrow" data-f aria-label="Activar salvapantallas"><svg viewBox="0 0 24 12"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 18"><path fill-rule="evenodd" fill="currentColor" d="M3 1h18q2 0 2 2v12q0 2-2 2H3q-2 0-2-2V3q0-2 2-2zm1 3v10h16l-5-6-4 4-3-2.500z"/><circle cx="8" cy="7" r="2" fill="currentColor"/></svg></button>
     <div id="railBox">
       <div id="railCap">Apps recientes</div>
       <div id="railWrap"><div id="rail"></div></div>
@@ -1328,6 +1331,7 @@ $('mStart').onclick=$('mList').onclick=()=>{
   spShow('liked');focus($('sp-liked'));
 };
 
+$('svArrow').onclick=()=>enterSaver();
 $('gzArrow').onclick=()=>{$('wipe').classList.add('on');setTimeout(()=>{location.href='juegos.html'},280)};
 
 /* Server: only present while the page is served from the PC. */
@@ -1386,6 +1390,7 @@ function move(dx,dy){
 document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
   if(k&&e.key==='ArrowDown'&&document.activeElement===$('gzArrow')){e.preventDefault();$('gzArrow').click();return}
+  if(k&&e.key==='ArrowUp'&&document.activeElement===$('svArrow')){e.preventDefault();enterSaver();return}
   if(k){e.preventDefault();move(k[0],k[1]);return}
   const open=layerEl();
   if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():spBack()}
@@ -1454,7 +1459,6 @@ function enterSaver(){
 }
 document.addEventListener('keydown',wake,true);
 document.addEventListener('click',e=>{if($('stage').classList.contains('idle'))wake(e)},true);
-$('saverBtn').onclick=enterSaver;
 
 /* If the TV cannot keep the background moving smoothly, stop it by itself and stay fast. */
 function checkSpeed(){
