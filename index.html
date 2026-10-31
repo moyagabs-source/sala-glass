@@ -5,7 +5,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <script>if(/github\.io$/.test(location.hostname)||/[?&]tv/.test(location.search))document.documentElement.classList.add('lite')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=DM+Mono:wght@300&family=Doto:wght@700&family=Geist:wght@200;300;400;500;600&family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=DM+Mono:wght@300;400;500&family=Doto:wght@700;900&family=Geist:wght@200;300;400;500;600;700&family=Instrument+Serif&display=swap">
 <style>
 /* Layout: lienzo fijo de TV 1920x1080. Bienvenida arriba, reloj a la izquierda, clima a la derecha y seis apps abajo.
    El ambiente sigue la hora del día. */
@@ -21,6 +21,31 @@
   --font:"Geist",-apple-system,"SF Pro Display","Segoe UI",system-ui,sans-serif;
 }
 html,body{height:100%}
+html{background:#000}
+/* A black cover hides the page until fonts and layout are ready, then fades away. */
+#boot{position:fixed;inset:0;z-index:99;background:#000;pointer-events:none;transition:opacity .6s ease-out;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff}
+#boot>*{display:none}
+#boot.hello{background:none}
+#boot.hello>*{display:flex}
+/* Two panels of the theme's color: they cover the sala, then slide apart like a curtain. */
+#boot .bootC{position:absolute;top:0;bottom:0;width:calc(50% + 1px);overflow:hidden;will-change:transform;transition:transform .95s cubic-bezier(.76,0,.24,1)}
+#boot .bootC::before{content:"";position:absolute;top:0;bottom:0;width:calc(200% - 2px);background:var(--bootBg,var(--nBg))}
+#bootL{left:0}
+#bootL::before{left:0}
+#bootR{right:0}
+#bootR::before{right:0}
+#boot.open #bootL{transform:translate3d(-100%,0,0)}
+#boot.open #bootR{transform:translate3d(100%,0,0)}
+#bootName,#bootDots{position:relative;transition:opacity .34s ease-in}
+#boot.gone #bootName,#boot.gone #bootDots{opacity:0}
+/* The welcome always uses the Nothing look, in the chosen Nothing colors. */
+#bootName{font:700 52px/1.2 "Doto",ui-monospace,monospace;letter-spacing:.01em;text-transform:uppercase;color:var(--bootInk,var(--nInk));gap:.5em;animation:bootName .9s ease-out .1s backwards}
+#bootName b{font-weight:900}
+#bootDots{gap:13px;margin-top:30px}
+#bootDots i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--bootInk,var(--nInk));opacity:.14;animation:bootDot .3s linear forwards}
+#bootDots i:last-child{background:var(--nA);width:13px;height:13px;margin-left:5px;align-self:center}
+@keyframes bootDot{to{opacity:1}}
+@keyframes bootName{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
 [hidden]{display:none!important}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);overflow:hidden;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;
@@ -95,6 +120,10 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #saver{position:absolute;inset:0;z-index:8;display:none;color:#fff;overflow:hidden}
 .idle #saver{display:block}
 .idle #ui{visibility:hidden}
+.idle.leaving #ui{visibility:visible}
+.idle #saver{animation:svFade .42s ease-out}
+.idle.leaving #saver{animation:none;opacity:0;transition:opacity .32s ease-in}
+@keyframes svFade{from{opacity:0}to{opacity:1}}
 #sPhoto,#sShade{position:absolute;display:none}
 /* Spotify's photos stop at 640px: shown at the height of the screen beside the music, never stretched across it */
 #sPhoto{right:0;top:0;width:1080px;height:1080px;overflow:hidden;transform-origin:100% 50%;will-change:transform;animation:sKen 36s ease-in-out infinite alternate}
@@ -130,7 +159,11 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* Music module with nothing playing: one clear invitation to press play */
 #mStart{display:none;width:100%;height:100%;border-radius:30px;text-align:left;grid-column:1/-1}
-#mStart:focus,#mStart:hover{outline:4px solid #fff;outline-offset:8px}
+#mStart{transition:background .22s ease}
+#mStart:focus,#mStart:hover{outline:0;background:rgba(255,255,255,.08)}
+#ePlay,#eArt{transition:transform .22s ease}
+#mStart:focus #ePlay,#mStart:hover #ePlay{transform:scale(1.07)}
+#mStart:focus #eArt,#mStart:hover #eArt{transform:scale(1.03)}
 #nMusic.empty{grid-template-columns:minmax(0,1fr)}
 #nMusic.empty #mStart{display:block}
 #nMusic.empty #nCover,#nMusic.empty #mInfo{display:none}
@@ -295,9 +328,12 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 .music #wMeta,.music #wDays{display:none}
 #mid #mTitle{font-size:38px}
 #mid #mArtist{font-family:var(--font);font-size:25px;font-weight:300;text-transform:none;letter-spacing:0;color:var(--ink-soft)}
-#mid #mBar{gap:0;height:6px;border-radius:3px;overflow:hidden;margin-top:24px}
+#mid #mBar{position:relative;gap:0;height:6px;border-radius:3px;margin-top:24px}
 #mid #mBar i{flex:1;width:auto;height:6px;border-radius:0;background:rgba(255,255,255,.22)}
 #mid #mBar i.on,#mid #mBar i.now{background:#fff}
+/* The playhead: a small dot that glides along the line, in the player and on the screensaver. */
+#mid #mBar::after,#sLine::after{content:"";position:absolute;left:var(--p,0%);top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.22);transition:left 1s linear}
+#sLine{position:relative;overflow:visible}
 #mid .mB{background:rgba(255,255,255,.14)}
 #mid .mB:focus,#mid .mB:hover{background:#fff;color:#10131d;outline:0;transform:scale(1.08)}
 .lite #mid .mB:focus,.lite #mid .mB:hover{transform:none}
@@ -306,7 +342,7 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 #mBar{display:flex;gap:5px;margin-top:18px}
 #mBar i{display:block;width:9px;height:9px;border-radius:50%;background:#3a3c3b}
 #mBar i.on{background:var(--nL)}
-#mBar i.now{background:var(--nA)}
+#mBar i.now{background:var(--nA);transform:scale(1.4)}
 #mBtns{display:flex;gap:12px;margin-top:18px}
 .mB{width:64px;height:64px;border-radius:50%;background:#232423;color:var(--nL);display:grid;place-items:center}
 .mB svg{width:26px;height:26px;fill:currentColor;display:block}
@@ -422,12 +458,13 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 .nothing #panel,.lite.nothing #sheet.low #panel{background:var(--nD)}
 .calm #nSec,.calm #nColon,.calm .nDrops,.calm .nPulse{animation:none}
 
-/* Personalize: "you are here" is always a solid white ring or fill; "chosen" is always a check mark. They never look alike. */
-#sheet .pill:focus,#sheet .pill:hover{background:#fff!important;color:#10131d!important;outline:4px solid #fff;outline-offset:5px;transform:none}
-#tabs .pill.sel{background:rgba(255,255,255,.2);box-shadow:inset 0 -4px 0 #fff}
+/* Personalize: "you are here" is a soft glow that eases in; "chosen" is always a check mark. They never look alike. */
+#sheet .pill,#sheet .theme,#sheet .clockopt,#sheet .city{outline:0;transition:background .2s ease,box-shadow .2s ease,transform .2s ease}
+#sheet .pill:focus,#sheet .pill:hover{background:rgba(255,255,255,.26)!important;color:#fff!important;outline:0;box-shadow:0 0 0 2px rgba(255,255,255,.28);transform:none}
+#tabs .pill.sel{background:rgba(255,255,255,.17)}
 #sheet .theme,#sheet .clockopt,#sheet .city{position:relative}
 #sheet .theme.sel,#sheet .clockopt.sel{box-shadow:none}
-#sheet .theme:focus,#sheet .theme:hover,#sheet .clockopt:focus,#sheet .clockopt:hover,#sheet .city:focus,#sheet .city:hover{transform:none;box-shadow:none;outline:6px solid #fff;outline-offset:5px}
+#sheet .theme:focus,#sheet .theme:hover,#sheet .clockopt:focus,#sheet .clockopt:hover,#sheet .city:focus,#sheet .city:hover{transform:scale(1.03);outline:0;box-shadow:0 0 0 3px rgba(255,255,255,.42)}
 #sheet .sel:not(.pill)::after{content:"✓";position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff;color:#10131d;display:grid;place-items:center;font-size:21px;font-weight:700;text-shadow:none}
 #sheet .city.sel::after{top:50%;right:10px;margin-top:-14px;width:28px;height:28px;font-size:17px}
 #sheet .theme{text-shadow:0 0 3px #000,0 1px 7px #000,0 0 12px #000}
@@ -440,16 +477,30 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 /* Style swatches: a circle of the color, its name below */
 #sheet #themes .theme{height:auto;background:none;border:0;padding:10px 4px 6px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;font-size:24px;color:#fff;text-shadow:none}
 #sheet #themes .theme::before{content:"";display:block;width:104px;height:104px;border-radius:50%;background:var(--t);box-shadow:inset 0 0 0 2px rgba(255,255,255,.34)}
-#sheet #themes .theme:focus,#sheet #themes .theme:hover{outline:0}
-#sheet #themes .theme:focus::before,#sheet #themes .theme:hover::before{outline:6px solid #fff;outline-offset:5px}
+#sheet #themes .theme:focus,#sheet #themes .theme:hover{outline:0;box-shadow:none;transform:none}
+#sheet #themes .theme::before{transition:box-shadow .2s ease,transform .2s ease}
+#sheet #themes .theme:focus::before,#sheet #themes .theme:hover::before{transform:scale(1.08);box-shadow:inset 0 0 0 2px rgba(255,255,255,.34),0 0 0 4px rgba(255,255,255,.34)}
 #sheet #themes .sel::after{top:45px;right:auto;left:50%;margin-left:-17px;background:#10131d;color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
 #sheet .foot{align-items:center}
 #navHint{margin-right:auto;font-size:23px;color:rgba(255,255,255,.66);font-family:var(--font);font-weight:400}
 
 @media (prefers-reduced-motion:reduce){#drift,#nSec,#nColon,.nDrops,.nPulse,#waveCover{animation:none}.amb,.tile,.pill,.opt,#toast{transition:none}}
+/* Crisper at the TV's 1080p: hairline weights wash out on a big panel, so small text gets one step more body,
+   and the screensaver photo stays close to its real size instead of being stretched. */
+html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
+#time,#sTime{font-weight:300}
+#line,#date,#hint,#sDate,#sArtist,#mid #mArtist,#wText,#navHint{font-weight:400}
+.nothing #sDate,.nothing #sArtist,.nothing #sTimes,.nothing #pills .pill,.nothing #railCap,.nLab,.nDay span,#eLab span{font-weight:400}
+#sPhoto{width:860px;height:860px;top:110px}
+/* Glass without blur: the same soft fill, defined by a thicker light outline. */
+html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty){border:2.5px solid rgba(255,255,255,.34);border-top-color:rgba(255,255,255,.5);box-shadow:none}
+/* One continuous progress line instead of twenty joined pieces. */
+#mid #mBar{background:linear-gradient(90deg,#fff var(--p,0%),rgba(255,255,255,.22) var(--p,0%))}
+#mid #mBar i,#mid #mBar i.on,#mid #mBar i.now{background:none}
 </style>
 
 <div id="fit">
+<div id="boot"><div class="bootC" id="bootL"></div><div class="bootC" id="bootR"></div><div id="bootName"><span>Bienvenido,</span><b>Gab</b></div><div id="bootDots"><i style="animation-delay:0.28s"></i><i style="animation-delay:0.37s"></i><i style="animation-delay:0.46s"></i><i style="animation-delay:0.55s"></i><i style="animation-delay:0.64s"></i><i style="animation-delay:0.73s"></i><i style="animation-delay:0.82s"></i><i style="animation-delay:0.91s"></i><i style="animation-delay:1.00s"></i><i style="animation-delay:1.09s"></i><i style="animation-delay:1.18s"></i><i style="animation-delay:1.27s"></i><i style="animation-delay:1.36s"></i><i style="animation-delay:1.45s"></i><i style="animation-delay:1.54s"></i><i style="animation-delay:1.63s"></i></div></div>
 <div id="stage">
   <div id="drift"><div class="amb" id="a0"></div><div class="amb" id="a1"></div></div>
   <div class="blob" id="b0"></div><div class="blob" id="b1"></div>
@@ -582,7 +633,6 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
         <button class="pill" id="tab-modes" data-f>Tema</button>
         <button class="pill" id="tab-themes" data-f>Estilo</button>
         <button class="pill" id="tab-clocks" data-f>Reloj</button>
-        <button class="pill" id="tab-sys" data-f>Clima y sistema</button>
       </div>
       <div id="sec-modes" hidden><div id="modes"></div></div>
       <div id="sec-themes" hidden><div id="themes"></div></div>
@@ -597,7 +647,7 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
         </div>
       </div>
       <div class="foot">
-        <span id="navHint">Flechas para moverte · OK aplica y queda guardado · Atrás para salir</span>
+        <span id="navHint">OK aplica y queda guardado · Atrás para salir</span>
         <button class="pill" id="done" data-f>Listo</button>
       </div>
     </div>
@@ -655,8 +705,7 @@ if(!THEMES.some(t=>t.id===classicTheme&&t.id!=='nothing'))classicTheme=theme==='
 let nStyle=store.get('sala-nstyle')||'gris';
 let clockStyle=store.get('sala-clock');
 if(!CLOCKS.some(c=>c.id===clockStyle))clockStyle='fino';
-let city=store.get('sala-city2');
-if(!CITIES.some(c=>c.id===city))city='slorenzo';
+let city='slorenzo';   // the weather is always San Lorenzo
 let live=false,wx=null;
 
 function fit(){
@@ -964,7 +1013,7 @@ function focus(el){
     else if(y+h>w.scrollTop+w.clientHeight)w.scrollTop=y+h-w.clientHeight+6;
   }
 }
-const TABS=['modes','themes','clocks','sys'];
+const TABS=['modes','themes','clocks'];
 function setTab(id){
   TABS.forEach(t=>{$('sec-'+t).hidden=t!==id;$('tab-'+t).classList.toggle('sel',t===id)});
 }
@@ -1112,6 +1161,8 @@ function renderSaver(){
 }
 function musicBar(){
   if($('stage').classList.contains('idle'))renderSaver();
+  const at=(mDur?Math.min(100,mPos/mDur*100):0)+'%';
+  $('mBar').style.setProperty('--p',at);$('sLine').style.setProperty('--p',at);
   const lit=mDur?Math.min(M_DOTS-1,Math.floor(M_DOTS*mPos/mDur)):0;
   if(lit===mLit)return;
   mLit=lit;
@@ -1367,6 +1418,24 @@ async function loadServer(){
   }catch(e){}
 }
 
+/* System sounds: soft sine tones, made live, no audio files. */
+let uiCtx=null;
+function ui(){uiCtx=uiCtx||new (window.AudioContext||window.webkitAudioContext)();return uiCtx}
+function tone(f,at,dur,gain,attack){
+  const c=ui(),o=c.createOscillator(),g=c.createGain();
+  o.type='sine';o.frequency.value=f;
+  g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(gain,at+attack);g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+  o.connect(g).connect(c.destination);o.start(at);o.stop(at+dur+.02);
+}
+function play(fn){
+  try{const c=ui();c.state==='running'?fn(c.currentTime+.01):c.resume().then(()=>fn(c.currentTime+.01)).catch(()=>{})}catch(e){}
+}
+const tick=()=>play(t=>tone(1046,t,.07,.018,.006));
+const tap=()=>play(t=>{tone(784,t,.11,.03,.008);tone(1174,t+.05,.14,.022,.01)});
+/* Welcome chime: a slow open chord that blooms and fades. */
+const chime=()=>play(t=>{[[329.6,0],[493.9,.12],[659.3,.26],[987.8,.42]].forEach(n=>tone(n[0],t+n[1],2.1-n[1],.05,.34))});
+addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))tap()},true);
+
 /* Remote */
 function layerEl(){
   if($('stage').classList.contains('idle')&&mTrack)return $('saver');
@@ -1386,7 +1455,7 @@ function move(dx,dy){
     const s=along+across*2.2;
     if(s<bs){bs=s;best=b}
   });
-  if(best)focus(best);
+  if(best){tick();focus(best)}
 }
 document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
@@ -1403,13 +1472,18 @@ let restTimer;
 function wake(e){
   const idle=$('stage').classList.contains('idle');
   if(idle&&e){
-    /* with music the screensaver has its own controls: only Back leaves it */
-    const backKey=e.key==='Escape'||e.keyCode===8||e.keyCode===461;
+    /* with music the screensaver has its own controls: only Back or Down leave it */
+    const backKey=e.key==='Escape'||e.key==='ArrowDown'||e.keyCode===8||e.keyCode===461;
     if(mTrack&&e.type==='keydown'&&!backKey)return;
     if(e.type==='click'&&e.target.closest('#sBtns'))return;
     e.preventDefault();e.stopImmediatePropagation();
-    $('stage').classList.remove('idle');
-    focus(saverBack&&saverBack.offsetParent?saverBack:$('rail').firstChild);
+    const st=$('stage');
+    if(st.classList.contains('leaving'))return;
+    st.classList.add('leaving');   // the sala shows through while the screensaver fades away
+    setTimeout(()=>{
+      st.classList.remove('idle','leaving');
+      focus(saverBack&&saverBack.offsetParent?saverBack:$('rail').firstChild);
+    },340);
   }
   clearTimeout(restTimer);
   restTimer=setTimeout(()=>{
@@ -1483,6 +1557,29 @@ if(/[?&]empty/.test(location.search))hasMusic=true;
 musicUI(null);
 startMusic();
 focus($('rail').firstChild);
+/* First open of this visit: welcome screen with its chime. Coming back from Snake: only the black fade. */
+let firstOpen=false;
+try{firstOpen=!sessionStorage.getItem('sala-hello');sessionStorage.setItem('sala-hello','1')}catch(e){}
+/* The welcome waits for its type, so the letters never swap in front of you. */
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),wait(1500)]).then(async()=>{
+  const b=$('boot');
+  if(!firstOpen){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{b.style.opacity=0;setTimeout(()=>b.remove(),640)}));
+    return;
+  }
+  if(theme!=='nothing'){   // the welcome sits on the active theme's own background
+    b.style.setProperty('--bootBg',getComputedStyle(document.documentElement).getPropertyValue('--ground').trim()||'#0d1020');   // solid: a gradient would look mirrored on the curtain
+    b.style.setProperty('--bootInk','#fff');
+  }
+  b.classList.add('hello');chime();
+  await wait(2000);
+  b.classList.add('gone');   // the words leave first
+  await wait(380);
+  b.classList.add('open');   // then the screen opens
+  await wait(1000);
+  b.remove();
+});
 /* Preview only: ?live reloads when the file changes, ?demo shows a sample song. Neither runs on the TV address. */
 if(/[?&]live/.test(location.search)){
   let seen=null;
