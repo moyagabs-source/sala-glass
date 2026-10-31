@@ -269,11 +269,11 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 #wave,#tw{display:none;position:absolute;inset:0;overflow:hidden}
 .nothing #wave{display:block}
 /* red dots sit on the same 24px grid: they wake with the wave, and two fainter sets stay as quiet accents */
-#waveDots{position:absolute;inset:0;background:radial-gradient(circle,var(--nA) 3px,transparent 3.6px) 0 0/216px 168px,radial-gradient(circle,var(--nA) 3px,transparent 3.6px) 0 0/312px 264px,radial-gradient(circle,var(--nDotB) 3px,transparent 3.6px) 12px 12px/24px 24px}
+#waveDots{opacity:.7;position:absolute;inset:0;background:radial-gradient(circle,var(--nA) 3px,transparent 3.6px) 0 0/216px 168px,radial-gradient(circle,var(--nA) 3px,transparent 3.6px) 0 0/312px 264px,radial-gradient(circle,var(--nDotB) 3px,transparent 3.6px) 12px 12px/24px 24px}
 #waveCover{position:absolute;left:0;top:-60px;width:985px;height:300px;transform-origin:0 0;will-change:transform;
   background:repeating-linear-gradient(100deg,var(--nBg) 0,var(--nBg) 250px,transparent 365px,var(--nBg) 480px);animation:nWave 28s linear infinite}
 @keyframes nWave{from{transform:translate3d(-1950px,0,0) scale(4)}to{transform:translate3d(0,0,0) scale(4)}}
-#waveTop{position:absolute;inset:0;background:radial-gradient(circle,rgba(215,25,33,.34) 1.9px,transparent 2.4px) 0 0/408px 360px,radial-gradient(circle,var(--nDotS) 1.7px,transparent 2.2px) 12px 12px/24px 24px,radial-gradient(90% 90% at 72% 8%,var(--nGlow),transparent 58%),radial-gradient(90% 90% at 20% 100%,var(--nShade),transparent 62%)}
+#waveTop{position:absolute;inset:0;background:radial-gradient(circle,rgba(215,25,33,.24) 1.9px,transparent 2.4px) 0 0/408px 360px,radial-gradient(circle,var(--nDotS) 1.7px,transparent 2.2px) 12px 12px/24px 24px,radial-gradient(90% 90% at 72% 8%,var(--nGlow),transparent 58%),radial-gradient(90% 90% at 20% 100%,var(--nShade),transparent 62%)}
 .calm #waveCover{animation:none}
 .calm #waveDots{display:none}
 .tw{position:absolute;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--nD);opacity:0;animation:tw 5.5s ease-in-out infinite}
@@ -626,12 +626,12 @@ function setAmbient(id){
 let glyphKind='cloud',glyphOn=false,mPlaying=false,glyphLit=[241,242,240],glyphOff=[30,30,30];
 /* Nothing colorways: every color in the skin reads from these values. */
 const NSTYLES=[
-  {id:'gris',n:'Gris',bg:'#cbcfcd',d:'#0d0d0d',l:'#f1f2f0',w:'#f1f2f0',a:'#d71921',mut:'#a8acaa',ink:'#0d0d0d',s:'rgba(13,13,13,.25)',b:'rgba(13,13,13,.33)',glow:'rgba(255,255,255,.42)',shade:'rgba(60,66,64,.2)',dim:'#3a3c3b'},
-  {id:'negro',n:'Negro',bg:'#090909',d:'#1a1a1a',l:'#f1f2f0',w:'#f1f2f0',a:'#d71921',mut:'#9a9d9b',ink:'#f1f2f0',s:'rgba(255,255,255,.16)',b:'rgba(255,255,255,.3)',glow:'rgba(255,255,255,.05)',shade:'rgba(0,0,0,.3)',dim:'#3e3e3e'},
-  {id:'blanco',n:'Blanco',bg:'#f0f1ef',d:'#111111',l:'#f7f7f5',w:'#dcdfdb',a:'#d71921',mut:'#a8acaa',ink:'#111111',s:'rgba(13,13,13,.17)',b:'rgba(13,13,13,.26)',glow:'rgba(255,255,255,.6)',shade:'rgba(60,66,64,.08)',dim:'#3a3c3b'},
-  {id:'rojo',n:'Rojo',bg:'#bf141c',d:'#0d0d0d',l:'#f6efec',w:'#f6efec',a:'#ff4a3d',mut:'#b5aaa7',ink:'#fff4f0',s:'rgba(0,0,0,.24)',b:'rgba(0,0,0,.34)',glow:'rgba(255,120,100,.28)',shade:'rgba(60,0,0,.3)',dim:'#403232'},
-  {id:'arena',n:'Arena',bg:'#d8d0c1',d:'#1c1a16',l:'#f4efe5',w:'#f4efe5',a:'#c8501e',mut:'#b1a998',ink:'#1c1a16',s:'rgba(40,32,20,.24)',b:'rgba(40,32,20,.32)',glow:'rgba(255,250,235,.45)',shade:'rgba(90,70,40,.18)',dim:'#45413a'},
-  {id:'azul',n:'Azul',bg:'#142038',d:'#0a1222',l:'#eaf0f8',w:'#eaf0f8',a:'#ff6a3d',mut:'#8d9bb3',ink:'#eaf0f8',s:'rgba(255,255,255,.15)',b:'rgba(255,255,255,.28)',glow:'rgba(120,160,255,.14)',shade:'rgba(0,0,20,.3)',dim:'#2c3a55'}];
+  {id:'gris',n:'Gris',bg:'#cbcfcd',d:'#0d0d0d',l:'#f1f2f0',w:'#f1f2f0',a:'#d71921',mut:'#a8acaa',ink:'#0d0d0d',s:'rgba(13,13,13,0.175)',b:'rgba(13,13,13,.33)',glow:'rgba(255,255,255,.42)',shade:'rgba(60,66,64,.2)',dim:'#3a3c3b'},
+  {id:'negro',n:'Negro',bg:'#090909',d:'#1a1a1a',l:'#f1f2f0',w:'#f1f2f0',a:'#d71921',mut:'#9a9d9b',ink:'#f1f2f0',s:'rgba(255,255,255,0.112)',b:'rgba(255,255,255,.3)',glow:'rgba(255,255,255,.05)',shade:'rgba(0,0,0,.3)',dim:'#3e3e3e'},
+  {id:'blanco',n:'Blanco',bg:'#f0f1ef',d:'#111111',l:'#f7f7f5',w:'#dcdfdb',a:'#d71921',mut:'#a8acaa',ink:'#111111',s:'rgba(13,13,13,0.119)',b:'rgba(13,13,13,.26)',glow:'rgba(255,255,255,.6)',shade:'rgba(60,66,64,.08)',dim:'#3a3c3b'},
+  {id:'rojo',n:'Rojo',bg:'#bf141c',d:'#0d0d0d',l:'#f6efec',w:'#f6efec',a:'#ff4a3d',mut:'#b5aaa7',ink:'#fff4f0',s:'rgba(0,0,0,0.168)',b:'rgba(0,0,0,.34)',glow:'rgba(255,120,100,.28)',shade:'rgba(60,0,0,.3)',dim:'#403232'},
+  {id:'arena',n:'Arena',bg:'#d8d0c1',d:'#1c1a16',l:'#f4efe5',w:'#f4efe5',a:'#c8501e',mut:'#b1a998',ink:'#1c1a16',s:'rgba(40,32,20,0.168)',b:'rgba(40,32,20,.32)',glow:'rgba(255,250,235,.45)',shade:'rgba(90,70,40,.18)',dim:'#45413a'},
+  {id:'azul',n:'Azul',bg:'#142038',d:'#0a1222',l:'#eaf0f8',w:'#eaf0f8',a:'#ff6a3d',mut:'#8d9bb3',ink:'#eaf0f8',s:'rgba(255,255,255,0.105)',b:'rgba(255,255,255,.28)',glow:'rgba(120,160,255,.14)',shade:'rgba(0,0,20,.3)',dim:'#2c3a55'}];
 function hexRgb(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16))}
 function applyStyle(id){
   const s=NSTYLES.find(x=>x.id===id)||NSTYLES[0],r=document.documentElement.style;
