@@ -127,7 +127,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #sPhoto,#sShade{position:absolute;display:none}
 /* Spotify's photos stop at 640px: shown at the height of the screen beside the music, never stretched across it */
 #sPhoto{right:0;top:0;width:1080px;height:1080px;overflow:hidden;transform-origin:100% 50%;will-change:transform;animation:sKen 36s ease-in-out infinite alternate}
-#sBg{width:100%;height:100%;object-fit:cover;display:block}
+.sImg{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block;opacity:0;transition:opacity 1.8s ease}
+.sImg.on{opacity:1}
 #sPhoto::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0,rgba(0,0,0,.9) 14%,rgba(0,0,0,.62) 32%,rgba(0,0,0,.26) 52%,transparent 74%),linear-gradient(0deg,#000 0,rgba(0,0,0,.72) 16%,transparent 44%),linear-gradient(180deg,#000 0,rgba(0,0,0,.5) 12%,transparent 30%)}
 @keyframes sKen{from{transform:scale(1)}to{transform:scale(1.05)}}
 #sShade{inset:0;background:linear-gradient(90deg,#000 40%,rgba(0,0,0,.5) 56%,transparent 72%),linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,0) 46%,rgba(0,0,0,.42))}
@@ -490,41 +491,140 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #sPhoto{width:860px;height:860px;top:0}
 /* Compressed dark photos break into steps when enlarged: a touch of softness and a stronger still grain hide them,
    and the photo stays still on the TV because a slow zoom makes the steps crawl. */
-#sBg{filter:blur(1.3px)}
+.sImg{filter:blur(1.3px)}
 #sPhotoGrain{position:absolute;inset:0;background-image:var(--grainPhoto);background-size:128px 128px;z-index:1}
 #sPhoto::after{z-index:2}
+.sImg,#sPhotoGrain{left:4px;top:4px;right:4px;bottom:4px;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px)}   /* nothing reaches the box edge, where the halo could leave a thin line */
+/* Round halo: the photo melts into black on every side. Many close stops keep the dark ring from breaking into steps. */
+.sMusic #sPhoto::after{background:radial-gradient(circle 430px at 50% 46%,transparent 36%,rgba(0,0,0,.05) 44%,rgba(0,0,0,.16) 52%,rgba(0,0,0,.32) 60%,rgba(0,0,0,.5) 68%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.83) 84%,rgba(0,0,0,.94) 92%,#000 100%)}
 #sPhoto{isolation:isolate}   /* keeps the photo's layers below the player */
 .lite #sPhoto{animation:none;will-change:auto}
 /* Screensaver with music: clock on the left, the artist on the right, the player across the whole screen. */
 .sMusic #sClock{left:96px;right:auto;top:64px;bottom:auto;text-align:left}
 .sMusic #sTime{font-size:120px}
 .sMusic #sDate{font-size:30px;margin-top:10px}
-#sShade{background:linear-gradient(90deg,#000 40%,rgba(0,0,0,.5) 56%,transparent 72%),linear-gradient(0deg,#000 8%,rgba(0,0,0,.82) 28%,rgba(0,0,0,0) 56%)}
-.nothing #sShade{background:radial-gradient(circle,transparent 1.7px,rgba(0,0,0,.72) 2.3px) 0 0/6px 6px,linear-gradient(90deg,#000 40%,rgba(0,0,0,.5) 56%,transparent 72%),linear-gradient(0deg,#000 8%,rgba(0,0,0,.82) 28%,rgba(0,0,0,0) 56%)}
-#sTrack{left:96px;right:96px;width:auto;bottom:64px;grid-template-columns:232px minmax(0,1fr);column-gap:44px;align-items:end}
-#sCover{width:232px;height:232px;border-radius:18px}
+#sShade{background:linear-gradient(0deg,#000 6%,rgba(0,0,0,.7) 22%,rgba(0,0,0,.26) 36%,rgba(0,0,0,0) 50%)}
+.nothing #sShade{background:radial-gradient(circle,transparent 1.7px,rgba(0,0,0,.72) 2.3px) 0 0/6px 6px,linear-gradient(0deg,#000 6%,rgba(0,0,0,.7) 22%,rgba(0,0,0,.26) 36%,rgba(0,0,0,0) 50%)}
+#sTrack{left:96px;right:96px;width:auto;bottom:64px;grid-template-columns:334px minmax(0,1fr);column-gap:52px;align-items:end}
+#sCover{width:334px;height:334px;border-radius:22px}
 #sTrack>:last-child{position:relative;min-width:0}
-#sName{font-size:76px;line-height:1.12;display:block;white-space:nowrap;text-overflow:ellipsis;padding-right:430px}
-#sArtist{font-size:34px;margin-top:6px;padding-right:430px}
+#sName{font-size:76px;line-height:1.12;display:block;white-space:nowrap;margin-right:470px}
+#sName span{display:inline-block}
+#sName.slide span{will-change:transform;animation:nameSlide var(--t,12s) ease-in-out infinite}
+@keyframes nameSlide{0%,14%{transform:none}64%,78%{transform:translate3d(var(--d),0,0)}100%{transform:none}}
+#sArtist{font-size:34px;margin-top:6px;padding-right:470px}
 /* The record slides out of the sleeve and spins behind the cover. One small layer: light even on the TV. */
-#sDeck{position:relative;width:232px;height:232px}
+#sDeck{position:relative;width:334px;height:334px}
 #sCover{position:relative;z-index:2}
-#sSlide{position:absolute;left:12px;top:-92px;width:208px;height:208px;z-index:1;animation:vinylOut .9s cubic-bezier(.2,.8,.2,1) .25s backwards}
-@keyframes vinylOut{from{transform:translate3d(0,92px,0)}to{transform:none}}
-#sVinyl{position:relative;width:100%;height:100%;border-radius:50%;will-change:transform;animation:vinylSpin 3.6s linear infinite;
-  background:conic-gradient(rgba(255,255,255,.2) 0 7deg,transparent 22deg 158deg,rgba(255,255,255,.14) 180deg 188deg,transparent 205deg 340deg,rgba(255,255,255,.2) 360deg),repeating-radial-gradient(circle,#101013 0 2px,#1d1d22 2px 3px),#111;
-  box-shadow:inset 0 0 0 2px #2c2c33}
-#sLabel{position:absolute;left:50%;top:50%;width:74px;height:74px;margin:-37px 0 0 -37px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #08080a}
+#sSlide{position:absolute;left:17px;top:-130px;width:300px;height:300px;z-index:1;animation:vinylOut .9s cubic-bezier(.2,.8,.2,1) .25s backwards}
+@keyframes vinylOut{from{transform:translate3d(0,130px,0)}to{transform:none}}
+#sVinyl{position:relative;width:100%;height:100%;border-radius:50%;background:var(--vinyl,#0b0b0d) center/100% 100%}
+/* The lamp's reflection stays still while the record turns under it, and never crosses the paper label. */
+#sSlide::after,#ttSheen{-webkit-mask:radial-gradient(circle,transparent 34%,#000 34.6%);mask:radial-gradient(circle,transparent 34%,#000 34.6%)}
+#sSlide::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 74% 26%,rgba(255,240,225,.15),rgba(255,240,225,0) 40%),radial-gradient(circle at 26% 74%,rgba(255,240,225,.08),rgba(255,240,225,0) 36%)}
+#sLabel{will-change:transform;animation:vinylSpin 1.8s linear infinite;position:absolute;left:50%;top:50%;width:100px;height:100px;margin:-50px 0 0 -50px;border-radius:50%;object-fit:cover;filter:saturate(.9) brightness(.92);box-shadow:0 0 0 1.500px rgba(0,0,0,.85)}
 #sVinyl::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.45)}
 @keyframes vinylSpin{to{transform:rotate(360deg)}}
-#saver.sPaused #sVinyl{animation-play-state:paused}
-#sViz{position:absolute;left:96px;right:96px;width:1728px;top:250px;height:400px;display:none}
-#saver.vizOn #sViz{display:block}
-#saver.vizOn #sPhoto{opacity:.28}
-#sVizBtn.on{background:rgba(255,255,255,.34)}
+#saver.sPaused #sLabel{animation-play-state:paused}
 #sLine{margin-top:36px;height:5px}
 #sTimes{font-size:24px;margin-top:14px}
 #sBtns{position:absolute;right:0;top:6px;margin:0}
+/* Changing song: the record goes into the sleeve, the sleeve leaves to the left, the next one arrives and its record comes out. */
+#sSlide{transition:transform .5s cubic-bezier(.2,1.25,.4,1)}
+#sDeck.dIn #sSlide{transform:translate3d(0,130px,0);transition:transform .36s cubic-bezier(.5,0,.8,.4)}
+#sDeck.dOut{animation:deckOut .34s cubic-bezier(.5,0,.9,.5) forwards}
+#sDeck.dEnter{animation:deckIn .46s cubic-bezier(.16,.9,.3,1) backwards}
+@keyframes deckOut{to{transform:translate3d(-480px,0,0)}}
+@keyframes deckIn{from{transform:translate3d(110px,0,0);opacity:0}}
+#sLyrBtn.on{background:rgba(255,255,255,.34)}
+#sLyrBtn.on:focus,#sLyrBtn.on:hover{background:#fff}
+/* Lyrics: the player folds into a column under the clock and the song takes the rest of the screen.
+   Only the list moves and only two lines change per verse, so the TV barely works. */
+#sLyr{position:absolute;left:560px;right:96px;top:0;bottom:0;overflow:hidden;display:none}
+#saver.lyr.sMusic #sLyr{display:block}
+#sLyr::before,#sLyr::after{content:"";position:absolute;left:0;right:0;height:220px;z-index:1}
+#sLyr::before{top:0;background:linear-gradient(180deg,#000 12%,transparent)}
+#sLyr::after{bottom:0;background:linear-gradient(0deg,#000 12%,transparent)}
+#sLyrList{position:absolute;left:0;right:0;top:50%;will-change:transform;transition:transform .7s cubic-bezier(.22,.8,.24,1)}
+.ly{font-size:60px;font-weight:600;letter-spacing:-.015em;line-height:1.18;margin-bottom:36px;opacity:.26;transition:opacity .45s ease}
+.ly.past{opacity:.13}
+.ly.now{opacity:1}
+.ly.gap{font-size:40px;font-weight:400}
+.ly.msg{font-size:42px;font-weight:300;opacity:.72}
+#saver.lyr #sPhoto{opacity:.3}
+#saver.lyr #sTrack{right:auto;width:334px;display:block}
+#saver.lyr #sName{font-size:46px;margin:24px 0 0}
+#saver.lyr #sArtist{font-size:26px;margin-top:4px;padding-right:0}
+#saver.lyr #sLine{margin-top:24px}
+#saver.lyr #sTimes{font-size:22px;margin-top:10px}
+#saver.lyr #sBtns{position:static;margin-top:20px;gap:8px}
+#saver.lyr .sB{width:60px;height:60px}
+#saver.lyr .sB svg{width:24px;height:24px}
+/* Turntable room. The whole apartment is one still picture; only the record and the arm ever move. */
+#sTT{position:absolute;inset:0;display:none;overflow:hidden;background:#55261a}
+#saver.tt #sTT{display:block;animation:svFade .7s ease-out}
+#saver.tt #sPhoto,#saver.tt #sShade,#saver.tt #sLyr,#saver.tt #sDeck{display:none}
+#ttRoom{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+/* The room is one photo. Only what moves sits on top, tilted to land exactly on the platter. A few still rings at
+   different heights give the record its edge and the arm its pillar, so nothing reads as a flat cut-out. */
+.ttRec{position:absolute;inset:0;border-radius:50%;background:var(--vinylSoft,#0b0b0d) center/100% 100%}
+#ttLabel{will-change:transform;animation:vinylSpin 1.8s linear infinite}
+#saver.sPaused #ttLabel{animation-play-state:paused}
+#ttLabel,.ttRec img{position:absolute;left:50%;top:50%;width:187px;height:187px;margin:-93.500px 0 0 -93.500px;border-radius:50%;object-fit:cover;filter:saturate(.85) brightness(.9);box-shadow:0 0 0 2px rgba(0,0,0,.8)}
+#ttSheen{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 34% 52% at 90% 50%,rgba(255,226,180,.2),rgba(255,226,180,0) 100%),radial-gradient(ellipse 34% 52% at 10% 50%,rgba(255,226,180,.2),rgba(255,226,180,0) 100%)}
+.ttA{position:absolute;left:0;top:0;overflow:visible;transform-origin:0 0;transition:transform 1s cubic-bezier(.3,.7,.3,1)}
+#ttShadow,#ttHeadSh{filter:blur(2.4px)}
+/* the same softness and warmth as the photo, so nothing reads as drawn on top */
+#ttArm,#ttHead,#ttHeadMid,#ttHeadBase,#ttNeedle,#ttJoint{filter:blur(.35px) sepia(.2) contrast(.96)}
+#ttJoint{position:absolute;left:1112px;top:693px;overflow:visible}
+/* The cover is a print in the painted frame: mat around it, the room's warm light on it, glass in front. */
+#ttSleeve{position:absolute;left:832px;top:181px;width:284px;height:286px;overflow:hidden}
+#ttCover{position:absolute;left:30px;top:30px;width:224px;height:226px;object-fit:cover;display:block;filter:saturate(.86) contrast(.94) brightness(.9);box-shadow:0 0 0 1px rgba(70,44,20,.6),0 1px 7px 1px rgba(58,34,14,.42);transition:opacity .4s ease}
+#ttSleeve::before{content:"";position:absolute;left:30px;top:30px;width:224px;height:226px;z-index:1;mix-blend-mode:multiply;background:linear-gradient(180deg,#e7c79c,#f7dcb4 70%,#ffe6bf)}
+#ttSleeve::after{content:"";position:absolute;inset:0;z-index:2;box-shadow:inset 0 10px 13px -4px rgba(40,22,8,.56),inset 6px 0 9px -4px rgba(40,22,8,.32),inset -6px 0 9px -4px rgba(40,22,8,.22),inset 0 -5px 8px -4px rgba(40,22,8,.2);background:linear-gradient(118deg,rgba(255,244,224,.14) 0,rgba(255,244,224,.05) 20%,transparent 21%,transparent 56%,rgba(255,244,224,.07) 57%,rgba(255,244,224,.02) 72%,transparent 73%)}
+#sTT::after{content:"";position:absolute;left:0;right:0;bottom:0;height:230px;background:linear-gradient(0deg,rgba(6,8,8,.72) 0,rgba(6,8,8,.5) 42%,rgba(6,8,8,0) 100%)}
+/* The song on the wall: warm ink between the frame and the turntable, the next line fainter below it. */
+#ttLyr{position:absolute;left:460px;width:1000px;top:476px;height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#2f2e2c;transition:opacity .26s ease,transform .26s ease}
+#ttLyr.off{opacity:0;transform:translate3d(0,5px,0)}
+#ttLyr.mute{opacity:0}
+#ttLine{font:italic 400 42px/1.2 Georgia,"Times New Roman",serif;opacity:.86}
+#ttNext{font:italic 400 25px/1.25 Georgia,"Times New Roman",serif;opacity:.5;margin-top:12px}
+/* Ambient occlusion: soft contact shadows where things touch, painted once and never moving. */
+#sTT::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 72% 78% at 50% 44%,rgba(30,14,4,0) 58%,rgba(30,14,4,.2) 100%)}
+/* Film grain: one painted noise layer jumping to a new spot about 12 times a second, like frames of a print. */
+/* The record takes the exact outline of the platter, traced from the photo's pixels. */
+#ttDisc{position:absolute;left:800.2px;top:696.3px;width:296.4px;height:108.3px;visibility:hidden;transition:opacity .3s linear,transform .5s ease}
+#saver.ttSeat #ttDisc{visibility:visible}
+#saver.ttChange #ttDisc{opacity:0;transform:translate3d(0,-26px,0)}
+.ttShape{position:absolute;inset:0;clip-path:polygon(100.40% 49.58%,98.77% 61.22%,95.47% 71.46%,90.60% 79.28%,85.74% 85.14%,81.22% 89.33%,76.93% 91.93%,73.57% 94.54%,70.17% 95.66%,67.41% 96.96%,64.83% 97.61%,62.65% 98.63%,60.64% 99.47%,58.60% 99.47%,56.73% 99.47%,55.00% 99.47%,53.37% 100.40%,51.73% 100.31%,50.10% 100.31%,48.47% 100.31%,46.84% 100.40%,45.14% 100.31%,43.47% 99.47%,41.60% 99.47%,39.56% 99.47%,37.55% 98.63%,35.38% 97.61%,32.59% 97.52%,29.63% 96.59%,26.53% 94.73%,22.72% 92.86%,18.98% 89.33%,14.02% 85.51%,8.78% 79.93%,4.02% 71.83%,0.62% 61.40%,-0.40% 49.58%,1.23% 37.86%,5.11% 27.90%,10.07% 20.27%,15.00% 14.68%,19.73% 10.87%,23.81% 8.07%,27.18% 5.65%,30.44% 4.44%,33.20% 3.33%,35.68% 2.49%,37.79% 1.56%,39.80% 0.63%,41.77% 0.72%,43.47% -0.30%,45.20% -0.30%,46.90% -0.30%,48.50% -0.30%,50.10% -0.40%,51.70% -0.30%,53.30% -0.30%,55.00% -0.30%,56.73% -0.30%,58.43% 0.72%,60.41% 0.63%,62.41% 1.56%,64.83% 1.56%,67.28% 2.58%,70.17% 3.51%,73.19% 5.37%,76.93% 7.24%,81.22% 9.84%,86.18% 13.66%,91.29% 19.43%,95.64% 27.62%,99.17% 37.86%)}
+#ttBody{background:#0d0d0f}
+#ttTop{transform:translate3d(0,-1.5px,0)}
+#ttAO{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 9px 3px rgba(0,0,0,.6),0 3px 12px 5px rgba(0,0,0,.28)}
+#ttSheen{-webkit-mask:none;mask:none}
+#ttLab{position:absolute;left:97.5px;top:0.7px;width:100px;height:100px;transform:scaleY(.365)}
+#ttLabel{left:0;top:0;width:100%;height:100%;margin:0}
+#ttPin{position:absolute;left:144.5px;top:48.7px;width:6px;height:4px;border-radius:50%;background:#d8d3c8;box-shadow:0 0 0 1px rgba(0,0,0,.7)}
+#ttGrain{position:absolute;left:-180px;top:-180px;right:-180px;bottom:-180px;background-image:var(--grainRoom);background-size:176px 176px;will-change:transform,opacity;animation:filmGrain .66s steps(1) infinite,grainIn 2.8s ease-in}
+@keyframes grainIn{from{opacity:0}to{opacity:1}}
+@keyframes filmGrain{0%{transform:translate3d(0,0,0)}12.5%{transform:translate3d(-61px,37px,0)}25%{transform:translate3d(43px,-83px,0)}37.5%{transform:translate3d(-97px,-29px,0)}50%{transform:translate3d(71px,59px,0)}62.5%{transform:translate3d(-23px,101px,0)}75%{transform:translate3d(113px,-47px,0)}87.5%{transform:translate3d(-79px,-109px,0)}}
+#ttFly{position:absolute;left:0;top:0}
+/* The player lives on the console's plain front, under the room: title, line, buttons and clock on one row. */
+#saver.tt #sClock{left:auto;right:96px;top:auto;bottom:14px;width:320px;text-align:right;color:#fff1dc}
+#saver.tt #sTime{font-size:50px;font-weight:300;line-height:1.05}
+#saver.tt #sDate{font-size:20px;margin-top:0}
+#saver.tt #sTrack{left:96px;right:96px;top:auto;bottom:8px;width:auto;display:block;color:#fff1dc;animation:svFade .7s ease-out}
+#saver.tt #sTrack>:last-child{display:grid;grid-template-columns:320px minmax(0,1fr) 320px;grid-template-rows:auto auto;column-gap:48px;align-items:center}
+#saver.tt #sName{grid-column:1;grid-row:1;font-size:36px;font-weight:600;letter-spacing:-.01em;line-height:1.15;margin:0;align-self:end;position:relative;top:-8px}
+#saver.tt #sArtist{grid-column:1;grid-row:2;font-size:22px;font-weight:400;padding-right:0;margin-top:0;align-self:start;position:relative;top:-8px}
+#saver.tt #sBtns{grid-column:2;grid-row:1;position:static;margin:0 0 15px;gap:10px;justify-content:center}
+#saver.tt #sLine{grid-column:2;grid-row:2;align-self:start;margin:6px 58px 0}
+#saver.tt #sTimes{grid-column:2;grid-row:2;font-size:18px;margin:0;align-self:start;line-height:17px}
+#saver.tt .sB{width:48px;height:48px}
+#saver.tt .sB svg{width:20px;height:20px}
+#saver.tt .sB{background:rgba(255,255,255,.14);color:#fff}
+#saver.tt .sB:focus,#saver.tt .sB:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
+#saver.tt #sTTBtn,#saver.tt #sLyrBtn.on{background:rgba(255,255,255,.3);color:#fff}
+#saver.tt #sTTBtn:focus,#saver.tt #sTTBtn:hover,#saver.tt #sLyrBtn.on:focus,#saver.tt #sLyrBtn.on:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
 /* Dark gradients break into visible steps on this panel. A fine still grain dithers them: painted once, it never moves. */
 .grain{position:absolute;inset:0;pointer-events:none;background-image:var(--grain);background-size:128px 128px;image-rendering:pixelated}
 .nothing .grain{display:none}
@@ -641,11 +741,41 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
   </div>
 
   <div id="saver">
-    <div id="sPhoto"><img id="sBg" alt=""><i id="sPhotoGrain"></i></div>
+    <div id="sPhoto"><img id="sBg" class="sImg" alt=""><img id="sBg2" class="sImg" alt=""><i id="sPhotoGrain"></i></div>
     <div id="sShade"></div>
+    <div id="sTT">
+      <img id="ttRoom" alt="">
+      <div id="ttDisc"><i id="ttAO"></i><div id="ttBody" class="ttShape"></div>
+        <div id="ttTop" class="ttShape"><div id="ttSpin" class="ttRec"></div><i id="ttSheen"></i>
+          <div id="ttLab"><canvas id="ttLabel" width="110" height="110"></canvas></div><i id="ttPin"></i></div>
+      </div>
+      <svg id="ttShadow" class="ttA" width="1" height="1" aria-hidden="true"><path d="M0 0C32 -3 62 5 94 2" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round" opacity=".42"/></svg>
+      <svg id="ttHeadSh" class="ttA" width="1" height="1" aria-hidden="true"><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="#000" opacity=".75"/></svg>
+      <svg id="ttArm" class="ttA" width="1" height="1" aria-hidden="true"><defs>
+<linearGradient id="tTube" gradientUnits="userSpaceOnUse" x1="0" y1="-2" x2="0" y2="3"><stop offset="0" stop-color="#0d0d0c"/><stop offset=".3" stop-color="#3d3a35"/><stop offset=".42" stop-color="#c4b9a4"/><stop offset=".55" stop-color="#2c2a27"/><stop offset="1" stop-color="#060605"/></linearGradient>
+<linearGradient id="tWeight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c0c0b"/><stop offset=".3" stop-color="#4a4640"/><stop offset=".45" stop-color="#26241f"/><stop offset="1" stop-color="#050505"/></linearGradient>
+<linearGradient id="tShell" gradientUnits="userSpaceOnUse" x1="0" y1="-3.500" x2="0" y2="3.500"><stop offset="0" stop-color="#101010"/><stop offset=".36" stop-color="#57534b"/><stop offset=".55" stop-color="#1f1e1b"/><stop offset="1" stop-color="#060605"/></linearGradient></defs>
+<path d="M0 0C30 -1 62 2 96 1" stroke="url(#tTube)" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
+      <svg id="ttHeadBase" class="ttA" width="1" height="1" aria-hidden="true"><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="#060605"/><rect x="12" y="-5.500" width="22" height="11" rx="1.500" fill="#14130f"/></svg>
+      <svg id="ttHeadMid" class="ttA" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tHeadSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0d0c0b"/><stop offset=".5" stop-color="#3a342b"/><stop offset=".72" stop-color="#6b5a43"/><stop offset="1" stop-color="#181613"/></linearGradient></defs><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="url(#tHeadSide)"/></svg>
+      <svg id="ttHead" class="ttA" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tHeadTop" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#191816"/><stop offset=".45" stop-color="#46423b"/><stop offset=".62" stop-color="#7c7468"/><stop offset=".8" stop-color="#37342f"/><stop offset="1" stop-color="#121210"/></linearGradient></defs>
+<path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="url(#tHeadTop)" stroke="#080807" stroke-width="1"/><path d="M-1 -4.500L33 -6.300Q38.700 -6.300 38.700 -2.500V2.500Q38.700 6.300 33 6.300L-1 4.500" fill="none" stroke="#fff0d6" stroke-opacity=".28" stroke-width=".7"/><ellipse cx="22" cy="-1" rx="13" ry="3.600" fill="#ffd9a6" opacity=".1"/>
+<rect x="9" y="-4.800" width="13" height="2" rx="1" fill="#0a0a09"/><rect x="9" y="2.800" width="13" height="2" rx="1" fill="#0a0a09"/><circle cx="29" cy="-3.800" r="1.100" fill="#b9a26c"/><circle cx="29" cy="3.800" r="1.100" fill="#b9a26c"/>
+<path d="M27 -7.500L31 -22" stroke="#0c0c0b" stroke-width="2.600" stroke-linecap="round"/><path d="M27.600 -8.500L31 -21" stroke="#79736a" stroke-width=".8"/></svg>
+      <svg id="ttNeedle" class="ttA" width="1" height="1" aria-hidden="true"><path d="M0 0L-1 7" stroke="#d6d0c4" stroke-width="1" stroke-linecap="round"/><circle cx="-1" cy="7" r=".8" fill="#000"/></svg>
+      <svg id="ttJoint" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tBear"><stop offset="0" stop-color="#050505"/><stop offset=".32" stop-color="#4c4842"/><stop offset=".48" stop-color="#23211e"/><stop offset="1" stop-color="#040404"/></linearGradient></defs>
+<ellipse cx="0" cy="2.200" rx="12.500" ry="4.200" fill="#000" opacity=".4"/>
+<path d="M-9.500 -7V0.500A9.500 3.300 0 0 0 9.500 .5V-7Z" fill="url(#tBear)"/>
+<ellipse cx="0" cy="-7" rx="9.500" ry="3.300" fill="#1c1b19" stroke="#55514a" stroke-width=".7"/>
+<ellipse cx="0" cy="-7" rx="3.400" ry="1.200" fill="#c9a968"/></svg>
+      <div id="ttSleeve"><img id="ttCover" alt=""></div>
+      <div id="ttLyr"><div id="ttLine"></div><div id="ttNext"></div></div>
+      <i id="ttGrain"></i>
+    </div>
     <div class="grain"></div>
-    <canvas id="sViz" width="864" height="200"></canvas>
     <div id="sClock"><div id="sTime"></div><div id="sDate"></div></div>
+    <div id="sLyr"><div id="sLyrList"></div></div>
     <div id="sTrack" hidden>
       <div id="sDeck"><div id="sSlide"><div id="sVinyl"><img id="sLabel" alt=""></div></div><img id="sCover" alt=""></div>
       <div>
@@ -654,10 +784,11 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
         <div id="sLine"><div id="sProg"></div></div>
         <div id="sTimes"><span id="sPos"></span><span id="sDur"></span></div>
         <div id="sBtns">
+          <button class="sB" id="sLyrBtn" data-f aria-label="Letra"><svg viewBox="0 0 24 24"><path d="M4 5h16v2.400H4zm0 5.800h16v2.400H4zm0 5.800h10v2.400H4z"/></svg></button>
           <button class="sB" id="sPrev" data-f aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M6 5h2.4v14H6zM20 5.6v12.8L9.5 12z"/></svg></button>
           <button class="sB" id="sPlay" data-f aria-label="Pausar"><svg viewBox="0 0 24 24"><path id="sIcon" d="M7 5h3.6v14H7zm6.4 0H17v14h-3.6z"/></svg></button>
           <button class="sB" id="sNext" data-f aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M15.6 5H18v14h-2.4zM4 5.6v12.8L14.5 12z"/></svg></button>
-          <button class="sB" id="sVizBtn" data-f aria-label="Visualizador"><svg viewBox="0 0 24 24"><path d="M4 13h3v7H4zm5-9h3v16H9zm5 5h3v11h-3zm5-3h2v14h-2z"/></svg></button>
+          <button class="sB" id="sTTBtn" data-f aria-label="Tocadiscos"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2.500a9.500 9.500 0 1 0 0 19 9.500 9.500 0 0 0 0-19zm0 6.300a3.200 3.200 0 1 1 0 6.400 3.200 3.200 0 0 1 0-6.400zm0 2.200a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg></button>
         </div>
       </div>
     </div>
@@ -1221,7 +1352,7 @@ function renderSaver(){
 function musicBar(){
   if($('stage').classList.contains('idle'))renderSaver();
   const at=(mDur?Math.min(100,mPos/mDur*100):0)+'%';
-  $('mBar').style.setProperty('--p',at);$('sLine').style.setProperty('--p',at);
+  $('mBar').style.setProperty('--p',at);$('sLine').style.setProperty('--p',at);ttArm();
   const lit=mDur?Math.min(M_DOTS-1,Math.floor(M_DOTS*mPos/mDur)):0;
   if(lit===mLit)return;
   mLit=lit;
@@ -1237,13 +1368,14 @@ function musicUI(s){
     return;
   }
   $('nMusic').classList.remove('empty');
-  mPlaying=!s.paused;mPos=s.pos;mDur=s.dur;mLit=-1;
+  mPlaying=!s.paused;mPos=s.pos;mDur=s.dur;mLit=-1;mBase=s.pos;mAt=performance.now();mFirst=s.artist.split(', ')[0];
   $('saver').classList.toggle('sPaused',!mPlaying);
   $('nMusic').hidden=false;$('stage').classList.add('music');
   if(!$('mBar').firstChild)for(let i=0;i<M_DOTS;i++)$('mBar').append(document.createElement('i'));
   if(s.name!==mTrack){
-    mTrack=s.name;$('mTitle').textContent=s.name;$('mArtist').textContent=s.artist;$('sName').textContent=s.name;$('sArtist').textContent=s.artist;
-    if(s.cover){$('nCover').src=s.cover;$('sCover').src=s.cover;$('sBg').src=s.cover}
+    mTrack=s.name;$('mTitle').textContent=s.name;$('mArtist').textContent=s.artist;setName(s.name);$('sArtist').textContent=s.artist;
+    deckSwap(s.cover);if(s.cover){$('nCover').src=s.cover;showPhoto(s.cover)}
+    lyrFor='';if((lyrOn||ttOn)&&$('stage').classList.contains('idle'))lyrLoad()
   }
   const ic=mPlaying?'M7 5h3.6v14H7zm6.4 0H17v14h-3.6z':'M7 4.6v14.8L19 12z';
   $('mIcon').setAttribute('d',ic);$('sIcon').setAttribute('d',ic);
@@ -1269,13 +1401,15 @@ function startMusic(){
         coverFor=t.id;let artistShown=false;
         spApi('/tracks/'+t.id).then(r=>r.json()).then(j=>{
           const u=bestImage(j.album&&j.album.images,460);
-          if(u&&coverFor===t.id){$('nCover').src=u;$('sCover').src=u;if(!artistShown)$('sBg').src=u}
+          if(u&&coverFor===t.id){$('nCover').src=u;deckCover(u);if(!artistShown)showPhoto(u)}
         }).catch(()=>{});
         /* the artist's photo for the screensaver; if Spotify doesn't give one, the album art stays */
         const aid=((t.artists[0]&&t.artists[0].uri)||'').split(':')[2];
         if(aid)spApi('/artists/'+aid).then(r=>r.ok?r.json():null).then(j=>{
           const u=j&&bestImage(j.images,640);
-          if(u&&coverFor===t.id){artistShown=true;$('sBg').src=u}
+          if(coverFor!==t.id)return;
+          if(u){artistShown=true;showPhoto(u)}
+          artistPhotos(t.artists[0].name,u);
         }).catch(()=>{});
       }
     });
@@ -1497,7 +1631,7 @@ const chime=()=>play(t=>{[[329.6,0],[493.9,.12],[659.3,.26],[987.8,.42]].forEach
 addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))tap()},true);
 
 /* Fine noise tiles for the grain layers, generated once at start. */
-[['--grain',9],['--grainPhoto',26]].forEach(q=>{
+[['--grain',5],['--grainPhoto',8],['--grainRoom',12.6]].forEach(q=>{
   const c=document.createElement('canvas');c.width=c.height=128;
   const g=c.getContext('2d'),im=g.createImageData(128,128);
   for(let i=0;i<im.data.length;i+=4){const v=Math.random()<.5?0:255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.floor(Math.random()*q[1])}
@@ -1600,122 +1734,207 @@ function enterSaver(){
   saverBack=document.activeElement;
   renderSaver();$('stage').classList.add('idle');
   if(mTrack)focus($('sPlay'));
-  vizApply();
+  lyrApply();ttArm();
 }
-/* Retro visualizer. Spotify keeps its audio protected and its sound data closed, so the bars cannot hear the song:
-   they dance to a pattern while it plays and fall when paused. The colors do come from the real cover. */
-const VIZ_BARS=48,VIZ_W=864,VIZ_H=200,VIZ_NAMES=['Visualizador apagado','Barras','Horizonte'],vizLevel=new Array(VIZ_BARS).fill(0),vizPeak=new Array(VIZ_BARS).fill(0);
-let vizMode=store.get('sala-viz');if(![0,1,2].includes(vizMode))vizMode=0;
-let vizLoop=false,vizFrame=0,vizFill=null,vizStripes=null,vizA='#2fe08a',vizB='#ff5a9c';
-const vizCtx=$('sViz').getContext('2d');
-function vizPaint(a,b){
-  vizA=a;vizB=b;
-  vizFill=vizCtx.createLinearGradient(0,VIZ_H,0,0);vizFill.addColorStop(0,a);vizFill.addColorStop(1,b);
+/* A title too long for its line glides to the end and back. It can only be measured while the screensaver shows. */
+function setName(t){const n=$('sName');n.textContent='';const sp=document.createElement('span');sp.textContent=t;n.append(sp);nameFit()}
+function nameFit(){
+  const n=$('sName'),sp=n.firstElementChild;if(!sp)return;
+  n.classList.remove('slide');
+  const over=sp.offsetWidth-n.clientWidth;
+  if(over>4){n.style.setProperty('--d',-(over+8)+'px');n.style.setProperty('--t',Math.max(9,over/60+6)+'s');n.classList.add('slide')}
 }
-vizPaint('#2fe08a','#ff5a9c');
-function vizCover(url){
-  const im=new Image();im.crossOrigin='anonymous';
-  im.onload=()=>{
-    try{
-      const c=document.createElement('canvas');c.width=c.height=24;
-      const g=c.getContext('2d');g.drawImage(im,0,0,24,24);
-      const d=g.getImageData(0,0,24,24).data,top=[];
-      for(let i=0;i<d.length;i+=4){
-        const hi=Math.max(d[i],d[i+1],d[i+2]),lo=Math.min(d[i],d[i+1],d[i+2]);
-        top.push({c:[d[i],d[i+1],d[i+2]],s:(hi-lo)*.8+hi*.2,h:Math.atan2(1.73*(d[i+1]-d[i+2]),2*d[i]-d[i+1]-d[i+2])});
-      }
-      top.sort((x,y)=>y.s-x.s);
-      const a=top[0],b=top.find(q=>Math.abs(q.h-a.h)>.7)||top[Math.floor(top.length/4)];
-      const css=q=>{const k=225/Math.max(1,...q.c);return 'rgb('+q.c.map(v=>Math.min(255,Math.round(v*Math.max(1,k)))).join(',')+')'};
-      vizPaint(css(a),css(b));
-    }catch(e){}
+$('sCover').addEventListener('load',()=>{const u=$('sCover').src;$('sLabel').src=u;ttPaint();ttFrame(u)});
+/* A full cover shrunk onto a tilted, turning record shimmers like noise, so the label is painted at its real size. */
+function ttPaint(){
+  const im=$('sCover'),m=Math.min(im.naturalWidth,im.naturalHeight),g=$('ttLabel').getContext('2d');
+  if(!m)return;
+  g.filter='blur(.7px)';
+  g.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,110,110);
+}
+/* The cover hangs in the wall frame like one more picture and fades to the next song's. */
+function ttFrame(u){
+  const c=$('ttCover');
+  if(c.src===u)return;
+  if(!c.getAttribute('src')){c.src=u;return}
+  c.style.opacity=0;
+  setTimeout(()=>{c.onload=()=>{c.style.opacity=1};c.src=u},400);
+}
+/* Turntable. The record leaves the sleeve, rises and lands on the platter; the arm then follows the song across it. */
+let ttOn=false,ttBusy=false,ttWords=store.get('sala-tt-words')!==0;
+function ttArm(){
+  const sv=$('saver'),on=ttOn&&sv.classList.contains('ttSeat')&&!sv.classList.contains('ttChange');
+  const deg=(on?25+23*(mDur?Math.min(1,mPos/mDur):0):6)*Math.PI/180,lift=on&&mPlaying?0:4;
+  /* points of the record's plane, measured on the photo: the head lies on that plane, so it squashes with it */
+  const at=L=>[948+(306-L*Math.sin(deg))*.536,747+(-120+L*Math.cos(deg))*.191],[hx,hy]=at(270);
+  const put=(el,px,py,tx,ty)=>{el.style.transform='translate('+px+'px,'+py+'px) rotate('+Math.atan2(ty-py,tx-px)+'rad) scaleX('+Math.hypot(tx-px,ty-py)/96+')'};
+  const lay=(el,dy)=>{el.style.transform='translate('+hx+'px,'+(hy+dy)+'px) scale(1,.56) rotate('+(Math.atan2(Math.cos(deg),-Math.sin(deg))-.19)+'rad)'};
+  put($('ttArm'),1112,689,hx,hy-lift-12);
+  put($('ttShadow'),1110,724,hx-2,hy+4);
+  lay($('ttHeadSh'),5);lay($('ttHeadBase'),-lift-5);lay($('ttHeadMid'),-lift-8.5);lay($('ttHead'),-lift-12);
+  const end=Math.atan2(Math.cos(deg),-Math.sin(deg))-.19,ex=hx+Math.cos(end)*30,ey=hy+Math.sin(end)*30*.56;
+  $('ttNeedle').style.transform='translate('+ex+'px,'+(ey-5.5-lift)+'px)';
+}
+function ttChange(){
+  const sv=$('saver');
+  if(!sv.classList.contains('ttSeat'))return;
+  sv.classList.add('ttChange');ttArm();
+  setTimeout(()=>{sv.classList.remove('ttChange');ttArm()},1100);
+}
+function ttGrooves(){
+  if(document.documentElement.style.getPropertyValue('--vinyl'))return;
+  /* fine: real grooves for the flat record. soft: broad bands for the tilted one, where fine lines would turn to noise. */
+  const paint=(name,step,width,boost)=>{
+    const c=document.createElement('canvas'),n=840,m=n/2;c.width=c.height=n;
+    const g=c.getContext('2d'),ring=(r,w,col)=>{g.strokeStyle=col;g.lineWidth=w;g.beginPath();g.arc(m,m,r*m,0,6.3);g.stroke()};
+    g.fillStyle='#070709';g.fillRect(0,0,n,n);
+    const gaps=[.49,.63,.76,.87];
+    for(let r=.385;r<.962;r+=step){
+      const gap=gaps.some(q=>Math.abs(r-q)<.006+step/2),b=(.06+.022*Math.sin(r*31)+.016*Math.sin(r*83))*boost;
+      ring(r,width,gap?'rgba(0,0,0,.96)':'rgba(236,236,244,'+b+')');
+    }
+    for(let r=.345;r<.385;r+=.013)ring(r,width,'rgba(230,230,240,'+.075*boost+')');
+    ring(.965,5,'#101013');ring(.985,4,'#1b1b20');ring(.997,2,'#34343b');
+    document.documentElement.style.setProperty(name,'url('+c.toDataURL('image/jpeg',.9)+')');
   };
-  im.src=url;
+  paint('--vinyl',.0026,.9,1);
+  paint('--vinylSoft',.013,5.5,.55);
 }
-$('sCover').addEventListener('load',()=>{vizCover($('sCover').src);$('sLabel').src=$('sCover').src});
-/* Barras: mirrored from the center over a lit floor, with glow, reflection and falling caps. */
-function vizBars(t,beat){
-  const base=150,cx=VIZ_W/2,w=(VIZ_W/2-8)/VIZ_BARS,lv=i=>vizLevel[i];
-  vizCtx.globalAlpha=.1+beat*.14;vizCtx.fillStyle=vizA;vizCtx.fillRect(0,base+1,VIZ_W,2);
-  for(let i=0;i<VIZ_BARS;i++){
-    const h=Math.round(lv(i)*132),x=Math.round(i*w);
-    vizCtx.globalAlpha=.13;vizCtx.fillStyle=vizFill;
-    vizCtx.fillRect(cx+x-2,base-h-4,Math.floor(w)+3,h+4);vizCtx.fillRect(cx-x-Math.floor(w)-1,base-h-4,Math.floor(w)+3,h+4);
-    vizCtx.globalAlpha=1;
-    vizCtx.fillRect(cx+x+1,base-h,Math.floor(w)-3,h);vizCtx.fillRect(cx-x-Math.floor(w)+2,base-h,Math.floor(w)-3,h);
-    vizCtx.globalAlpha=.2;
-    const r=Math.round(h*.3);
-    vizCtx.fillRect(cx+x+1,base+5,Math.floor(w)-3,r);vizCtx.fillRect(cx-x-Math.floor(w)+2,base+5,Math.floor(w)-3,r);
-  }
-  vizCtx.globalAlpha=1;
-  if(!vizStripes){
-    vizStripes=document.createElement('canvas');vizStripes.width=VIZ_W;vizStripes.height=VIZ_H;
-    const g=vizStripes.getContext('2d');g.fillStyle='#000';for(let y=4;y<VIZ_H;y+=6)g.fillRect(0,y,VIZ_W,2);
-  }
-  vizCtx.globalCompositeOperation='destination-out';vizCtx.drawImage(vizStripes,0,0);
-  vizCtx.globalCompositeOperation='source-over';vizCtx.fillStyle='#fff';
-  for(let i=0;i<VIZ_BARS;i++){
-    if(vizPeak[i]<.03)continue;
-    const y=base-Math.round(vizPeak[i]*132)-4,x=Math.round(i*w);
-    vizCtx.fillRect(cx+x+1,y,Math.floor(w)-3,2);vizCtx.fillRect(cx-x-Math.floor(w)+2,y,Math.floor(w)-3,2);
-  }
+setTimeout(ttGrooves,900);
+function ttToggle(){
+  ttGrooves();
+  const sv=$('saver');
+  if(ttBusy)return;
+  if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
+  const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
+  ttBusy=true;ttOn=true;$('ttRoom').src='room.jpg?v=6';sv.classList.add('tt');lyrApply();
+  const q=$('ttTop').getBoundingClientRect();
+  const fly=document.createElement('div'),size=300;
+  fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
+  const im=document.createElement('img');im.src=$('sCover').src;im.style.cssText='width:100px;height:100px;margin:-50px 0 0 -50px';fly.append(im);$('sTT').insertBefore(fly,$('ttGrain'));
+  const x=(r.left-b.left)/k,y=(r.top-b.top)/k,cw=q.width/k,ch=q.height/k,tx=(q.left-b.left)/k+cw/2-size/2,ty=(q.top-b.top)/k+ch/2-size/2;
+  fly.style.transformOrigin='50% 50%';
+  fly.animate([
+    {transform:`translate3d(${x}px,${y}px,0) scale(1)`,easing:'cubic-bezier(.3,0,.3,1)'},
+    {transform:`translate3d(${x+(tx-x)*.5}px,${Math.min(y,ty)-190}px,0) scale(1.5)`,offset:.55,easing:'cubic-bezier(.4,0,.5,1)'},
+    {transform:`translate3d(${tx}px,${ty}px,0) scale(${cw/size},${ch/size})`}
+  ],{duration:1400,fill:'forwards'}).onfinish=()=>{
+    sv.classList.add('ttSeat');ttBusy=false;
+    fly.animate([{opacity:1},{opacity:0}],{duration:520,fill:'forwards'}).onfinish=()=>fly.remove();
+    setTimeout(ttArm,180);
+  };
 }
-/* Horizonte: an original neon landscape. A striped sun pulses behind mountains that rise with the bars while the ground rolls toward you. */
-function vizHorizon(t,beat){
-  const hy=108,cx=VIZ_W/2,sr=58+beat*5;
-  for(let i=0;i<30;i++)vizCtx.fillStyle='rgba(255,255,255,'+(.2+((i*37)%5)*.12)+')',vizCtx.fillRect((i*149)%VIZ_W,(i*53)%82,i%4?1:2,i%4?1:2);
-  vizCtx.globalAlpha=.16+beat*.12;vizCtx.fillStyle=vizFill;vizCtx.beginPath();vizCtx.arc(cx,hy-20,sr+20,0,6.3);vizCtx.fill();
-  vizCtx.globalAlpha=1;
-  vizCtx.save();vizCtx.beginPath();vizCtx.arc(cx,hy-20,sr,0,6.3);vizCtx.clip();
-  const g=vizCtx.createLinearGradient(0,hy-20-sr,0,hy-20+sr);g.addColorStop(0,'#fff6c8');g.addColorStop(.45,vizB);g.addColorStop(1,vizA);
-  vizCtx.fillStyle=g;vizCtx.fillRect(cx-sr,hy-20-sr,sr*2,sr*2);
-  vizCtx.globalCompositeOperation='destination-out';vizCtx.fillStyle='#000';
-  for(let k=0;k<6;k++){const y=hy-30+k*11-((t/70)%11);vizCtx.fillRect(cx-sr,y,sr*2,2+k*.9)}
-  vizCtx.restore();vizCtx.globalCompositeOperation='source-over';
-  vizCtx.fillStyle='rgba(4,4,12,.92)';vizCtx.fillRect(0,hy,VIZ_W,VIZ_H-hy);
-  /* mountains: silhouette first, then the bright ridge */
-  const pts=[];
-  for(let i=0;i<=VIZ_BARS;i++){
-    const f=i/VIZ_BARS,edge=Math.pow(Math.abs(f-.5)*2,1.3),lv=vizLevel[Math.min(VIZ_BARS-1,Math.abs(i-VIZ_BARS/2)*2)];
-    pts.push([f*VIZ_W,hy-(lv*62+10*Math.abs(Math.sin(i*1.9)))*edge]);
-  }
-  vizCtx.fillStyle='#07060f';vizCtx.beginPath();vizCtx.moveTo(0,hy);pts.forEach(q=>vizCtx.lineTo(q[0],q[1]));vizCtx.lineTo(VIZ_W,hy);vizCtx.fill();
-  vizCtx.strokeStyle=vizA;vizCtx.lineJoin='round';
-  vizCtx.globalAlpha=.25;vizCtx.lineWidth=6;vizCtx.beginPath();pts.forEach((q,i)=>i?vizCtx.lineTo(q[0],q[1]):vizCtx.moveTo(q[0],q[1]));vizCtx.stroke();
-  vizCtx.globalAlpha=1;vizCtx.lineWidth=1.6;vizCtx.stroke();
-  /* ground grid rolling toward the viewer */
-  vizCtx.strokeStyle=vizB;vizCtx.lineWidth=1;
-  const roll=(t/900)%1;
-  for(let r=0;r<9;r++){
-    const z=(r+roll)/9,y=hy+z*z*(VIZ_H-hy);
-    vizCtx.globalAlpha=.16+z*.7;vizCtx.beginPath();vizCtx.moveTo(0,y);vizCtx.lineTo(VIZ_W,y);vizCtx.stroke();
-  }
-  vizCtx.globalAlpha=.4;vizCtx.beginPath();
-  for(let i=-16;i<=16;i++){vizCtx.moveTo(cx+i*17,hy);vizCtx.lineTo(cx+i*150,VIZ_H)}
-  vizCtx.stroke();vizCtx.globalAlpha=1;
-  vizCtx.fillStyle=vizA;vizCtx.fillRect(0,hy-1,VIZ_W,2);
+$('sTTBtn').onclick=ttToggle;
+let deckBusy=false,deckNext='';
+function deckCover(u){if(deckBusy)deckNext=u;else if($('sCover').getAttribute('src')!==u)$('sCover').src=u}
+function deckSwap(u){
+  const deck=$('sDeck'),cov=$('sCover');
+  if(ttOn)ttChange();
+  if(u)deckNext=u;
+  if(deckBusy)return;
+  if(!$('stage').classList.contains('idle')||!cov.getAttribute('src')){if(u)cov.src=u;return}
+  deckBusy=true;deck.classList.add('dIn');
+  /* the sleeve only leaves once the new cover has arrived, or after a moment if it is slow */
+  let ready=false,inside=false,turned=false;
+  const turn=()=>{
+    if(turned||!ready||!inside)return;
+    turned=true;deck.classList.add('dOut');
+    setTimeout(()=>{if(deckNext)cov.src=deckNext;deck.classList.replace('dOut','dEnter')},340);
+    setTimeout(()=>{deck.classList.remove('dIn');deckBusy=false;deckCover(deckNext||cov.getAttribute('src'))},780);
+    setTimeout(()=>deck.classList.remove('dEnter'),1300);
+  };
+  setTimeout(()=>{inside=true;turn()},380);
+  const go=()=>{ready=true;turn()},im=new Image();
+  im.onload=im.onerror=go;setTimeout(go,1200);
+  if(deckNext)im.src=deckNext;else go();
 }
-function vizDraw(t){
-  if(!vizMode||!$('stage').classList.contains('idle')){vizLoop=false;return}
-  requestAnimationFrame(vizDraw);
-  if(++vizFrame%2)return;   // half the screen's rate is plenty, and much kinder to the TV
-  const beat=Math.pow(Math.max(0,Math.sin(t/254)),8);
-  for(let i=0;i<VIZ_BARS;i++){
-    const f=i/VIZ_BARS,low=Math.pow(1-f,2.2)*beat*.8,wave=.34+.28*Math.sin(t/430+i*.55)*Math.sin(t/710-i*.21),chop=.2*Math.sin(t/93+i*2.4);
-    const target=mPlaying?Math.max(.05,Math.min(1,(wave+chop)*(1.08-f*.5)+low)):0;
-    vizLevel[i]+=(target-vizLevel[i])*(target>vizLevel[i]?.5:.14);
-    vizPeak[i]=Math.max(vizLevel[i],vizPeak[i]-.012);
-  }
-  vizCtx.clearRect(0,0,VIZ_W,VIZ_H);
-  vizCtx.globalCompositeOperation='source-over';
-  if(vizMode===1)vizBars(t,beat);else vizHorizon(t,beat);
+/* Two stacked photos crossfade, and a new one only shows once it has fully arrived. */
+let bgFront=$('sBg'),bgToken=0,photos=[],photoAt=0;
+function showPhoto(u){
+  if(!u||bgFront.getAttribute('src')===u)return;
+  const tk=++bgToken,back=bgFront===$('sBg')?$('sBg2'):$('sBg');
+  const swap=()=>{if(tk!==bgToken)return;back.classList.add('on');bgFront.classList.remove('on');bgFront=back};
+  if(back.getAttribute('src')===u)return swap();
+  back.onload=swap;back.src=u;
 }
-function vizApply(){
-  $('saver').classList.toggle('vizOn',!!vizMode);
-  $('sVizBtn').classList.toggle('on',!!vizMode);
-  if(vizMode&&!vizLoop){vizLoop=true;requestAnimationFrame(vizDraw)}
+const plainName=t=>t.normalize('NFD').replace(/[^a-z0-9]/gi,'').toLowerCase();
+/* Spotify's API only gives one photo per artist, never the gallery of their profile.
+   TheAudioDB, a community archive, adds more when it has them; if the name doesn't match exactly they are ignored. */
+function artistPhotos(name,first){
+  const tk=coverFor;photos=first?[first]:[];photoAt=0;
+  fetch('https://www.theaudiodb.com/api/v1/json/123/search.php?s='+encodeURIComponent(name)).then(r=>r.ok?r.json():null).then(j=>{
+    const a=j&&j.artists&&j.artists[0];
+    if(!a||coverFor!==tk||plainName(a.strArtist||'')!==plainName(name))return;
+    ['strArtistFanart','strArtistFanart2','strArtistFanart3','strArtistFanart4','strArtistWideThumb','strArtistThumb'].forEach(k=>{
+      if(a[k]&&!photos.includes(a[k]))photos.push(a[k]);
+    });
+  }).catch(()=>{});
 }
-$('sVizBtn').onclick=()=>{vizMode=(vizMode+1)%3;store.set('sala-viz',vizMode);vizApply();toast(VIZ_NAMES[vizMode])};
+setInterval(()=>{
+  if(photos.length<2||ttOn||!$('stage').classList.contains('idle'))return;
+  photoAt=(photoAt+1)%photos.length;showPhoto(photos[photoAt]);
+},20000);
+/* Lyrics come from LRCLIB, a free open archive; Spotify keeps its own closed. Most have a time per line:
+   the rest are spread across the song, so those follow it only roughly. */
+let lyrOn=store.get('sala-lyrics')===1,lyrFor='',lyrLines=[],lyrTimes=[],lyrAt=-2,mBase=0,mAt=0,mFirst='';
+function lyrShow(lines,times,cls){
+  lyrLines=lines;lyrTimes=times||[];lyrAt=-2;
+  if(!times)ttSay(-1,true);
+  const box=$('sLyrList');box.textContent='';
+  lines.forEach(t=>{const d=document.createElement('div');d.className='ly '+(cls||(t?'':'gap'));d.textContent=t||'♪';box.append(d)});
+  if(cls)box.style.transform='translate3d(0,-50%,0)';
+}
+function lyrPick(list,dur){
+  const near=(list||[]).filter(x=>!x.instrumental&&(x.syncedLyrics||x.plainLyrics)&&Math.abs(x.duration-dur)<=6);
+  return near.find(x=>x.syncedLyrics)||near[0]||null;
+}
+function lyrLoad(){
+  const key=mTrack+'|'+mFirst;
+  if(!mTrack||lyrFor===key)return;
+  lyrFor=key;lyrShow(['Buscando la letra…'],null,'msg now');
+  const clean=mTrack.replace(/\s+-\s+.*$/,'').replace(/\s*\((feat|ft|with|con)\b.*?\)/i,'').trim();
+  fetch('https://lrclib.net/api/search?track_name='+encodeURIComponent(clean)+'&artist_name='+encodeURIComponent(mFirst)).then(r=>r.ok?r.json():null).then(list=>{
+    if(lyrFor!==key)return;
+    const x=lyrPick(list,mDur);
+    if(!x)return lyrShow(['Esta canción no tiene letra disponible'],null,'msg now');
+    if(x.syncedLyrics){
+      const rows=x.syncedLyrics.split('\n').map(l=>{const m=l.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/);return m&&[+m[1]*60+ +m[2],m[3].trim()]}).filter(Boolean);
+      lyrShow(rows.map(q=>q[1]),rows.map(q=>q[0]));
+    }else{
+      const rows=x.plainLyrics.split('\n').map(l=>l.trim()).filter(Boolean);
+      lyrShow(rows,rows.map((q,i)=>i/rows.length*mDur));
+    }
+  }).catch(()=>{if(lyrFor===key){lyrFor='';lyrShow(['No se pudo buscar la letra'],null,'msg now')}});
+}
+function ttSay(n,clear){
+  const l=$('ttLyr'),a=clear?'':lyrLines[n]||(n>=0?'♪':''),b=clear?'':lyrLines[n+1]||'';
+  l.classList.add('off');
+  setTimeout(()=>{$('ttLine').textContent=a;$('ttNext').textContent=b;l.classList.remove('off')},260);
+}
+function lyrApply(){
+  $('saver').classList.toggle('lyr',lyrOn&&!ttOn);
+  $('sLyrBtn').classList.toggle('on',ttOn?ttWords:lyrOn);
+  $('ttLyr').classList.toggle('mute',!ttWords);
+  nameFit();lyrAt=-2;
+  if(lyrOn||ttOn)lyrLoad();
+}
+setInterval(()=>{
+  if((!lyrOn&&!ttOn)||!lyrTimes.length||!$('stage').classList.contains('idle'))return;
+  const pos=mPlaying?mBase+(performance.now()-mAt)/1000:mBase;
+  let n=-1;while(n+1<lyrTimes.length&&lyrTimes[n+1]<=pos+.15)n++;
+  if(n===lyrAt)return;
+  lyrAt=n;
+  if(ttOn)ttSay(n);
+  const box=$('sLyrList'),rows=box.children;
+  for(let i=Math.max(0,n-2);i<Math.min(rows.length,n+2);i++)rows[i].classList.toggle('past',i<n),rows[i].classList.toggle('now',i===n);
+  const r=rows[Math.max(0,n)];
+  box.style.transform='translate3d(0,'+-(r.offsetTop+r.offsetHeight/2)+'px,0)';
+},250);
+$('sLyrBtn').onclick=()=>{
+  if(ttOn){ttWords=!ttWords;store.set('sala-tt-words',ttWords?1:0)}
+  else{lyrOn=!lyrOn;store.set('sala-lyrics',lyrOn?1:0)}
+  lyrApply();
+};
 document.addEventListener('keydown',wake,true);
 document.addEventListener('click',e=>{if($('stage').classList.contains('idle'))wake(e)},true);
 
