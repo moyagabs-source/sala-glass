@@ -487,7 +487,63 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #time,#sTime{font-weight:300}
 #line,#date,#hint,#sDate,#sArtist,#mid #mArtist,#wText,#navHint{font-weight:400}
 .nothing #sDate,.nothing #sArtist,.nothing #sTimes,.nothing #pills .pill,.nothing #railCap,.nLab,.nDay span,#eLab span{font-weight:400}
-#sPhoto{width:860px;height:860px;top:110px}
+#sPhoto{width:860px;height:860px;top:0}
+/* Compressed dark photos break into steps when enlarged: a touch of softness and a stronger still grain hide them,
+   and the photo stays still on the TV because a slow zoom makes the steps crawl. */
+#sBg{filter:blur(1.3px)}
+#sPhotoGrain{position:absolute;inset:0;background-image:var(--grainPhoto);background-size:128px 128px;z-index:1}
+#sPhoto::after{z-index:2}
+#sPhoto{isolation:isolate}   /* keeps the photo's layers below the player */
+.lite #sPhoto{animation:none;will-change:auto}
+/* Screensaver with music: clock on the left, the artist on the right, the player across the whole screen. */
+.sMusic #sClock{left:96px;right:auto;top:64px;bottom:auto;text-align:left}
+.sMusic #sTime{font-size:120px}
+.sMusic #sDate{font-size:30px;margin-top:10px}
+#sShade{background:linear-gradient(90deg,#000 40%,rgba(0,0,0,.5) 56%,transparent 72%),linear-gradient(0deg,#000 8%,rgba(0,0,0,.82) 28%,rgba(0,0,0,0) 56%)}
+.nothing #sShade{background:radial-gradient(circle,transparent 1.7px,rgba(0,0,0,.72) 2.3px) 0 0/6px 6px,linear-gradient(90deg,#000 40%,rgba(0,0,0,.5) 56%,transparent 72%),linear-gradient(0deg,#000 8%,rgba(0,0,0,.82) 28%,rgba(0,0,0,0) 56%)}
+#sTrack{left:96px;right:96px;width:auto;bottom:64px;grid-template-columns:232px minmax(0,1fr);column-gap:44px;align-items:end}
+#sCover{width:232px;height:232px;border-radius:18px}
+#sTrack>:last-child{position:relative;min-width:0}
+#sName{font-size:76px;line-height:1.12;display:block;white-space:nowrap;text-overflow:ellipsis;padding-right:430px}
+#sArtist{font-size:34px;margin-top:6px;padding-right:430px}
+/* The record slides out of the sleeve and spins behind the cover. One small layer: light even on the TV. */
+#sDeck{position:relative;width:232px;height:232px}
+#sCover{position:relative;z-index:2}
+#sSlide{position:absolute;left:12px;top:-92px;width:208px;height:208px;z-index:1;animation:vinylOut .9s cubic-bezier(.2,.8,.2,1) .25s backwards}
+@keyframes vinylOut{from{transform:translate3d(0,92px,0)}to{transform:none}}
+#sVinyl{position:relative;width:100%;height:100%;border-radius:50%;will-change:transform;animation:vinylSpin 3.6s linear infinite;
+  background:conic-gradient(rgba(255,255,255,.2) 0 7deg,transparent 22deg 158deg,rgba(255,255,255,.14) 180deg 188deg,transparent 205deg 340deg,rgba(255,255,255,.2) 360deg),repeating-radial-gradient(circle,#101013 0 2px,#1d1d22 2px 3px),#111;
+  box-shadow:inset 0 0 0 2px #2c2c33}
+#sLabel{position:absolute;left:50%;top:50%;width:74px;height:74px;margin:-37px 0 0 -37px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #08080a}
+#sVinyl::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.45)}
+@keyframes vinylSpin{to{transform:rotate(360deg)}}
+#saver.sPaused #sVinyl{animation-play-state:paused}
+#sViz{position:absolute;left:96px;right:96px;width:1728px;top:250px;height:400px;display:none}
+#saver.vizOn #sViz{display:block}
+#saver.vizOn #sPhoto{opacity:.28}
+#sVizBtn.on{background:rgba(255,255,255,.34)}
+#sLine{margin-top:36px;height:5px}
+#sTimes{font-size:24px;margin-top:14px}
+#sBtns{position:absolute;right:0;top:6px;margin:0}
+/* Dark gradients break into visible steps on this panel. A fine still grain dithers them: painted once, it never moves. */
+.grain{position:absolute;inset:0;pointer-events:none;background-image:var(--grain);background-size:128px 128px;image-rendering:pixelated}
+.nothing .grain{display:none}
+#saver .grain{display:block}
+.sMusic{background:#000}
+/* Soft movement on the TV: only transform moves, on the handful of elements in play, with one shared easy-out curve. */
+#railWrap{margin:-26px -14px;padding:26px 14px}
+#rail{transition:transform .32s cubic-bezier(.22,.8,.24,1)}
+.lite .tile,.lite.nothing .tile{transition:transform .24s cubic-bezier(.22,.8,.24,1),background .18s ease}
+.lite .tile:focus,.lite .tile:hover{transform:translate3d(0,-8px,0) scale(1.05);outline:3px solid rgba(255,255,255,.8);outline-offset:3px}
+.lite.nothing .tile:focus,.lite.nothing .tile:hover{transform:translate3d(0,-8px,0) scale(1.05);outline:3px solid var(--nA);outline-offset:3px}
+.lite .tile img{transition:transform .24s cubic-bezier(.22,.8,.24,1)}
+.lite .tile:focus img,.lite .tile:hover img{transform:scale(1.04)}
+.lite .pill{transition:transform .2s cubic-bezier(.22,.8,.24,1),background .18s ease}
+.lite .pill:focus,.lite .pill:hover{transform:scale(1.05)}
+.mB,.sB,#mid .mB{transition:transform .2s cubic-bezier(.22,.8,.24,1),background .16s ease,color .16s ease}
+.lite #mid .mB:focus,.lite #mid .mB:hover,.lite .mB:focus,.lite .mB:hover,.sB:focus,.sB:hover{transform:scale(1.1)}
+#gzArrow,#svArrow{transition:opacity .2s ease,transform .2s cubic-bezier(.22,.8,.24,1)}
+#gzArrow:focus,#svArrow:focus{transform:scale(1.08)}
 /* Empty music block: when selected, the whole block grows a touch. */
 #nMusic.empty{transition:transform .22s ease}
 #nMusic.empty:focus-within,#nMusic.empty:hover{transform:scale(1.025)}
@@ -507,7 +563,8 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
   <div id="veil"></div>
   <div id="toast" class="glass" role="status"></div>
 
-  <div id="ui">
+  <div class="grain"></div>
+<div id="ui">
     <div id="top">
       <div>
         <div id="hello">Hola, Gab</div>
@@ -584,11 +641,13 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
   </div>
 
   <div id="saver">
-    <div id="sPhoto"><img id="sBg" alt=""></div>
+    <div id="sPhoto"><img id="sBg" alt=""><i id="sPhotoGrain"></i></div>
     <div id="sShade"></div>
+    <div class="grain"></div>
+    <canvas id="sViz" width="864" height="200"></canvas>
     <div id="sClock"><div id="sTime"></div><div id="sDate"></div></div>
     <div id="sTrack" hidden>
-      <img id="sCover" alt="">
+      <div id="sDeck"><div id="sSlide"><div id="sVinyl"><img id="sLabel" alt=""></div></div><img id="sCover" alt=""></div>
       <div>
         <div id="sName"></div>
         <div id="sArtist"></div>
@@ -598,6 +657,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
           <button class="sB" id="sPrev" data-f aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M6 5h2.4v14H6zM20 5.6v12.8L9.5 12z"/></svg></button>
           <button class="sB" id="sPlay" data-f aria-label="Pausar"><svg viewBox="0 0 24 24"><path id="sIcon" d="M7 5h3.6v14H7zm6.4 0H17v14h-3.6z"/></svg></button>
           <button class="sB" id="sNext" data-f aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M15.6 5H18v14h-2.4zM4 5.6v12.8L14.5 12z"/></svg></button>
+          <button class="sB" id="sVizBtn" data-f aria-label="Visualizador"><svg viewBox="0 0 24 24"><path d="M4 13h3v7H4zm5-9h3v16H9zm5 5h3v11h-3zm5-3h2v14h-2z"/></svg></button>
         </div>
       </div>
     </div>
@@ -1178,6 +1238,7 @@ function musicUI(s){
   }
   $('nMusic').classList.remove('empty');
   mPlaying=!s.paused;mPos=s.pos;mDur=s.dur;mLit=-1;
+  $('saver').classList.toggle('sPaused',!mPlaying);
   $('nMusic').hidden=false;$('stage').classList.add('music');
   if(!$('mBar').firstChild)for(let i=0;i<M_DOTS;i++)$('mBar').append(document.createElement('i'));
   if(s.name!==mTrack){
@@ -1205,16 +1266,16 @@ function startMusic(){
       musicUI({name:t.name,artist:t.artists.map(a=>a.name).join(', '),cover:bestImage(t.album.images,460),pos:st.position/1000,dur:st.duration/1000,paused:st.paused});
       if(t.id&&t.id!==coverFor){
         /* the player's own images can be small or missing: ask the API for the full set once per song */
-        coverFor=t.id;
+        coverFor=t.id;let artistShown=false;
         spApi('/tracks/'+t.id).then(r=>r.json()).then(j=>{
           const u=bestImage(j.album&&j.album.images,460);
-          if(u&&coverFor===t.id){$('nCover').src=u;$('sCover').src=u;$('sBg').src=u}
+          if(u&&coverFor===t.id){$('nCover').src=u;$('sCover').src=u;if(!artistShown)$('sBg').src=u}
         }).catch(()=>{});
         /* the artist's photo for the screensaver; if Spotify doesn't give one, the album art stays */
         const aid=((t.artists[0]&&t.artists[0].uri)||'').split(':')[2];
         if(aid)spApi('/artists/'+aid).then(r=>r.ok?r.json():null).then(j=>{
           const u=j&&bestImage(j.images,640);
-          if(u&&coverFor===t.id)$('sBg').src=u;
+          if(u&&coverFor===t.id){artistShown=true;$('sBg').src=u}
         }).catch(()=>{});
       }
     });
@@ -1435,6 +1496,15 @@ const tap=()=>play(t=>{tone(784,t,.11,.03,.008);tone(1174,t+.05,.14,.022,.01)});
 const chime=()=>play(t=>{[[329.6,0],[493.9,.12],[659.3,.26],[987.8,.42]].forEach(n=>tone(n[0],t+n[1],2.1-n[1],.05,.34))});
 addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))tap()},true);
 
+/* Fine noise tiles for the grain layers, generated once at start. */
+[['--grain',9],['--grainPhoto',26]].forEach(q=>{
+  const c=document.createElement('canvas');c.width=c.height=128;
+  const g=c.getContext('2d'),im=g.createImageData(128,128);
+  for(let i=0;i<im.data.length;i+=4){const v=Math.random()<.5?0:255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.floor(Math.random()*q[1])}
+  g.putImageData(im,0,0);
+  document.documentElement.style.setProperty(q[0],'url('+c.toDataURL()+')');
+});
+
 /* Remote */
 function layerEl(){
   if($('stage').classList.contains('idle')&&mTrack)return $('saver');
@@ -1530,7 +1600,122 @@ function enterSaver(){
   saverBack=document.activeElement;
   renderSaver();$('stage').classList.add('idle');
   if(mTrack)focus($('sPlay'));
+  vizApply();
 }
+/* Retro visualizer. Spotify keeps its audio protected and its sound data closed, so the bars cannot hear the song:
+   they dance to a pattern while it plays and fall when paused. The colors do come from the real cover. */
+const VIZ_BARS=48,VIZ_W=864,VIZ_H=200,VIZ_NAMES=['Visualizador apagado','Barras','Horizonte'],vizLevel=new Array(VIZ_BARS).fill(0),vizPeak=new Array(VIZ_BARS).fill(0);
+let vizMode=store.get('sala-viz');if(![0,1,2].includes(vizMode))vizMode=0;
+let vizLoop=false,vizFrame=0,vizFill=null,vizStripes=null,vizA='#2fe08a',vizB='#ff5a9c';
+const vizCtx=$('sViz').getContext('2d');
+function vizPaint(a,b){
+  vizA=a;vizB=b;
+  vizFill=vizCtx.createLinearGradient(0,VIZ_H,0,0);vizFill.addColorStop(0,a);vizFill.addColorStop(1,b);
+}
+vizPaint('#2fe08a','#ff5a9c');
+function vizCover(url){
+  const im=new Image();im.crossOrigin='anonymous';
+  im.onload=()=>{
+    try{
+      const c=document.createElement('canvas');c.width=c.height=24;
+      const g=c.getContext('2d');g.drawImage(im,0,0,24,24);
+      const d=g.getImageData(0,0,24,24).data,top=[];
+      for(let i=0;i<d.length;i+=4){
+        const hi=Math.max(d[i],d[i+1],d[i+2]),lo=Math.min(d[i],d[i+1],d[i+2]);
+        top.push({c:[d[i],d[i+1],d[i+2]],s:(hi-lo)*.8+hi*.2,h:Math.atan2(1.73*(d[i+1]-d[i+2]),2*d[i]-d[i+1]-d[i+2])});
+      }
+      top.sort((x,y)=>y.s-x.s);
+      const a=top[0],b=top.find(q=>Math.abs(q.h-a.h)>.7)||top[Math.floor(top.length/4)];
+      const css=q=>{const k=225/Math.max(1,...q.c);return 'rgb('+q.c.map(v=>Math.min(255,Math.round(v*Math.max(1,k)))).join(',')+')'};
+      vizPaint(css(a),css(b));
+    }catch(e){}
+  };
+  im.src=url;
+}
+$('sCover').addEventListener('load',()=>{vizCover($('sCover').src);$('sLabel').src=$('sCover').src});
+/* Barras: mirrored from the center over a lit floor, with glow, reflection and falling caps. */
+function vizBars(t,beat){
+  const base=150,cx=VIZ_W/2,w=(VIZ_W/2-8)/VIZ_BARS,lv=i=>vizLevel[i];
+  vizCtx.globalAlpha=.1+beat*.14;vizCtx.fillStyle=vizA;vizCtx.fillRect(0,base+1,VIZ_W,2);
+  for(let i=0;i<VIZ_BARS;i++){
+    const h=Math.round(lv(i)*132),x=Math.round(i*w);
+    vizCtx.globalAlpha=.13;vizCtx.fillStyle=vizFill;
+    vizCtx.fillRect(cx+x-2,base-h-4,Math.floor(w)+3,h+4);vizCtx.fillRect(cx-x-Math.floor(w)-1,base-h-4,Math.floor(w)+3,h+4);
+    vizCtx.globalAlpha=1;
+    vizCtx.fillRect(cx+x+1,base-h,Math.floor(w)-3,h);vizCtx.fillRect(cx-x-Math.floor(w)+2,base-h,Math.floor(w)-3,h);
+    vizCtx.globalAlpha=.2;
+    const r=Math.round(h*.3);
+    vizCtx.fillRect(cx+x+1,base+5,Math.floor(w)-3,r);vizCtx.fillRect(cx-x-Math.floor(w)+2,base+5,Math.floor(w)-3,r);
+  }
+  vizCtx.globalAlpha=1;
+  if(!vizStripes){
+    vizStripes=document.createElement('canvas');vizStripes.width=VIZ_W;vizStripes.height=VIZ_H;
+    const g=vizStripes.getContext('2d');g.fillStyle='#000';for(let y=4;y<VIZ_H;y+=6)g.fillRect(0,y,VIZ_W,2);
+  }
+  vizCtx.globalCompositeOperation='destination-out';vizCtx.drawImage(vizStripes,0,0);
+  vizCtx.globalCompositeOperation='source-over';vizCtx.fillStyle='#fff';
+  for(let i=0;i<VIZ_BARS;i++){
+    if(vizPeak[i]<.03)continue;
+    const y=base-Math.round(vizPeak[i]*132)-4,x=Math.round(i*w);
+    vizCtx.fillRect(cx+x+1,y,Math.floor(w)-3,2);vizCtx.fillRect(cx-x-Math.floor(w)+2,y,Math.floor(w)-3,2);
+  }
+}
+/* Horizonte: an original neon landscape. A striped sun pulses behind mountains that rise with the bars while the ground rolls toward you. */
+function vizHorizon(t,beat){
+  const hy=108,cx=VIZ_W/2,sr=58+beat*5;
+  for(let i=0;i<30;i++)vizCtx.fillStyle='rgba(255,255,255,'+(.2+((i*37)%5)*.12)+')',vizCtx.fillRect((i*149)%VIZ_W,(i*53)%82,i%4?1:2,i%4?1:2);
+  vizCtx.globalAlpha=.16+beat*.12;vizCtx.fillStyle=vizFill;vizCtx.beginPath();vizCtx.arc(cx,hy-20,sr+20,0,6.3);vizCtx.fill();
+  vizCtx.globalAlpha=1;
+  vizCtx.save();vizCtx.beginPath();vizCtx.arc(cx,hy-20,sr,0,6.3);vizCtx.clip();
+  const g=vizCtx.createLinearGradient(0,hy-20-sr,0,hy-20+sr);g.addColorStop(0,'#fff6c8');g.addColorStop(.45,vizB);g.addColorStop(1,vizA);
+  vizCtx.fillStyle=g;vizCtx.fillRect(cx-sr,hy-20-sr,sr*2,sr*2);
+  vizCtx.globalCompositeOperation='destination-out';vizCtx.fillStyle='#000';
+  for(let k=0;k<6;k++){const y=hy-30+k*11-((t/70)%11);vizCtx.fillRect(cx-sr,y,sr*2,2+k*.9)}
+  vizCtx.restore();vizCtx.globalCompositeOperation='source-over';
+  vizCtx.fillStyle='rgba(4,4,12,.92)';vizCtx.fillRect(0,hy,VIZ_W,VIZ_H-hy);
+  /* mountains: silhouette first, then the bright ridge */
+  const pts=[];
+  for(let i=0;i<=VIZ_BARS;i++){
+    const f=i/VIZ_BARS,edge=Math.pow(Math.abs(f-.5)*2,1.3),lv=vizLevel[Math.min(VIZ_BARS-1,Math.abs(i-VIZ_BARS/2)*2)];
+    pts.push([f*VIZ_W,hy-(lv*62+10*Math.abs(Math.sin(i*1.9)))*edge]);
+  }
+  vizCtx.fillStyle='#07060f';vizCtx.beginPath();vizCtx.moveTo(0,hy);pts.forEach(q=>vizCtx.lineTo(q[0],q[1]));vizCtx.lineTo(VIZ_W,hy);vizCtx.fill();
+  vizCtx.strokeStyle=vizA;vizCtx.lineJoin='round';
+  vizCtx.globalAlpha=.25;vizCtx.lineWidth=6;vizCtx.beginPath();pts.forEach((q,i)=>i?vizCtx.lineTo(q[0],q[1]):vizCtx.moveTo(q[0],q[1]));vizCtx.stroke();
+  vizCtx.globalAlpha=1;vizCtx.lineWidth=1.6;vizCtx.stroke();
+  /* ground grid rolling toward the viewer */
+  vizCtx.strokeStyle=vizB;vizCtx.lineWidth=1;
+  const roll=(t/900)%1;
+  for(let r=0;r<9;r++){
+    const z=(r+roll)/9,y=hy+z*z*(VIZ_H-hy);
+    vizCtx.globalAlpha=.16+z*.7;vizCtx.beginPath();vizCtx.moveTo(0,y);vizCtx.lineTo(VIZ_W,y);vizCtx.stroke();
+  }
+  vizCtx.globalAlpha=.4;vizCtx.beginPath();
+  for(let i=-16;i<=16;i++){vizCtx.moveTo(cx+i*17,hy);vizCtx.lineTo(cx+i*150,VIZ_H)}
+  vizCtx.stroke();vizCtx.globalAlpha=1;
+  vizCtx.fillStyle=vizA;vizCtx.fillRect(0,hy-1,VIZ_W,2);
+}
+function vizDraw(t){
+  if(!vizMode||!$('stage').classList.contains('idle')){vizLoop=false;return}
+  requestAnimationFrame(vizDraw);
+  if(++vizFrame%2)return;   // half the screen's rate is plenty, and much kinder to the TV
+  const beat=Math.pow(Math.max(0,Math.sin(t/254)),8);
+  for(let i=0;i<VIZ_BARS;i++){
+    const f=i/VIZ_BARS,low=Math.pow(1-f,2.2)*beat*.8,wave=.34+.28*Math.sin(t/430+i*.55)*Math.sin(t/710-i*.21),chop=.2*Math.sin(t/93+i*2.4);
+    const target=mPlaying?Math.max(.05,Math.min(1,(wave+chop)*(1.08-f*.5)+low)):0;
+    vizLevel[i]+=(target-vizLevel[i])*(target>vizLevel[i]?.5:.14);
+    vizPeak[i]=Math.max(vizLevel[i],vizPeak[i]-.012);
+  }
+  vizCtx.clearRect(0,0,VIZ_W,VIZ_H);
+  vizCtx.globalCompositeOperation='source-over';
+  if(vizMode===1)vizBars(t,beat);else vizHorizon(t,beat);
+}
+function vizApply(){
+  $('saver').classList.toggle('vizOn',!!vizMode);
+  $('sVizBtn').classList.toggle('on',!!vizMode);
+  if(vizMode&&!vizLoop){vizLoop=true;requestAnimationFrame(vizDraw)}
+}
+$('sVizBtn').onclick=()=>{vizMode=(vizMode+1)%3;store.set('sala-viz',vizMode);vizApply();toast(VIZ_NAMES[vizMode])};
 document.addEventListener('keydown',wake,true);
 document.addEventListener('click',e=>{if($('stage').classList.contains('idle'))wake(e)},true);
 
