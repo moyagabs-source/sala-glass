@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920">
+<title>Game Zone</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Press+Start+2P&family=Geist:wght@400;600;700&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:#fff;font-family:"Geist",system-ui,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+#app{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0}
+[hidden]{display:none!important}
+
+/* Console picker: each half of the screen is its console's own world. One side is always lit; everything here is painted once. */
+#pick{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+#logo{position:absolute;left:0;right:0;top:34px;text-align:center;z-index:2;pointer-events:none;font:800 74px/1 "Doto",ui-monospace,monospace;letter-spacing:.08em;text-shadow:0 0 22px rgba(255,255,255,.55),0 4px 0 #000}
+#upArrow{display:block;width:44px;height:22px;margin:-22px auto 8px;animation:upBob 2.4s ease-in-out infinite}
+@keyframes upBob{50%{transform:translate3d(0,-5px,0)}}
+#logo small{display:block;margin-top:8px;font:800 28px "Doto",ui-monospace,monospace;letter-spacing:.2em;color:#ffd34d;text-shadow:0 2px 0 #000;animation:gzBlink 1.3s steps(2) infinite}
+@keyframes gzBlink{50%{opacity:.2}}
+.con{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:96px;text-align:center}
+.con::after{content:"";position:absolute;inset:0;background:#000;opacity:.42;transition:opacity .16s linear;z-index:3;pointer-events:none}
+.con.on::after{opacity:0}
+.con:focus{outline:none}
+.con>svg,.con>h2,.con>p{position:relative;z-index:2}
+.ghost{position:absolute;left:0;right:0;top:150px;text-align:center;font:900 330px/1 "Big Shoulders Display",sans-serif;letter-spacing:-.01em;z-index:0}
+.floor{position:absolute;left:-30%;right:-30%;bottom:-40px;height:440px;z-index:1;transform:perspective(420px) rotateX(62deg);transform-origin:50% 100%}
+.con>svg{width:740px;height:auto;margin-bottom:26px;transition:transform .16s ease-out}
+.con.on>svg{transform:translate3d(0,-20px,0) scale(1.07)}
+.con h2{margin:0;font:900 112px/1 "Big Shoulders Display",sans-serif;letter-spacing:.01em;text-transform:uppercase}
+.con p{display:inline-block;margin:14px 0 0;padding:8px 24px;border-radius:24px;background:rgba(0,0,0,.5);font-size:27px;font-weight:600}
+.con.on p{background:#fff;color:#0b0b14}
+#c-segaMD{background:radial-gradient(60% 46% at 50% 56%,rgba(255,40,50,.5),transparent 72%),linear-gradient(180deg,#14060c,#050508 62%,#2a0710)}
+#c-segaMD .ghost{color:rgba(255,50,60,.2)}
+#c-segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.75) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,60,70,.75) 0 3px,transparent 3px 60px)}
+#c-segaMD h2{color:#fff;text-shadow:5px 5px 0 #d8202a,10px 10px 0 #1c5fd0}
+#c-gba{background:radial-gradient(60% 46% at 50% 56%,rgba(140,110,255,.7),transparent 72%),linear-gradient(180deg,#1b1270,#0b0838 62%,#2c1b9c)}
+#c-gba .ghost{color:rgba(190,170,255,.2)}
+#c-gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.7) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,224,107,.7) 0 3px,transparent 3px 60px)}
+#c-gba h2{color:#ffe06b;text-shadow:5px 5px 0 #4a3bd0,10px 10px 0 #120c55}
+#scan{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 5px)}
+#foot{position:absolute;left:0;right:0;bottom:26px;text-align:center;font-size:24px;color:#e4e4ee;z-index:5;pointer-events:none}
+
+/* Game row: same world as the picker. Covers stand on the neon floor; only the row slides, on one layer. */
+#shelf{position:absolute;inset:0;overflow:hidden}
+#shelf.segaMD{background:radial-gradient(52% 44% at 50% 50%,rgba(255,40,50,.5),transparent 74%),linear-gradient(180deg,#14060c,#050508 62%,#2a0710)}
+#shelf.gba{background:radial-gradient(52% 44% at 50% 50%,rgba(140,110,255,.7),transparent 74%),linear-gradient(180deg,#1b1270,#0b0838 62%,#2c1b9c)}
+#shelf .ghost{top:96px;font-size:520px;color:rgba(255,255,255,.07)}
+#shelf.segaMD .ghost{color:rgba(255,50,60,.17)}
+#shelf.gba .ghost{color:rgba(190,170,255,.17)}
+#shelf .floor{bottom:-40px;height:1000px;transform:perspective(560px) rotateX(68deg)}
+#shelf.segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.75) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,60,70,.75) 0 3px,transparent 3px 60px)}
+#shelf.gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.7) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,224,107,.7) 0 3px,transparent 3px 60px)}
+#top{position:absolute;left:80px;right:80px;top:36px;display:flex;align-items:center;gap:22px;z-index:5}
+#top svg{width:150px;height:auto;flex:none}
+#top h1{flex:1;margin:0;font:900 64px/1 "Big Shoulders Display",sans-serif;text-transform:uppercase}
+#top h1 small{display:block;margin-top:4px;font:600 24px "Geist",sans-serif;text-transform:none;opacity:.85}
+.pill{height:68px;padding:0 30px;border-radius:34px;background:rgba(0,0,0,.5);font-size:25px;font-weight:600;flex:none}
+#add{background:#ffd34d;color:#0b0b14}
+#edit.on{background:#e0483e}
+.pill:focus,.pill:hover{outline:5px solid #fff;outline-offset:3px}
+#grid{position:absolute;left:0;top:216px;height:540px;width:max-content;min-width:1920px;display:flex;align-items:flex-end;gap:54px;z-index:2;transition:transform .18s ease-out;will-change:transform}
+.game{position:relative;flex:none;display:block;transform-origin:50% 100%;transition:transform .14s ease-out;opacity:.62}
+.box{position:relative;display:block;height:400px;aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:#222;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.art{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;font:900 44px/1.02 "Big Shoulders Display",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+.segaMD .art{background:linear-gradient(180deg,#d8202a 0 7%,#111 7% 9%,#1c5fd0 9% 16%,transparent 16%),#101016}
+.gba .art{background:radial-gradient(circle,rgba(255,255,255,.2) 2px,transparent 2.5px) 0 0/16px 16px,linear-gradient(160deg,#6d57ff,#2a1fa0);color:#ffe06b}
+.game:hover,.game:focus{outline:none;opacity:1;transform:scale(1.28);z-index:2}
+.game:focus .box,.game:hover .box{box-shadow:0 0 0 5px #fff}
+.segaMD .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #d8202a}
+.gba .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #ffe06b}
+.removing .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #e0483e}
+#now{position:absolute;left:0;right:0;bottom:64px;text-align:center;z-index:5;padding:0 80px}
+#nowT{margin:0;font:900 96px/1 "Big Shoulders Display",sans-serif;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px 12px}
+.segaMD #nowT{color:#fff;text-shadow:4px 4px 0 #d8202a,8px 8px 0 #1c5fd0}
+.gba #nowT{color:#ffe06b;text-shadow:4px 4px 0 #4a3bd0,8px 8px 0 #120c55}
+#nowS{font:800 30px "Doto",ui-monospace,monospace;letter-spacing:.16em;color:#ffd34d;text-shadow:0 2px 0 #000;animation:gzBlink 1.3s steps(2) infinite}
+.removing #nowS{color:#ff8a82}
+#empty{width:1920px;align-self:center;text-align:center;font-size:36px;line-height:1.35;padding:0 300px}
+#empty b{color:#ffd34d}
+#shelfScan{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 5px)}
+
+#file{position:absolute;left:-9999px}
+#game{position:fixed;inset:0;background:#000;display:none}
+.playing #game{display:block}
+.playing #app{display:none}
+#toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);padding:16px 30px;border-radius:30px;background:#fff;color:#0b0b14;font-size:26px;font-weight:600;display:none;z-index:9}
+#toast.on{display:block}
+
+/* Arcade skin: pixel type, score bar and a CRT tube over everything. Painted once. */
+#hud{position:absolute;left:0;right:0;top:0;height:50px;z-index:6;display:flex;justify-content:space-between;align-items:center;padding:0 70px;font:18px "Press Start 2P",monospace;color:#ff5a4f;background:#000;pointer-events:none}
+#hud b{font-weight:400;color:#fff}
+#app::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;border-radius:44px;box-shadow:0 0 0 30px #000,inset 0 0 170px rgba(0,0,0,.72)}
+#logo{top:74px;font:44px/1 "Press Start 2P",monospace;letter-spacing:0;color:#ffd34d;text-shadow:4px 4px 0 #d8202a,8px 8px 0 #000}
+#logo small{margin-top:16px;font:18px "Press Start 2P",monospace;letter-spacing:0;color:#fff;text-shadow:3px 3px 0 #000}
+#upArrow{margin:-12px auto 10px;color:#fff}
+.con{padding-bottom:88px}
+.con>svg{width:700px}
+.ghost{top:176px}
+.con h2{font:46px/1.1 "Press Start 2P",monospace;letter-spacing:0}
+#c-segaMD h2{text-shadow:4px 4px 0 #d8202a,8px 8px 0 #1c5fd0}
+#c-gba h2{text-shadow:4px 4px 0 #4a3bd0,8px 8px 0 #120c55}
+.con p{margin-top:22px;padding:10px 18px;border-radius:0;font:17px "Press Start 2P",monospace;box-shadow:0 0 0 4px #000}
+#foot{bottom:30px;font:16px "Press Start 2P",monospace}
+#top{top:66px}
+#top svg{width:124px}
+#top h1{font:32px/1.2 "Press Start 2P",monospace}
+#top h1 small{margin-top:8px;font:15px "Press Start 2P",monospace}
+.pill{height:62px;padding:0 22px;border-radius:0;font:15px "Press Start 2P",monospace;box-shadow:0 0 0 4px #000,0 0 0 8px rgba(255,255,255,.75)}
+.pill:focus,.pill:hover{outline:none;box-shadow:0 0 0 4px #000,0 0 0 9px #ffd34d}
+#grid{top:176px;height:540px}
+.box,.art{border-radius:0}
+.art{font:20px/1.3 "Press Start 2P",monospace}
+.game:focus,.game:hover{transform:scale(1.22)}
+#floorWrap{position:absolute;left:0;right:0;top:716px;bottom:0;overflow:hidden;perspective:260px;perspective-origin:50% 0;border-top:4px solid #fff;z-index:1}
+#shelf.segaMD #floorWrap{border-color:#ff5a62}
+#shelf.gba #floorWrap{border-color:#ffe06b}
+#shelf #floorWrap .floor{left:-150%;right:-150%;top:auto;bottom:0;height:2600px;transform-origin:50% 100%;transform:rotateX(82deg)}
+#now{bottom:58px}
+#nowT{font:44px/1.3 "Press Start 2P",monospace;padding:0 0 18px}
+#nowS{font:20px "Press Start 2P",monospace;letter-spacing:0}
+#empty{font:22px/1.8 "Press Start 2P",monospace;padding:0 240px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="hud"><span>1UP <b>000000</b></span><span>HI-SCORE <b>999990</b></span><span>CREDIT <b>01</b></span></div>
+  <div id="logo"><svg id="upArrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>GAME ZONE<small>INSERT COIN · ELIGE CONSOLA</small></div>
+  <div id="pick">
+    <button class="con" id="c-segaMD" data-f aria-label="Sega Genesis"><span class="ghost">16 BIT</span><span class="floor"></span>
+      <svg viewBox="0 0 640 340" aria-hidden="true"><defs><linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4a55"/><stop offset=".22" stop-color="#26262e"/><stop offset="1" stop-color="#0e0e12"/></linearGradient><radialGradient id="gD" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#5a5a68"/><stop offset=".55" stop-color="#2a2a33"/><stop offset="1" stop-color="#121216"/></radialGradient></defs><ellipse cx="320" cy="318" rx="290" ry="16" fill="#000" opacity=".55"/><path d="M60 70h520q34 0 40 34l14 150q2 40-34 44H40q-36-4-34-44l14-150q6-34 40-34z" fill="url(#gB)" stroke="#6c6c7a" stroke-width="2"/><path d="M26 112q6-30 38-30h512q32 0 38 30z" fill="#fff" opacity=".07"/><path d="M12 262h616q-2 28-30 30H42q-28-2-30-30z" fill="#08080b"/><ellipse cx="320" cy="172" rx="170" ry="120" fill="#0c0c10"/><ellipse cx="320" cy="164" rx="158" ry="110" fill="url(#gD)" stroke="#73737f" stroke-width="2"/><ellipse cx="320" cy="164" rx="118" ry="78" fill="#17171d" stroke="#000" stroke-width="3"/><rect x="214" y="146" width="212" height="38" rx="6" fill="#000" stroke="#55555f" stroke-width="2"/><rect x="226" y="158" width="188" height="14" rx="2" fill="#2d2d36"/><text x="320" y="116" text-anchor="middle" font-family="Big Shoulders Display,sans-serif" font-weight="900" font-size="26" letter-spacing="3" fill="#f1c84b">16-BIT</text><g fill="#34343e"><rect x="70" y="112" width="86" height="8" rx="4"/><rect x="62" y="132" width="86" height="8" rx="4"/><rect x="54" y="152" width="86" height="8" rx="4"/></g><rect x="60" y="192" width="82" height="20" rx="10" fill="#0a0a0d" stroke="#44444e"/><rect x="70" y="196" width="34" height="12" rx="6" fill="#d8202a"/><circle cx="72" cy="240" r="7" fill="#ff5a4f"/><circle cx="72" cy="240" r="13" fill="#ff5a4f" opacity=".25"/><g stroke="#3c3c47" stroke-width="7" stroke-linecap="round"><path d="M500 110h76M508 132h76M516 154h76M524 176h76M532 198h76"/></g><circle cx="560" cy="240" r="12" fill="#0a0a0d" stroke="#5a5a66" stroke-width="3"/></svg>
+      <h2>Sega Genesis</h2><p id="n-segaMD"></p>
+    </button>
+    <button class="con" id="c-gba" data-f aria-label="Game Boy Advance"><span class="ghost">32 BIT</span><span class="floor"></span>
+      <svg viewBox="0 0 640 340" aria-hidden="true"><defs><linearGradient id="aB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d7bff"/><stop offset=".3" stop-color="#5a46e0"/><stop offset="1" stop-color="#2e2298"/></linearGradient><linearGradient id="aS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d7f2dc"/><stop offset="1" stop-color="#8dc4a2"/></linearGradient></defs><ellipse cx="320" cy="322" rx="280" ry="14" fill="#000" opacity=".5"/><path d="M120 24h400q58 0 82 56l28 96q14 58-38 92l-34 26q-18 12-46 12H128q-28 0-46-12l-34-26q-52-34-38-92l28-96q24-56 82-56z" fill="url(#aB)" stroke="#cfc7ff" stroke-width="3"/><path d="M92 46q14-12 34-12h388q20 0 34 12l14 22H78z" fill="#fff" opacity=".2"/><path d="M58 92q-16 30-30 80" stroke="#fff" stroke-opacity=".35" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="176" y="46" width="288" height="216" rx="14" fill="#141238" stroke="#0a0920" stroke-width="3"/><path d="M190 56h260l-90 196H190z" fill="#fff" opacity=".05"/><rect x="202" y="66" width="236" height="160" rx="3" fill="url(#aS)"/><g fill="#3f6a52"><rect x="222" y="196" width="196" height="12"/><rect x="250" y="172" width="24" height="24"/><rect x="326" y="148" width="24" height="48"/><rect x="376" y="124" width="24" height="24"/><rect x="290" y="96" width="16" height="16"/></g><rect x="202" y="66" width="236" height="80" fill="#fff" opacity=".12"/><circle cx="196" cy="246" r="5" fill="#ff5a4f"/><g fill="#141238"><rect x="86" y="118" width="26" height="82" rx="5"/><rect x="58" y="146" width="82" height="26" rx="5"/></g><circle cx="99" cy="159" r="7" fill="#2f2a66"/><circle cx="508" cy="184" r="23" fill="#141238"/><circle cx="508" cy="180" r="19" fill="#2a2470"/><circle cx="564" cy="146" r="23" fill="#141238"/><circle cx="564" cy="142" r="19" fill="#2a2470"/><g fill="#141238"><rect x="88" y="232" width="42" height="11" rx="5"/><rect x="88" y="254" width="42" height="11" rx="5"/></g><g fill="#141238"><circle cx="520" cy="250" r="3.500"/><circle cx="534" cy="244" r="3.500"/><circle cx="548" cy="238" r="3.500"/><circle cx="528" cy="262" r="3.500"/><circle cx="542" cy="256" r="3.500"/><circle cx="556" cy="250" r="3.500"/></g></svg>
+      <h2>Game Boy Advance</h2><p id="n-gba"></p>
+    </button>
+  </div>
+  <div id="scan"></div>
+  <div id="foot">ARRIBA: VOLVER A LA SALA</div>
+
+  <div id="shelf" hidden>
+    <span class="ghost" id="sGhost"></span><div id="floorWrap"><span class="floor"></span></div>
+    <div id="top">
+      <button class="pill" id="backCon" data-f>&lt; CONSOLAS</button>
+      <div id="topIcon"></div>
+      <h1><span id="sName"></span><small id="sCount"></small></h1>
+      <button class="pill" id="add" data-f>Cargar desde USB</button>
+      <button class="pill" id="edit" data-f>Quitar juegos</button>
+    </div>
+    <div id="grid"></div>
+    <div id="now"><h3 id="nowT"></h3><div id="nowS"></div></div>
+    <div id="shelfScan"></div>
+  </div>
+</div>
+<input id="file" type="file" multiple accept=".md,.gen,.smd,.bin,.gba,.zip">
+<div id="game"></div>
+<div id="toast"></div>
+
+<script>
+/* Your own games: picked from a USB once, kept in this TV's browser storage, never uploaded anywhere.
+   The emulator (EmulatorJS with Genesis Plus GX and mGBA) loads from its CDN only when a game starts, so this page stays light. */
+const EJS_DATA='https://cdn.emulatorjs.org/4.2.3/data/';
+const COVERS='https://raw.githubusercontent.com/libretro-thumbnails/';
+const CONSOLES={
+  segaMD:{n:'Sega Genesis',repo:'Sega_-_Mega_Drive_-_Genesis'},
+  gba:{n:'Game Boy Advance',repo:'Nintendo_-_Game_Boy_Advance'}
+};
+const DEMO=/[?&]demo/.test(location.search);
+const $=id=>document.getElementById(id);
+const HOME='./'+(/github\.io$/.test(location.hostname)?'':'?tv=1&live=1&demo=1');
+let playing=false,tt=0,con=null,removing=false,conFocus='c-segaMD';
+function fit(){$('app').style.transform='scale('+Math.min(innerWidth/1920,innerHeight/1080)+')'}
+addEventListener('resize',fit);fit();
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
+const sess={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}}};
+
+const db=new Promise((ok,no)=>{
+  const r=indexedDB.open('sala-juegos',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('roms',{keyPath:'name'});
+  r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);
+});
+const tx=async(mode,fn)=>{
+  const s=(await db).transaction('roms',mode).objectStore('roms'),r=fn(s);
+  return new Promise((ok,no)=>{r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+};
+const demoGames=[['Mi juego uno','segaMD'],['Mi juego dos','segaMD'],['Mi juego tres','segaMD'],['Aventura de prueba','gba'],['Carrera de prueba','gba']].map(g=>({name:g[0],core:g[1]}));
+const allGames=async()=>DEMO?demoGames.concat(await tx('readonly',s=>s.getAll())):tx('readonly',s=>s.getAll());
+
+/* A zip says what it holds in plain text near its start; a .bin is a Genesis dump. */
+async function coreOf(file){
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(ext==='gba')return 'gba';
+  if(['md','gen','smd','bin'].includes(ext))return 'segaMD';
+  if(ext==='zip'){
+    const head=new TextDecoder('latin1').decode(await file.slice(0,400).arrayBuffer()).toLowerCase();
+    if(/\.(cue|iso|chd|pbp)/.test(head)||file.size>16e6)return null;   // disc games (PlayStation) are not supported here
+    if(head.includes('.gba'))return 'gba';
+    if(/\.(md|gen|smd|bin)/.test(head))return 'segaMD';
+  }
+  return null;
+}
+async function addFiles(files){
+  let n=0,last=null;
+  for(const f of files){
+    const core=await coreOf(f);
+    if(!core){toast('No reconozco '+f.name);continue}
+    try{await tx('readwrite',s=>s.put({name:f.name.replace(/\.[^.]+$/,''),core,ext:f.name.split('.').pop().toLowerCase(),data:f}));n++;last=core}
+    catch(e){toast('No hay espacio para '+f.name)}
+  }
+  if(n)toast(n===1?'Juego guardado':n+' juegos guardados');
+  if(last)openShelf(last);
+}
+
+/* Covers come from the public libretro archive by exact title. Files named like "Game (USA)" match at once;
+   for a bare name a few usual regions are tried, and the console-styled cover stays if none exists. */
+function coverUrls(g){
+  const safe=g.name.replace(/_ /g,' - ').replace(/\(USA Europe\)/,'(USA, Europe)').replace(/[&*\/:`<>?\\|"]/g,'_'),base=safe.replace(/\s*[\(\[].*$/,'');
+  const names=[...new Set([safe].concat([' (USA)',' (USA, Europe)',' (USA, Australia)',' (World)',' (Europe)',''].map(r=>base+r)))];
+  return names.map(n=>COVERS+CONSOLES[g.core].repo+'/master/Named_Boxarts/'+encodeURIComponent(n)+'.png');
+}
+function cover(box,g){
+  const art=document.createElement('i');art.className='art';art.style.fontStyle='normal';art.textContent=g.name.replace(/\s*[\(\[].*$/,'');box.append(art);
+  if(DEMO&&!g.data)return;
+  const urls=coverUrls(g),im=new Image();let i=0;
+  im.alt='';
+  im.onload=()=>{box.style.aspectRatio=im.naturalWidth+'/'+im.naturalHeight;box.style.background='none';art.remove();box.append(im);if(document.activeElement===box.parentNode)showGame(box.parentNode)};   // the whole cover, at its own proportions
+  im.onerror=()=>{if(++i<urls.length)im.src=urls[i]};
+  im.src=urls[0];
+}
+
+function showPick(){
+  con=null;$('shelf').hidden=true;$('pick').hidden=$('logo').hidden=$('foot').hidden=$('scan').hidden=false;
+  allGames().then(all=>Object.keys(CONSOLES).forEach(k=>{
+    const n=all.filter(g=>g.core===k).length;
+    $('n-'+k).textContent=n?n+(n===1?' juego':' juegos'):'Sin juegos todavía';
+  }));
+  document.querySelectorAll('.con').forEach(c=>c.classList.toggle('on',c.id===conFocus));
+  $(conFocus).focus({preventScroll:true});
+}
+async function openShelf(id){
+  con=id;conFocus='c-'+id;removing=false;sess.set('gz-con',id);
+  $('pick').hidden=$('logo').hidden=$('foot').hidden=$('scan').hidden=true;
+  const sh=$('shelf');sh.hidden=false;sh.className=id;sh.classList.remove('removing');
+  $('edit').classList.remove('on');$('edit').textContent='Quitar juegos';
+  $('topIcon').replaceChildren($('c-'+id).querySelector('svg').cloneNode(true));
+  $('sName').textContent=CONSOLES[id].n;
+  $('sGhost').textContent=id==='gba'?'32 BIT':'16 BIT';
+  const games=(await allGames()).filter(g=>g.core===id).sort((a,b)=>a.name.localeCompare(b.name)),w=$('grid');
+  $('sCount').textContent=games.length+(games.length===1?' juego':' juegos');
+  $('edit').hidden=!games.length;
+  w.textContent='';w.style.transform='';$('nowT').textContent=$('nowS').textContent='';
+  if(!games.length){
+    w.innerHTML='<div id="empty">Conecta tu USB a la TV y elige <b>Cargar desde USB</b>.<br>Solo se hace una vez por juego.</div>';
+    return $('add').focus({preventScroll:true});
+  }
+  games.forEach(g=>{
+    const b=document.createElement('button'),box=document.createElement('span'),title=g.name.replace(/_ /g,' - ').replace(/\s*[\(\[].*$/,'');
+    b.className='game';b.dataset.f='';b.dataset.t=title;b.setAttribute('aria-label',title);box.className='box';
+    cover(box,g);b.append(box);
+    b.addEventListener('focus',()=>showGame(b));
+    b.addEventListener('mouseenter',()=>b.focus({preventScroll:true}));
+    b.onclick=async()=>{
+      if(!removing)return play(g);
+      await tx('readwrite',x=>x.delete(g.name));toast('Quitado de esta TV');openShelf(id);
+    };
+    w.append(b);
+  });
+  w.querySelector('.game').focus({preventScroll:true});
+}
+function showGame(b){
+  $('nowT').textContent=b.dataset.t;
+  $('nowS').textContent=removing?'OK PARA QUITAR':'PRESS OK TO START';
+  $('grid').style.transform='translate3d('+(960-b.offsetLeft-b.offsetWidth/2)+'px,0,0)';
+}
+function goBack(){
+  if(con)return showPick();
+  location.replace(HOME);
+}
+function play(g){
+  if(!g.data)return toast('Juego de ejemplo: carga uno tuyo para empezar');
+  playing=true;document.body.classList.add('playing');
+  Object.assign(window,{
+    EJS_player:'#game',EJS_core:g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
+    EJS_pathtodata:EJS_DATA,EJS_startOnLoaded:true,EJS_color:'#ffd34d',EJS_language:'es-ES',EJS_threads:false,
+    EJS_Buttons:{playPause:false,restart:false,mute:false,settings:false,fullscreen:false,saveState:false,loadState:false,screenRecord:false,gamepad:false,cheat:false,volume:false,saveSavFiles:false,loadSavFiles:false,quickSave:false,quickLoad:false,screenshot:false,cacheManager:false,exitEmulation:false}
+  });
+  const s=document.createElement('script');s.src=EJS_DATA+'loader.js';s.onerror=()=>{toast('No se pudo cargar el emulador');setTimeout(()=>location.reload(),2000)};document.head.append(s);
+}
+
+/* Remote and game controller share these moves in the menus. */
+function move(dx,dy){
+  if(dy<0&&(!con||document.activeElement.classList.contains('pill')))return goBack();   // up leaves: shelf to consoles, consoles to the sala
+  const list=[...document.querySelectorAll('[data-f]')].filter(b=>b.offsetParent),a=document.activeElement;
+  if(!list.includes(a))return list[0]&&list[0].focus({preventScroll:true});
+  const r=a.getBoundingClientRect(),ax=r.left+r.width/2,ay=r.top+r.height/2;
+  let best=null,bs=1e12;
+  list.forEach(b=>{
+    if(b===a)return;
+    const q=b.getBoundingClientRect(),x=q.left+q.width/2-ax,y=q.top+q.height/2-ay,along=dx?x*dx:y*dy,across=dx?Math.abs(y):Math.abs(x);
+    if(along<=1)return;
+    const s=along+across*2.2;
+    if(s<bs){bs=s;best=b}
+  });
+  if(!best)return;
+  best.focus({preventScroll:true});
+}
+document.addEventListener('keydown',e=>{
+  const back=e.key==='Escape'||e.keyCode===8||e.keyCode===461;
+  if(back){e.preventDefault();e.stopImmediatePropagation();playing?location.reload():goBack();return}
+  if(playing)return;
+  const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
+  if(k){e.preventDefault();move(k[0],k[1])}
+},true);
+const was={};
+addEventListener('gamepadconnected',()=>setInterval(()=>{
+  const p=[...navigator.getGamepads()].find(Boolean);if(!p)return;
+  /* B + Start leaves a game: the emulator keeps every other button */
+  if(playing){if(p.buttons[1]&&p.buttons[1].pressed&&p.buttons[9]&&p.buttons[9].pressed)location.reload();return}
+  const b=i=>!!(p.buttons[i]&&p.buttons[i].pressed);
+  const now={ok:b(0),back:b(1),u:b(12)||p.axes[1]<-.6,d:b(13)||p.axes[1]>.6,l:b(14)||p.axes[0]<-.6,r:b(15)||p.axes[0]>.6};
+  Object.keys(now).forEach(k=>{
+    if(now[k]&&!was[k]){
+      if(k==='ok')document.activeElement.click();
+      else if(k==='back')goBack();
+      else move(k==='l'?-1:k==='r'?1:0,k==='u'?-1:k==='d'?1:0);
+    }
+    was[k]=now[k];
+  });
+},60));
+Object.keys(CONSOLES).forEach(k=>{
+  const b=$('c-'+k);
+  b.onclick=()=>openShelf(k);
+  b.addEventListener('mouseenter',()=>b.focus({preventScroll:true}));
+  b.addEventListener('focus',()=>{conFocus='c-'+k;document.querySelectorAll('.con').forEach(c=>c.classList.toggle('on',c===b))});
+});
+$('backCon').onclick=goBack;
+$('add').onclick=()=>$('file').click();
+$('edit').onclick=()=>{
+  removing=!removing;$('shelf').classList.toggle('removing',removing);$('edit').classList.toggle('on',removing);
+  $('edit').textContent=removing?'Terminar':'Quitar juegos';
+  toast(removing?'Elige el juego que quieres quitar':'Listo');
+  $('nowS').textContent=removing?'OK PARA QUITAR':'PRESS OK TO START';
+};
+$('file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+const last=sess.get('gz-con');
+if(CONSOLES[last]&&performance.getEntriesByType('navigation')[0].type==='reload')openShelf(last);else showPick();
+</script>
+</body>
+</html>
