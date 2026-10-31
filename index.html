@@ -334,9 +334,10 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 #nCond{font-size:28px;font-weight:500}
 #nCity{color:#555;margin-top:4px;font-size:20px}
 /* Glyph matrix: a 26x26 canvas stretched to 12px cells under a fixed mask, so every dot keeps one size and only brightness changes */
-#nIconT{border-radius:50%}
-#nGlyph{position:absolute;inset:0;width:312px;height:312px;image-rendering:pixelated}
-#nGlyphDots{position:absolute;inset:0;background:radial-gradient(circle,transparent 3.9px,var(--nD) 4.7px) 0 0/12px 12px}
+/* every layer is round on its own: on the TV the parent's clip can slip while the canvas updates */
+#nIconT{border-radius:50%;contain:paint}
+#nGlyph{position:absolute;inset:0;width:312px;height:312px;image-rendering:pixelated;border-radius:50%}
+#nGlyphDots{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 3.9px,var(--nD) 4.7px) 0 0/12px 12px}
 .nDrops{animation:nDrop 1.6s steps(4) infinite}
 @keyframes nDrop{from{transform:translateY(-4px);opacity:.3}to{transform:translateY(12px);opacity:1}}
 .nPulse{animation:nBlink 2.4s steps(2,jump-none) infinite}
@@ -677,7 +678,7 @@ function startGlyph(){
   function draw(t,a,b,mix){
     for(let j=0,i=0;j<GN;j++)for(let k=0;k<GN;k++,i++){
       const x=k-GC,y=j-GC,d=Math.hypot(x,y),o=i*4;
-      if(d>12.9){px[o+3]=0;continue}
+      if(d>11.7){px[o+3]=0;continue}  // a clear margin, so no dot ever touches the edge of the circle
       const v=Math.min(1,noise[i]<mix?b(x,y,d,t):a(x,y,d,t));
       for(let c=0;c<3;c++)px[o+c]=glyphOff[c]+(glyphLit[c]-glyphOff[c])*v;
       px[o+3]=255;
