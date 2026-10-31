@@ -366,6 +366,30 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 .nothing #panel,.lite.nothing #sheet.low #panel{background:var(--nD)}
 .calm #nSec,.calm #nColon,.calm .nDrops,.calm .nPulse{animation:none}
 
+/* Personalize: "you are here" is always a solid white ring or fill; "chosen" is always a check mark. They never look alike. */
+#sheet .pill:focus,#sheet .pill:hover{background:#fff!important;color:#10131d!important;outline:4px solid #fff;outline-offset:5px;transform:none}
+#tabs .pill.sel{background:rgba(255,255,255,.2);box-shadow:inset 0 -4px 0 #fff}
+#sheet .theme,#sheet .clockopt,#sheet .city{position:relative}
+#sheet .theme.sel,#sheet .clockopt.sel{box-shadow:none}
+#sheet .theme:focus,#sheet .theme:hover,#sheet .clockopt:focus,#sheet .clockopt:hover,#sheet .city:focus,#sheet .city:hover{transform:none;box-shadow:none;outline:6px solid #fff;outline-offset:5px}
+#sheet .sel:not(.pill)::after{content:"✓";position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff;color:#10131d;display:grid;place-items:center;font-size:21px;font-weight:700;text-shadow:none}
+#sheet .city.sel::after{top:50%;right:10px;margin-top:-14px;width:28px;height:28px;font-size:17px}
+#sheet .theme{text-shadow:0 0 3px #000,0 1px 7px #000,0 0 12px #000}
+.lite #sheet.low{background:rgba(6,8,16,.12)}
+/* Theme cards: only the theme's background and its name in the theme's own type */
+#sheet #modes .theme{height:200px;padding:0;align-items:center;justify-content:center;text-shadow:none;font-size:64px;line-height:1}
+#sheet #m-classic{color:#fff;font-family:var(--font);font-weight:200;letter-spacing:-.02em}
+#sheet #m-nothing{font-family:"Doto",ui-monospace,monospace;font-weight:700;text-transform:uppercase;font-size:60px}
+#sheet #modes .sel::after{top:14px;right:14px}
+/* Style swatches: a circle of the color, its name below */
+#sheet #themes .theme{height:auto;background:none;border:0;padding:10px 4px 6px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;font-size:24px;color:#fff;text-shadow:none}
+#sheet #themes .theme::before{content:"";display:block;width:104px;height:104px;border-radius:50%;background:var(--t);box-shadow:inset 0 0 0 2px rgba(255,255,255,.34)}
+#sheet #themes .theme:focus,#sheet #themes .theme:hover{outline:0}
+#sheet #themes .theme:focus::before,#sheet #themes .theme:hover::before{outline:6px solid #fff;outline-offset:5px}
+#sheet #themes .sel::after{top:45px;right:auto;left:50%;margin-left:-17px;background:#10131d;color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+#sheet .foot{align-items:center}
+#navHint{margin-right:auto;font-size:23px;color:rgba(255,255,255,.66);font-family:var(--font);font-weight:400}
+
 @media (prefers-reduced-motion:reduce){#drift,#nSec,#nColon,.nDrops,.nPulse,#waveCover{animation:none}.amb,.tile,.pill,.opt,#toast{transition:none}}
 </style>
 
@@ -500,6 +524,7 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
         </div>
       </div>
       <div class="foot">
+        <span id="navHint">Flechas para moverte · OK para elegir · Atrás para cancelar</span>
         <button class="pill" id="cancel" data-f>Cancelar</button>
         <button class="pill" id="done" data-f>Guardar</button>
       </div>
@@ -862,7 +887,7 @@ const TABS=['modes','themes','clocks','sys'];
 function setTab(id){
   TABS.forEach(t=>{$('sec-'+t).hidden=t!==id;$('tab-'+t).classList.toggle('sel',t===id)});
 }
-TABS.forEach(t=>{$('tab-'+t).onclick=()=>setTab(t)});
+TABS.forEach(t=>{$('tab-'+t).onclick=$('tab-'+t).onfocus=()=>setTab(t)});  // the content follows the highlight, no OK needed
 const chip=(id,label,sel,bg,fn,box)=>{
   const b=document.createElement('button');
   b.className='theme'+(sel?' sel':'');b.id=id;b.dataset.f='';b.setAttribute('aria-pressed',sel);
@@ -874,13 +899,14 @@ function renderModes(){
   const w=$('modes');w.textContent='';
   const s=NSTYLES.find(x=>x.id===draftStyle)||NSTYLES[0];
   chip('m-classic','Clásico',draftTheme!=='nothing',ambient(dayPalette()),()=>{draftTheme=draftClassic;setAmbient(draftTheme)},w);
-  chip('m-nothing','Nothing',draftTheme==='nothing','linear-gradient(135deg,'+s.bg+' 0 54%,'+s.d+' 54% 82%,'+s.a+' 82%)',()=>{draftTheme='nothing';setAmbient('nothing')},w);
+  chip('m-nothing','Nothing',draftTheme==='nothing','radial-gradient(circle,'+s.b+' 1.2px,transparent 1.6px) 0 0/11px 11px,'+s.bg,()=>{draftTheme='nothing';setAmbient('nothing')},w);
+  $('m-nothing').style.color=s.ink;
   $('tab-clocks').hidden=draftTheme==='nothing';   // the Nothing skin has its own clocks
 }
 function renderThemes(){
   const w=$('themes');w.textContent='';
   if(draftTheme==='nothing'){
-    NSTYLES.forEach(s=>chip('s-'+s.id,s.n,s.id===draftStyle,'linear-gradient(135deg,'+s.bg+' 0 54%,'+s.d+' 54% 82%,'+s.a+' 82%)',()=>{draftStyle=s.id;applyStyle(s.id)},w));
+    NSTYLES.forEach(s=>chip('s-'+s.id,s.n,s.id===draftStyle,s.bg,()=>{draftStyle=s.id;applyStyle(s.id)},w));
     return;
   }
   THEMES.filter(t=>t.id!=='nothing').forEach(t=>chip('t-'+t.id,t.n,t.id===draftTheme,ambient(t.p||dayPalette()),()=>{draftTheme=t.id;draftClassic=t.id;setAmbient(t.id)},w));
