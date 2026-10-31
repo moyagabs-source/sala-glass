@@ -99,7 +99,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #upArrow{margin:-12px auto 10px;color:#fff}
 .con{padding-bottom:88px}
 .con>img.real{width:640px;height:auto;margin-bottom:26px;position:relative;z-index:2;transition:transform .16s ease-out}
-.con.on>img.real{transform:translate3d(0,-20px,0) scale(1.07)}
+.con.on>img.real{transform:translate3d(0,-64px,0) scale(1.1)}
 #top img.real{width:124px;height:auto;display:block}
 .ghost{top:176px}
 .con h2{font:46px/1.1 "Press Start 2P",monospace;letter-spacing:0}
@@ -132,16 +132,20 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 /* TV: no scanlines, tube shadow, 3D floor or animated layers. A plain line replaces the floor. */
 .lite #scan,.lite #shelfScan,.lite .floor,.lite #app::after{display:none}
 .lite #floorWrap::after{display:none}
-.lite #grid,.lite .game,.lite .con>img.real,.lite .con::after{transition:none}
+.lite #grid,.lite .game,.lite .con::after{transition:none}
 .lite #grid{will-change:auto}
 .lite #logo small,.lite #nowS,.lite #upArrow{animation:none}
 .lite .ghost{display:none}
-.lite .con.on>img.real{transform:none}
 .lite .game:focus,.lite .game:hover{transform:none}
 .lite .game:focus .box{outline:6px solid #fff}
 #fade{position:fixed;inset:0;background:#000;z-index:20;pointer-events:none;opacity:0;animation:fadeIn .34s ease-out}
 #fade.out{animation:none;transition:opacity .26s ease-in}
 @keyframes fadeIn{from{opacity:1}to{opacity:0}}
+#fps{position:fixed;right:18px;top:12px;z-index:9;font:18px "Press Start 2P",monospace;color:#7dffd2;text-shadow:2px 2px 0 #000;pointer-events:none}
+/* TV: the emulator draws half-size and the screen stretches it, far cheaper than painting every pixel. */
+.lite.playing #game{inset:auto;left:0;top:0;width:50vw;height:50vh;transform:scale(2);transform-origin:0 0}
+.con{padding-bottom:128px}
+.con>img.real{margin-bottom:34px;transition:transform .2s ease-out}
 </style>
 </head>
 <body>
@@ -177,6 +181,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 </div>
 <input id="file" type="file" multiple accept=".md,.gen,.smd,.bin,.gba,.zip">
 <div id="game"></div>
+<div id="fps"></div>
 <div id="toast"></div>
 <div id="fade"></div>
 
@@ -361,11 +366,25 @@ function play(g){
   sfx('start');
   playing=true;document.body.classList.add('playing');
   Object.assign(window,{
-    EJS_player:'#game',EJS_core:g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
+    EJS_player:'#game',EJS_core:g.core==='segaMD'?'picodrive':g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
     EJS_pathtodata:EJS_DATA,EJS_startOnLoaded:true,EJS_color:'#ffd34d',EJS_language:'es-ES',EJS_threads:false,
+    /* Speed first: lighter builds, no video effects, and skip drawing frames rather than slow the game down. */
+    EJS_defaultOptions:{webgl2Enabled:'disabled',shader:'disabled',rewindEnabled:'disabled',picodrive_frameskip:'auto',mgba_frameskip:'auto'},
     EJS_Buttons:{playPause:false,restart:false,mute:false,settings:false,fullscreen:false,saveState:false,loadState:false,screenRecord:false,gamepad:false,cheat:false,volume:false,saveSavFiles:false,loadSavFiles:false,quickSave:false,quickLoad:false,screenshot:false,cacheManager:false,exitEmulation:false}
   });
+  meter();
   const s=document.createElement('script');s.src=EJS_DATA+'loader.js';s.onerror=()=>{toast('No se pudo cargar el emulador');setTimeout(()=>location.reload(),2000)};document.head.append(s);
+}
+
+/* Measured speed of the running game, in the corner, while we tune it for the TV. */
+function meter(){
+  let last=0;
+  setInterval(()=>{
+    const m=window.EJS_emulator&&EJS_emulator.gameManager;
+    if(!m||!EJS_emulator.started)return;
+    const n=m.getFrameNum();
+    $('fps').textContent=(n-last)+' FPS';last=n;
+  },1000);
 }
 
 /* 8-bit menu sounds, synthesized live: no audio files to download. Silent during a game. */
