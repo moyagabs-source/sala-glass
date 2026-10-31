@@ -1887,7 +1887,7 @@ let ttNight=store.get('sala-night')===1;
 function ttLight(n){
   ttNight=n;store.set('sala-night',n?1:0);
   const im=$('ttRoomN');
-  if(!im.getAttribute('src'))im.src='room-night.jpg?v=3';   // ready before it is asked for, so the fade starts at once
+  if(!im.getAttribute('src'))im.src='room-night.jpg?v=4';   // ready before it is asked for, so the fade starts at once
   $('ttSun').classList.toggle('on',!n);$('ttMoon').classList.toggle('on',n);
   if(!n)return $('saver').classList.remove('ttNight');
   const show=()=>{if(ttNight)$('saver').classList.add('ttNight')};
@@ -1943,7 +1943,7 @@ function ttToggle(){
   if(ttBusy)return;
   if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
   const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
-  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=10';ttLight(ttNight);sv.classList.add('tt');lyrApply();
+  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=11';ttLight(ttNight);sv.classList.add('tt');lyrApply();
   const q=$('ttTop').getBoundingClientRect();
   const fly=document.createElement('div'),size=300;
   fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
