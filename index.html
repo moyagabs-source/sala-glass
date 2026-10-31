@@ -488,15 +488,15 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #time,#sTime{font-weight:300}
 #line,#date,#hint,#sDate,#sArtist,#mid #mArtist,#wText,#navHint{font-weight:400}
 .nothing #sDate,.nothing #sArtist,.nothing #sTimes,.nothing #pills .pill,.nothing #railCap,.nLab,.nDay span,#eLab span{font-weight:400}
-#sPhoto{width:860px;height:860px;top:0}
+#sPhoto{left:535px;right:0;width:auto;height:1080px;top:0}
 /* Compressed dark photos break into steps when enlarged: a touch of softness and a stronger still grain hide them,
    and the photo stays still on the TV because a slow zoom makes the steps crawl. */
 .sImg{filter:blur(1.3px)}
 #sPhotoGrain{position:absolute;inset:0;background-image:var(--grainPhoto);background-size:128px 128px;z-index:1}
 #sPhoto::after{z-index:2}
-.sImg,#sPhotoGrain{left:4px;top:4px;right:4px;bottom:4px;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px)}   /* nothing reaches the box edge, where the halo could leave a thin line */
+.sImg,#sPhotoGrain{left:4px;top:0;right:0;bottom:0;width:calc(100% - 4px);height:100%}   /* the left edge stays under the black of the fade, so it can leave no thin line */   /* nothing reaches the box edge, where the halo could leave a thin line */
 /* Round halo: the photo melts into black on every side. Many close stops keep the dark ring from breaking into steps. */
-.sMusic #sPhoto::after{background:radial-gradient(circle 430px at 50% 46%,transparent 36%,rgba(0,0,0,.05) 44%,rgba(0,0,0,.16) 52%,rgba(0,0,0,.32) 60%,rgba(0,0,0,.5) 68%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.83) 84%,rgba(0,0,0,.94) 92%,#000 100%)}
+.sMusic #sPhoto::after{background:linear-gradient(90deg,#000 0,rgba(0,0,0,.86) 7%,rgba(0,0,0,.55) 15%,rgba(0,0,0,.24) 24%,rgba(0,0,0,.06) 33%,transparent 42%),linear-gradient(180deg,rgba(0,0,0,.2) 0,transparent 16%)}
 #sPhoto{isolation:isolate}   /* keeps the photo's layers below the player */
 .lite #sPhoto{animation:none;will-change:auto}
 /* Screensaver with music: clock on the left, the artist on the right, the player across the whole screen. */
@@ -578,7 +578,7 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #ttJoint{position:absolute;left:1112px;top:691px;overflow:visible}
 /* The cover is a print in the painted frame: mat around it, the room's warm light on it, glass in front. */
 #ttSleeve{position:absolute;left:832px;top:181px;width:284px;height:286px;overflow:hidden}
-#ttCover{position:absolute;left:30px;top:30px;width:224px;height:226px;object-fit:cover;display:block;filter:saturate(.86) contrast(.94) brightness(.9);box-shadow:0 0 0 1px rgba(70,44,20,.6),0 1px 7px 1px rgba(58,34,14,.42);transition:opacity .4s ease}
+#ttCover{position:absolute;left:30px;top:30px;width:224px;height:226px;display:block;box-shadow:0 0 0 1px rgba(70,44,20,.6),0 1px 7px 1px rgba(58,34,14,.42);transition:opacity .4s ease}
 #ttSleeve::before{content:"";position:absolute;left:30px;top:30px;width:224px;height:226px;z-index:1;mix-blend-mode:multiply;background:linear-gradient(180deg,#e7c79c,#f7dcb4 70%,#ffe6bf)}
 #ttSleeve::after{content:"";position:absolute;inset:0;z-index:2;box-shadow:inset 0 10px 13px -4px rgba(40,22,8,.56),inset 6px 0 9px -4px rgba(40,22,8,.32),inset -6px 0 9px -4px rgba(40,22,8,.22),inset 0 -5px 8px -4px rgba(40,22,8,.2);background:linear-gradient(118deg,rgba(255,244,224,.14) 0,rgba(255,244,224,.05) 20%,transparent 21%,transparent 56%,rgba(255,244,224,.07) 57%,rgba(255,244,224,.02) 72%,transparent 73%)}
 /* The song on the wall: warm ink between the frame and the turntable, the next line fainter below it. */
@@ -653,6 +653,10 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .ttM svg{width:17px;height:17px;fill:currentColor;display:block}
 .ttM.on{background:rgba(255,255,255,.2)}
 .ttM:focus,.ttM:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
+#sSeek{position:absolute;left:0;right:0;top:-16px;height:37px;background:none;box-shadow:none;z-index:2}
+#sLine::after{transition:left 1s linear,transform .15s ease}
+#sLine:focus-within::after{transform:scale(1.7)}
+#sLine:focus-within{box-shadow:0 0 0 2px rgba(255,255,255,.28)}
 #ttGrainZone{position:absolute;inset:0;overflow:hidden}
 #ttGrain{position:absolute;left:-120px;top:-120px;width:1080px;height:660px;transform-origin:0 0;background-image:var(--grainRoom);background-size:88px 88px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
 @keyframes grainIn{from{opacity:0}to{opacity:1}}
@@ -821,7 +825,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
 <path d="M-9.500 -7V0.500A9.500 3.300 0 0 0 9.500 .5V-7Z" fill="url(#tBear)"/>
 <ellipse cx="0" cy="-7" rx="9.500" ry="3.300" fill="#1c1b19" stroke="#55514a" stroke-width=".7"/>
 <ellipse cx="0" cy="-7" rx="3.400" ry="1.200" fill="#c9a968"/></svg>
-      <div id="ttSleeve"><img id="ttCover" alt=""></div>
+      <div id="ttSleeve"><canvas id="ttCover" width="224" height="226"></canvas></div>
       <button class="albHit" id="ttAlbBtn" data-f aria-label="Abrir álbum"></button>
       <div id="ttLyr"><div id="ttLine"></div><div id="ttNext"></div></div>
       <div id="ttGrainZone"><i id="ttGrain"></i></div>
@@ -836,7 +840,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
       <div>
         <div id="sName"></div>
         <div id="sArtist"></div>
-        <div id="sLine"><div id="sProg"></div></div>
+        <div id="sLine"><div id="sProg"></div><button id="sSeek" data-f aria-label="Avanzar o retroceder en la canción"></button></div>
         <div id="sTimes"><span id="sPos"></span><span id="sDur"></span></div>
         <div id="sBtns">
           <button class="sB" id="sLyrBtn" data-f aria-label="Letra"><svg viewBox="0 0 24 24"><path d="M4 5h16v2.400H4zm0 5.800h16v2.400H4zm0 5.800h10v2.400H4z"/></svg></button>
@@ -1473,7 +1477,32 @@ function startMusic(){
   };
   const s=document.createElement('script');s.src='https://sdk.scdn.co/spotify-player.js';document.head.append(s);
 }
-$('mPrev').onclick=$('sPrev').onclick=()=>player&&player.previousTrack();
+/* Back: past 3 seconds, or with nothing before it, the song starts over; otherwise it goes to the previous one. */
+/* Moving through the song: the bar answers at once, the jump reaches Spotify when the presses stop. */
+let seekTo=null,seekT=0;
+function seekSet(t){
+  t=Math.max(0,Math.min(mDur-1,t));
+  seekTo=t;mPos=t;mBase=t;mAt=performance.now();lyrAt=-2;musicBar();
+  clearTimeout(seekT);
+  seekT=setTimeout(()=>{if(player)player.seek(Math.round(seekTo*1000)).catch(()=>{});seekTo=null},260);
+}
+const seekBy=d=>seekSet((seekTo==null?mPos:seekTo)+d);
+$('sSeek').onclick=e=>{
+  if(!e.detail)return;   // Enter on the remote stays put; only a real pointer click picks a spot
+  const r=$('sLine').getBoundingClientRect();
+  seekSet(mDur*(e.clientX-r.left)/r.width);
+};
+async function spPrev(){
+  if(!player)return;
+  const st=await player.getCurrentState();
+  if(!st)return;
+  if(st.position>3000)return player.seek(0);
+  const none=(st.disallows&&st.disallows.skipping_prev)||!(st.track_window.previous_tracks||[]).length;
+  if(!none)return player.previousTrack().catch(()=>player.seek(0));
+  const r=await spApi('/me/player/previous?device_id='+spDevice,'POST').catch(()=>null);
+  if(!r||!r.ok)player.seek(0);
+}
+$('mPrev').onclick=$('sPrev').onclick=spPrev;
 $('mNext').onclick=$('sNext').onclick=()=>player&&player.nextTrack();
 $('mPlay').onclick=$('sPlay').onclick=()=>player&&player.togglePlay();
 let musBack=null;
@@ -1599,7 +1628,9 @@ async function spSend(body,name){
 function spPlay(i){
   const v=view,t=v.tracks[i];
   if(v.context)return spSend({context_uri:v.context,offset:{position:i}},t.name);
-  spSend({uris:v.tracks.slice(i,i+100).map(x=>x.uri)},t.name);
+  /* the songs before it go along too, so the back button has somewhere to go */
+  const from=Math.max(0,i-25);
+  spSend({uris:v.tracks.slice(from,from+100).map(x=>x.uri),offset:{position:i-from}},t.name);
 }
 $('spPlay').onclick=()=>{
   if(!view||view.grid)return;
@@ -1702,25 +1733,34 @@ function layerEl(){
   return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null;
 }
 function items(){return [...(layerEl()||$('ui')).querySelectorAll('[data-f]')].filter(b=>b.offsetParent)}
+/* Remote: a target counts if it reaches past the current edge in that direction, so a tall cover beside the
+   buttons is reachable. The nearest row or column wins first; alignment only decides inside it. */
+let navLast=null;
 function move(dx,dy){
   const list=items(),a=document.activeElement;
   if(!list.includes(a))return focus(list[0]);
-  const r=a.getBoundingClientRect(),ax=r.left+r.width/2,ay=r.top+r.height/2;
+  if(navLast&&navLast.to===a&&navLast.dx===-dx&&navLast.dy===-dy&&list.includes(navLast.from)){
+    const b=navLast.from;navLast=null;tick();return focus(b);
+  }
+  const r=a.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,M=8;
   let best=null,bs=1e12;
   list.forEach(b=>{
     if(b===a)return;
-    const q=b.getBoundingClientRect(),x=q.left+q.width/2-ax,y=q.top+q.height/2-ay;
-    const along=dx?x*dx:y*dy,across=dx?Math.abs(y):Math.abs(x);
-    if(along<=1)return;
-    const s=along+across*2.2;
+    const q=b.getBoundingClientRect();
+    const past=dy<0?q.top<r.top-M:dy>0?q.bottom>r.bottom+M:dx<0?q.left<r.left-M:q.right>r.right+M;
+    if(!past)return;
+    const gapY=Math.max(0,r.top-q.bottom,q.top-r.bottom),gapX=Math.max(0,r.left-q.right,q.left-r.right);
+    const toX=Math.abs(q.left+q.width/2-cx),toY=Math.abs(q.top+q.height/2-cy);
+    const s=dy?gapY*4+gapX+toX*.1:gapX*2+gapY*4+toY*.1;
     if(s<bs){bs=s;best=b}
   });
-  if(best){tick();focus(best)}
+  if(best){navLast={from:a,to:best,dx,dy};tick();focus(best)}
 }
 document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
   if(k&&e.key==='ArrowDown'&&document.activeElement===$('gzArrow')){e.preventDefault();$('gzArrow').click();return}
   if(k&&e.key==='ArrowUp'&&document.activeElement===$('svArrow')){e.preventDefault();enterSaver();return}
+  if(k&&k[0]&&document.activeElement===$('sSeek')){e.preventDefault();seekBy(k[0]*10);return}
   if(k){e.preventDefault();move(k[0],k[1]);return}
   const open=layerEl();
   if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():spBack()}
@@ -1737,9 +1777,15 @@ function wake(e){
   }
   if(idle&&e){
     /* with music the screensaver has its own controls: only Back or Down leave it */
+    if(mTrack&&e.type==='keydown'&&e.key==='ArrowDown'&&document.activeElement.closest&&document.activeElement.closest('#sBtns')){
+      e.preventDefault();e.stopImmediatePropagation();tick();focus($('sSeek'));return;
+    }
+    if(mTrack&&e.type==='keydown'&&e.key==='ArrowDown'&&document.activeElement.closest&&document.activeElement.closest('#ttMode,.albHit')){
+      e.preventDefault();e.stopImmediatePropagation();move(0,1);return;
+    }
     const backKey=e.key==='Escape'||e.key==='ArrowDown'||e.keyCode===8||e.keyCode===461;
     if(mTrack&&e.type==='keydown'&&!backKey)return;
-    if(e.type==='click'&&e.target.closest('#sBtns,.albHit,#ttMode'))return;
+    if(e.type==='click'&&e.target.closest('#sBtns,.albHit,#ttMode,#sSeek'))return;
     e.preventDefault();e.stopImmediatePropagation();
     const st=$('stage');
     if(st.classList.contains('leaving'))return;
@@ -1814,19 +1860,34 @@ function ttPaint(){
   g.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,110,110);
 }
 /* The cover hangs in the wall frame like one more picture and fades to the next song's. */
+let ttShown='';
+function ttDraw(){
+  const im=$('sCover'),w=im.naturalWidth,h=im.naturalHeight;
+  if(!w||!h)return;
+  const m=Math.min(w,h);
+  let src=im,sx=(w-m)/2,sy=(h-m)/2,size=m;
+  while(size>448){
+    const c=document.createElement('canvas'),n=Math.ceil(size/2);c.width=c.height=n;
+    const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(src,sx,sy,size,size,0,0,n,n);
+    src=c;sx=sy=0;size=n;
+  }
+  const g=$('ttCover').getContext('2d');
+  g.imageSmoothingQuality='high';g.filter='saturate(.86) contrast(.94) brightness(.9)';
+  g.drawImage(src,sx,sy,size,size,0,0,224,226);
+}
 function ttFrame(u){
-  const c=$('ttCover');
-  if(c.src===u)return;
-  if(!c.getAttribute('src')){c.src=u;return}
+  if(ttShown===u)return;
+  const first=!ttShown,c=$('ttCover');ttShown=u;
+  if(first)return ttDraw();
   c.style.opacity=0;
-  setTimeout(()=>{c.onload=()=>{c.style.opacity=1};c.src=u},400);
+  setTimeout(()=>{ttDraw();c.style.opacity=1},400);
 }
 /* Turntable. The record leaves the sleeve, rises and lands on the platter; the arm then follows the song across it. */
 let ttNight=store.get('sala-night')===1;
 function ttLight(n){
   ttNight=n;store.set('sala-night',n?1:0);
   const im=$('ttRoomN');
-  if(!im.getAttribute('src'))im.src='room-night.jpg?v=2';   // ready before it is asked for, so the fade starts at once
+  if(!im.getAttribute('src'))im.src='room-night.jpg?v=3';   // ready before it is asked for, so the fade starts at once
   $('ttSun').classList.toggle('on',!n);$('ttMoon').classList.toggle('on',n);
   if(!n)return $('saver').classList.remove('ttNight');
   const show=()=>{if(ttNight)$('saver').classList.add('ttNight')};
@@ -1882,7 +1943,7 @@ function ttToggle(){
   if(ttBusy)return;
   if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
   const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
-  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=9';ttLight(ttNight);sv.classList.add('tt');lyrApply();
+  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=10';ttLight(ttNight);sv.classList.add('tt');lyrApply();
   const q=$('ttTop').getBoundingClientRect();
   const fly=document.createElement('div'),size=300;
   fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
@@ -1957,6 +2018,8 @@ setInterval(()=>{
 },20000);
 /* Lyrics come from LRCLIB, a free open archive; Spotify keeps its own closed. Most have a time per line:
    the rest are spread across the song, so those follow it only roughly. */
+const LYR_LEAD=.6;
+let LYR_BRIDGE='';   // address of the Cloudflare bridge to timed lyrics
 let lyrOn=store.get('sala-lyrics')===1,lyrFor='',lyrLines=[],lyrTimes=[],lyrAt=-2,mBase=0,mAt=0,mFirst='';
 function lyrShow(lines,times,cls){
   lyrLines=lines;lyrTimes=times||[];lyrAt=-2;
@@ -1987,19 +2050,27 @@ function lyrLoad(quiet){
     if(!rows.length)throw 0;
     if(lyrFor===key)spread(rows);
   });
+  const lrc=t=>t.split(/\r?\n/).map(l=>{const m=l.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/);return m&&[+m[1]*60+ +m[2],m[3].trim()]}).filter(Boolean);
+  /* Second source, with real timing. A file far longer than this song is another version, so it is skipped. */
+  const bridge=()=>LYR_BRIDGE?fetch(LYR_BRIDGE+'?title='+encodeURIComponent(clean)+'&artist='+encodeURIComponent(mFirst)).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{
+    const rows=lrc(t);
+    if(rows.length<5||rows[rows.length-1][0]>mDur+15)throw 0;
+    if(lyrFor===key)lyrShow(rows.map(q=>q[1]),rows.map(q=>q[0]));
+  }):Promise.reject(0);
+  const others=()=>bridge().catch(backup);
   fetch('https://lrclib.net/api/search?track_name='+encodeURIComponent(clean)+'&artist_name='+encodeURIComponent(mFirst)).then(r=>{if(!r.ok)throw 0;return r.json()}).then(list=>{
     if(lyrFor!==key)return;
     const x=lyrPick(list,mDur);
-    if(!x)return backup().catch(()=>{if(lyrFor===key)lyrShow(['Esta canción no tiene letra disponible'],null,'msg now')});
+    if(!x)return others().catch(()=>{if(lyrFor===key)lyrShow(['Esta canción no tiene letra disponible'],null,'msg now')});
     if(x.syncedLyrics){
-      const rows=x.syncedLyrics.split('\n').map(l=>{const m=l.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/);return m&&[+m[1]*60+ +m[2],m[3].trim()]}).filter(Boolean);
+      const rows=lrc(x.syncedLyrics);
       lyrShow(rows.map(q=>q[1]),rows.map(q=>q[0]));
     }else spread(x.plainLyrics.split('\n').map(l=>l.trim()).filter(Boolean));
   }).catch(()=>{
     if(lyrFor!==key)return;
     /* while LRCLIB is down, keep the backup on screen and look now and then for the timed version */
     if(quiet&&lyrTimes.length)return again(120000);
-    backup().then(()=>again(120000)).catch(()=>{
+    others().then(()=>again(120000)).catch(()=>{
       if(lyrFor!==key)return;
       lyrShow(['No se pudo buscar la letra'],null,'msg now');
       again(30000);
@@ -2021,7 +2092,7 @@ function lyrApply(){
 setInterval(()=>{
   if((!lyrOn&&!ttOn)||!lyrTimes.length||!$('stage').classList.contains('idle'))return;
   const pos=mPlaying?mBase+(performance.now()-mAt)/1000:mBase;
-  let n=-1;while(n+1<lyrTimes.length&&lyrTimes[n+1]<=pos+.15)n++;
+  let n=-1;while(n+1<lyrTimes.length&&lyrTimes[n+1]<=pos+LYR_LEAD)n++;
   if(n===lyrAt)return;
   lyrAt=n;
   if(ttOn)ttSay(n);
