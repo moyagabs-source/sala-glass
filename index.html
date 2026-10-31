@@ -1039,6 +1039,7 @@ if($('takeover'))$('takeover').onclick=async()=>{
 };
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-go]');if(!b)return;
+  if(ALONE&&b.dataset.id)return;   // the app icons are decorative: the TV's own buttons open the apps
   toast('Abriendo '+b.dataset.go);
   if(b.closest('#sheet'))closeSheet();
   if(b.dataset.id){
