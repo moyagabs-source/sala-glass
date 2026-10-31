@@ -568,7 +568,7 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 /* The room is one photo. Only what moves sits on top, tilted to land exactly on the platter. A few still rings at
    different heights give the record its edge and the arm its pillar, so nothing reads as a flat cut-out. */
 .ttRec{position:absolute;inset:0;border-radius:50%;background:var(--vinylSoft,#0b0b0d) center/100% 100%}
-#ttLabel{will-change:transform;animation:vinylSpin 1.8s linear infinite}
+#ttLabel{will-change:transform;animation:vinylSpin 1.8s steps(43) infinite}
 #saver.sPaused #ttLabel{animation-play-state:paused}
 #ttLabel,.ttRec img{position:absolute;left:50%;top:50%;width:187px;height:187px;margin:-93.500px 0 0 -93.500px;border-radius:50%;object-fit:cover;filter:saturate(.85) brightness(.9);box-shadow:0 0 0 2px rgba(0,0,0,.8)}
 #ttSheen{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 34% 52% at 90% 50%,rgba(255,226,180,.2),rgba(255,226,180,0) 100%),radial-gradient(ellipse 34% 52% at 10% 50%,rgba(255,226,180,.2),rgba(255,226,180,0) 100%)}
@@ -582,7 +582,7 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #ttSleeve::before{content:"";position:absolute;left:30px;top:30px;width:224px;height:226px;z-index:1;mix-blend-mode:multiply;background:linear-gradient(180deg,#e7c79c,#f7dcb4 70%,#ffe6bf)}
 #ttSleeve::after{content:"";position:absolute;inset:0;z-index:2;box-shadow:inset 0 10px 13px -4px rgba(40,22,8,.56),inset 6px 0 9px -4px rgba(40,22,8,.32),inset -6px 0 9px -4px rgba(40,22,8,.22),inset 0 -5px 8px -4px rgba(40,22,8,.2);background:linear-gradient(118deg,rgba(255,244,224,.14) 0,rgba(255,244,224,.05) 20%,transparent 21%,transparent 56%,rgba(255,244,224,.07) 57%,rgba(255,244,224,.02) 72%,transparent 73%)}
 /* The song on the wall: warm ink between the frame and the turntable, the next line fainter below it. */
-#ttLyr{position:absolute;left:460px;width:1000px;top:476px;height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#2f2e2c;transition:opacity .26s ease,transform .26s ease}
+#ttLyr{position:absolute;left:460px;width:1000px;top:476px;height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#2f2e2c;transition:opacity .26s ease,transform .26s ease,color 1.4s ease-in-out}
 #ttLyr.off{opacity:0;transform:translate3d(0,5px,0)}
 #ttLyr.mute{opacity:0}
 #ttLine{font:italic 400 42px/1.2 Georgia,"Times New Roman",serif;opacity:.86}
@@ -602,9 +602,61 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #ttLabel{left:0;top:0;width:100%;height:100%;margin:0}
 #ttPin{position:absolute;left:147.5px;top:50.7px;overflow:visible}
 #saver.tt>.grain{display:none}
-#ttGrain{position:absolute;left:-120px;top:-120px;right:-120px;bottom:-120px;background-image:var(--grainRoom);background-size:176px 176px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
+/* Album and artist panel, opened from the cover. */
+.albHit{position:absolute;inset:0;z-index:3;border-radius:20px;background:none;box-shadow:none;transition:box-shadow .18s ease}
+.albHit:focus,.albHit:hover{box-shadow:0 0 0 4px #fff}
+#ttAlbBtn{inset:auto;left:862px;top:211px;width:224px;height:226px;border-radius:2px}
+#sAlbBtn{display:block}
+#saver.tt #sAlbBtn{display:none}
+#ttAlbBtn{display:none}
+#saver.tt #ttAlbBtn{display:block}
+#alb{position:absolute;inset:0;z-index:9;display:grid;place-items:center;background:rgba(6,5,4,.74);animation:svFade .3s ease-out;color:#fff}
+#alb[hidden]{display:none}
+#saver.albOn #ttGrain{animation-play-state:paused}
+#albCard{position:relative;width:1560px;height:840px;display:grid;grid-template-columns:400px minmax(0,1fr);column-gap:64px;padding:56px;box-sizing:border-box;border-radius:36px;background:#1a1816;box-shadow:0 0 0 1px rgba(255,255,255,.08);animation:albUp .34s cubic-bezier(.2,.8,.2,1)}
+@keyframes albUp{from{transform:translate3d(0,26px,0)}to{transform:none}}
+#albSide{min-width:0}
+#albArt{width:400px;height:400px;display:block;border-radius:20px;object-fit:cover;background:#2a2724}
+#albArt.round{border-radius:50%}
+#albKind{font-size:20px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin-top:26px}
+#albName{font-size:42px;font-weight:600;line-height:1.14;margin:6px 0 0;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+#albSub{font-size:24px;opacity:.68;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#albActs{display:flex;gap:12px;position:absolute;left:56px;bottom:56px}
+.albA{height:64px;min-width:64px;padding:0 24px;border-radius:32px;font-size:23px;font-weight:600;color:#fff;background:rgba(255,255,255,.13);transition:background .15s ease,color .15s ease}
+.albA:focus,.albA:hover,.albT:focus,.albT:hover,.albC:focus,.albC:hover,.albM:focus,.albM:hover{background:#fff;color:#111}
+#albMain{min-width:0;overflow-y:auto;scrollbar-width:none;margin:-6px -14px;padding:6px 14px}
+#albMain::-webkit-scrollbar{display:none}
+.albT{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;column-gap:14px;width:100%;height:68px;padding:0 20px;border-radius:14px;font-size:25px;text-align:left;color:#fff;background:none}
+.albT b{font-weight:400;opacity:.5;font-variant-numeric:tabular-nums}
+.albT span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.albT u{text-decoration:none;opacity:.5;font-size:21px;font-variant-numeric:tabular-nums}
+.albT.on{color:#ffc27a}
+.albT:focus.on,.albT:hover.on{color:#111}
+#albGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.albC{padding:12px;border-radius:18px;text-align:left;font-size:22px;color:#fff;background:none}
+.albC img{width:100%;aspect-ratio:1;display:block;border-radius:10px;object-fit:cover;background:#2a2724}
+.albC span{display:block;margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#albMenu{position:absolute;left:150px;bottom:136px;width:430px;padding:12px;border-radius:22px;background:#2b2825;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+#albMenu[hidden]{display:none}
+.albM{display:block;width:100%;height:64px;padding:0 20px;border-radius:13px;font-size:24px;text-align:left;color:#fff;background:none}
+#ttRoomN{position:absolute;left:0;top:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.4s ease-in-out}
+#ttSleeve,#ttLab{transition:opacity 1.4s ease-in-out}
+#ttLine,#ttNext{transition:color 1.4s ease-in-out}
+.ttM{transition:background .15s ease,color 1.4s ease-in-out}
+#saver.ttNight #ttRoomN{opacity:1}
+#saver.ttNight #ttLyr{color:#f6ead6}
+#saver.ttNight #ttSleeve{opacity:.66}
+#saver.ttNight #ttLab{opacity:.62}
+#saver.ttNight .ttM{color:#fff}
+#ttMode{position:absolute;left:974px;top:116px;margin-left:-37px;display:flex;gap:2px;padding:2px;border-radius:20px;background:rgba(255,255,255,.1);opacity:.72}
+.ttM{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#3a2e22;background:none;transition:background .15s ease}
+.ttM svg{width:17px;height:17px;fill:currentColor;display:block}
+.ttM.on{background:rgba(255,255,255,.2)}
+.ttM:focus,.ttM:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
+#ttGrainZone{position:absolute;left:380px;top:140px;width:1160px;height:760px;overflow:hidden}
+#ttGrain{position:absolute;left:-120px;top:-120px;width:700px;height:500px;transform-origin:0 0;background-image:var(--grainRoom);background-size:88px 88px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
 @keyframes grainIn{from{opacity:0}to{opacity:1}}
-@keyframes filmGrain{0%{transform:translate3d(0,0,0)}12.5%{transform:translate3d(-61px,37px,0)}25%{transform:translate3d(43px,-83px,0)}37.5%{transform:translate3d(-97px,-29px,0)}50%{transform:translate3d(71px,59px,0)}62.5%{transform:translate3d(-23px,101px,0)}75%{transform:translate3d(113px,-47px,0)}87.5%{transform:translate3d(-79px,-109px,0)}}
+@keyframes filmGrain{0%{transform:translate3d(0,0,0) scale(2)}12.5%{transform:translate3d(-61px,37px,0) scale(2)}25%{transform:translate3d(43px,-83px,0) scale(2)}37.5%{transform:translate3d(-97px,-29px,0) scale(2)}50%{transform:translate3d(71px,59px,0) scale(2)}62.5%{transform:translate3d(-23px,101px,0) scale(2)}75%{transform:translate3d(113px,-47px,0) scale(2)}87.5%{transform:translate3d(-79px,-109px,0) scale(2)}}
 #ttFly{position:absolute;left:0;top:0}
 /* The player lives on the console's plain front, under the room: title, line, buttons and clock on one row. */
 #saver.tt #sClock{left:auto;right:96px;top:auto;bottom:14px;width:320px;text-align:right;color:#fff1dc}
@@ -742,7 +794,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
     <div id="sPhoto"><img id="sBg" class="sImg" alt=""><img id="sBg2" class="sImg" alt=""><i id="sPhotoGrain"></i></div>
     <div id="sShade"></div>
     <div id="sTT">
-      <img id="ttRoom" alt="">
+      <img id="ttRoom" alt=""><img id="ttRoomN" alt="">
       <div id="ttDisc"><i id="ttAO"></i><div id="ttBody" class="ttShape"></div>
         <div id="ttTop" class="ttShape"><div id="ttSpin" class="ttRec"></div><i id="ttSheen"></i></div>
         <div id="ttLab"><canvas id="ttLabel" width="110" height="110"></canvas></div><svg id="ttPin" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tPin"><stop offset="0" stop-color="#3f3b34"/><stop offset=".28" stop-color="#cfc8b9"/><stop offset=".42" stop-color="#fffaf0"/><stop offset=".62" stop-color="#8d877b"/><stop offset="1" stop-color="#2b2823"/></linearGradient><radialGradient id="tPinTop" cx=".38" cy=".35" r=".8"><stop offset="0" stop-color="#fffdf6"/><stop offset=".6" stop-color="#b9b2a4"/><stop offset="1" stop-color="#5e594f"/></radialGradient></defs>
@@ -770,14 +822,17 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
 <ellipse cx="0" cy="-7" rx="9.500" ry="3.300" fill="#1c1b19" stroke="#55514a" stroke-width=".7"/>
 <ellipse cx="0" cy="-7" rx="3.400" ry="1.200" fill="#c9a968"/></svg>
       <div id="ttSleeve"><img id="ttCover" alt=""></div>
+      <button class="albHit" id="ttAlbBtn" data-f aria-label="Abrir álbum"></button>
       <div id="ttLyr"><div id="ttLine"></div><div id="ttNext"></div></div>
-      <i id="ttGrain"></i>
+      <div id="ttGrainZone"><i id="ttGrain"></i></div>
+      <div id="ttMode"><button class="ttM on" id="ttSun" data-f aria-label="Luz de día"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.500v3M12 18.500v3M2.500 12h3M18.500 12h3M5.300 5.300l2.100 2.100M16.600 16.600l2.100 2.100M5.300 18.700l2.100-2.100M16.600 7.400l2.100-2.100" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="ttM" id="ttMoon" data-f aria-label="Luz de noche"><svg viewBox="0 0 24 24"><path d="M20.500 14.300A8.600 8.600 0 1 1 9.700 3.500a7 7 0 0 0 10.800 10.800z"/></svg></button></div>
     </div>
     <div class="grain"></div>
     <div id="sClock"><div id="sTime"></div><div id="sDate"></div></div>
     <div id="sLyr"><div id="sLyrList"></div></div>
+    <div id="alb" hidden><div id="albCard" role="dialog" aria-label="Álbum y artista"></div></div>
     <div id="sTrack" hidden>
-      <div id="sDeck"><div id="sSlide"><div id="sVinyl"><img id="sLabel" alt=""></div></div><img id="sCover" alt=""></div>
+      <div id="sDeck"><button class="albHit" id="sAlbBtn" data-f aria-label="Abrir álbum"></button><div id="sSlide"><div id="sVinyl"><img id="sLabel" alt=""></div></div><img id="sCover" alt=""></div>
       <div>
         <div id="sName"></div>
         <div id="sArtist"></div>
@@ -1296,7 +1351,7 @@ document.addEventListener('click',e=>{
 /* Music: the official Spotify player runs inside this page, so it needs the https address and stops if the page closes.
    The token was handed to this TV once and lives only in its local storage. */
 const SP_KEY='sala-spotify',M_DOTS=20;
-let spTok=null,player=null,spDevice=null,mPos=0,mDur=0,mLit=-1,mTrack='',coverFor='';
+let now=null,spTok=null,player=null,spDevice=null,mPos=0,mDur=0,mLit=-1,mTrack='',coverFor='';
 const DEMO=/[?&]demo/.test(location.search);
 if(location.hash.length>4){   // a new permission handed over in the address: keep it here and clear it from the address at once
   try{localStorage.setItem(SP_KEY,decodeURIComponent(escape(atob(location.hash.slice(1)))))}catch(e){}
@@ -1395,6 +1450,7 @@ function startMusic(){
     player.addListener('player_state_changed',st=>{
       if(!st)return musicUI(null);
       const t=st.track_window.current_track;
+      now={uri:t.uri,album:t.album,artists:t.artists};
       musicUI({name:t.name,artist:t.artists.map(a=>a.name).join(', '),cover:bestImage(t.album.images,460),pos:st.position/1000,dur:st.duration/1000,paused:st.paused});
       if(t.id&&t.id!==coverFor){
         /* the player's own images can be small or missing: ask the API for the full set once per song */
@@ -1641,6 +1697,7 @@ addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))t
 
 /* Remote */
 function layerEl(){
+  if(!$('alb').hidden)return $('alb');
   if($('stage').classList.contains('idle')&&mTrack)return $('saver');
   return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null;
 }
@@ -1674,11 +1731,15 @@ const REST_MS=60000;
 let restTimer;
 function wake(e){
   const idle=$('stage').classList.contains('idle');
+  if(idle&&e&&!$('alb').hidden){
+    if(e.type==='keydown'&&(e.key==='Escape'||e.keyCode===8||e.keyCode===461)){e.preventDefault();e.stopImmediatePropagation();albBack()}
+    return;
+  }
   if(idle&&e){
     /* with music the screensaver has its own controls: only Back or Down leave it */
     const backKey=e.key==='Escape'||e.key==='ArrowDown'||e.keyCode===8||e.keyCode===461;
     if(mTrack&&e.type==='keydown'&&!backKey)return;
-    if(e.type==='click'&&e.target.closest('#sBtns'))return;
+    if(e.type==='click'&&e.target.closest('#sBtns,.albHit,#ttMode'))return;
     e.preventDefault();e.stopImmediatePropagation();
     const st=$('stage');
     if(st.classList.contains('leaving'))return;
@@ -1761,6 +1822,17 @@ function ttFrame(u){
   setTimeout(()=>{c.onload=()=>{c.style.opacity=1};c.src=u},400);
 }
 /* Turntable. The record leaves the sleeve, rises and lands on the platter; the arm then follows the song across it. */
+let ttNight=store.get('sala-night')===1;
+function ttLight(n){
+  ttNight=n;store.set('sala-night',n?1:0);
+  const im=$('ttRoomN');
+  if(!im.getAttribute('src'))im.src='room-night.jpg?v=1';   // ready before it is asked for, so the fade starts at once
+  $('ttSun').classList.toggle('on',!n);$('ttMoon').classList.toggle('on',n);
+  if(!n)return $('saver').classList.remove('ttNight');
+  const show=()=>{if(ttNight)$('saver').classList.add('ttNight')};
+  if(im.complete&&im.naturalWidth)return show();
+  im.onload=show;
+}
 let ttKey='',ttOn=false,ttBusy=false,ttWords=true;
 function ttArm(){
   const sv=$('saver'),on=ttOn&&sv.classList.contains('ttSeat')&&!sv.classList.contains('ttChange');
@@ -1810,7 +1882,7 @@ function ttToggle(){
   if(ttBusy)return;
   if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
   const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
-  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=7';sv.classList.add('tt');lyrApply();
+  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=8';ttLight(ttNight);sv.classList.add('tt');lyrApply();
   const q=$('ttTop').getBoundingClientRect();
   const fly=document.createElement('div'),size=300;
   fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
@@ -1828,6 +1900,7 @@ function ttToggle(){
   };
 }
 $('sTTBtn').onclick=ttToggle;
+$('ttSun').onclick=()=>ttLight(false);$('ttMoon').onclick=()=>ttLight(true);
 let deckBusy=false,deckNext='';
 function deckCover(u){if(deckBusy)deckNext=u;else if($('sCover').getAttribute('src')!==u)$('sCover').src=u}
 function deckSwap(u){
@@ -1899,7 +1972,10 @@ function lyrLoad(quiet){
   const clean=mTrack.replace(/\s+-\s+.*$/,'').replace(/\s*\((feat|ft|with|con)\b.*?\)/i,'').trim();
   const live=()=>lyrFor===key&&(lyrOn||ttOn)&&mTrack+'|'+mFirst===key;
   const again=ms=>setTimeout(()=>{if(live())lyrLoad(true)},ms);
-  const spread=rows=>lyrShow(rows,rows.map((q,i)=>mDur*(.07+.86*i/rows.length)));
+  const spread=rows=>{
+    const all=rows.reduce((n,l)=>n+l.length+8,0);let seen=0;
+    lyrShow(rows,rows.map(l=>{const t=mDur*(.07+.86*seen/all);seen+=l.length+8;return t}));
+  };
   /* Backup when LRCLIB fails: lyrics.ovh has no timing, so its lines are spread across the song. */
   const backup=()=>fetch('https://api.lyrics.ovh/v1/'+encodeURIComponent(mFirst)+'/'+encodeURIComponent(clean)).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{
     const rows=(j.lyrics||'').split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!/^\[.*\]$/.test(l));
@@ -1954,6 +2030,112 @@ $('sLyrBtn').onclick=()=>{
   else{lyrOn=!lyrOn;store.set('sala-lyrics',lyrOn?1:0)}
   lyrApply();
 };
+const uriId=u=>(u||'').split(':')[2]||'';
+const mk=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
+const albBtn=(cls,text,fn)=>{const b=mk('button',cls,text);b.dataset.f='';b.onclick=fn;b.addEventListener('focus',()=>{if(b.closest('#albMain'))b.scrollIntoView({block:'nearest'})});return b};
+let albFrom=null,albPrev=null;
+function albFrame(kind,name,sub,img,round){
+  const c=$('albCard');c.textContent='';
+  const side=mk('div');side.id='albSide';
+  const a=mk('img');a.id='albArt';a.alt='';if(round)a.className='round';if(img)a.src=img;
+  const k=mk('div');k.id='albKind';k.textContent=kind;
+  const n=mk('h3');n.id='albName';n.textContent=name;
+  const u=mk('div');u.id='albSub';u.textContent=sub;
+  side.append(a,k,n,u);
+  const acts=mk('div');acts.id='albActs';
+  const main=mk('div');main.id='albMain';
+  const menu=mk('div');menu.id='albMenu';menu.hidden=true;
+  c.append(side,main,acts,menu);
+  return {acts,main,menu};
+}
+function albMsg(t){const m=$('albMain');if(m)m.replaceChildren(mk('div','albT',t))}
+async function albPlay(body,name){
+  albClose();toast('Reproduciendo '+name);
+  if(DEMO)return;
+  const r=await spApi('/me/player/play?device_id='+spDevice,'PUT',body);
+  if(!r.ok)toast('No se pudo reproducir');
+}
+function albMenuToggle(){
+  const m=$('albMenu');
+  if(!m.hidden){m.hidden=true;return focus($('albDots'))}
+  m.textContent='';
+  const art=now&&now.artists&&now.artists[0];
+  m.append(
+    albBtn('albM','Agregar a la cola',async()=>{
+      m.hidden=true;focus($('albDots'));
+      const r=DEMO?{ok:true}:await spApi('/me/player/queue?uri='+encodeURIComponent(albSong.uri)+'&device_id='+spDevice,'POST');
+      toast(r.ok?'Agregada a la cola':'No se pudo agregar');
+    }),
+    albBtn('albM','Guardar en Me gusta',async()=>{
+      m.hidden=true;focus($('albDots'));
+      if(DEMO)return toast('Guardada en Me gusta');
+      const r=await spApi('/me/library?uris='+encodeURIComponent(albSong.uri),'PUT');
+      toast(r.ok?'Guardada en Me gusta':r.status===401||r.status===403?'Falta autorizar guardar canciones':'No se pudo guardar');
+    }),
+    albBtn('albM','Mezcla del artista',()=>{if(art)albPlay({context_uri:art.uri},art.name)}),
+    albBtn('albM','Ir al artista',()=>{if(art)albArtist(art.uri,art.name)})
+  );
+  m.hidden=false;focus(m.firstChild);
+}
+let albSong=null;
+async function albAlbum(id,hint){
+  albPrev=null;
+  const f=albFrame('Álbum',hint?hint.name:'',' ',hint?bestImage(hint.images,460):'');
+  f.main.append(mk('div','albT','Cargando…'));
+  const r=await spGet('/albums/'+id);
+  if(!r.data)return albMsg('No se pudo cargar el álbum.');
+  const x=r.data,tracks=(x.tracks&&x.tracks.items)||[],year=(x.release_date||'').slice(0,4),art=(x.artists||[])[0]||{};
+  $('albName').textContent=x.name;$('albSub').textContent=[art.name,year,tracks.length+' canciones'].filter(Boolean).join(' · ');
+  $('albArt').src=bestImage(x.images,460)||$('albArt').src;
+  f.main.textContent='';
+  tracks.forEach((t,i)=>{
+    const b=albBtn('albT'+(t.name===mTrack?' on':''),null,()=>albPlay({context_uri:x.uri,offset:{position:i}},t.name));
+    b.append(mk('b',null,i+1),mk('span',null,t.name),mk('u',null,fmtT((t.duration_ms||0)/1000)));
+    f.main.append(b);
+  });
+  const dots=albBtn('albA','···',albMenuToggle);dots.id='albDots';dots.setAttribute('aria-label','Más opciones');
+  f.acts.append(albBtn('albA','Reproducir',()=>albPlay({context_uri:x.uri},x.name)),albBtn('albA','Ir al artista',()=>albArtist(art.uri,art.name)),dots);
+  focus(f.main.querySelector('.on')||f.acts.firstChild);
+}
+async function albArtist(uri,name){
+  const back=()=>albAlbum(uriId(now.album.uri),now.album);
+  const f=albFrame('Artista',name,' ','',true);
+  albPrev=back;
+  f.main.append(mk('div','albT','Cargando…'));
+  const id=uriId(uri),[a,l]=await Promise.all([spGet('/artists/'+id),spGet('/artists/'+id+'/albums?include_groups=album,single&limit=20')]);
+  if(!$('albArt'))return;
+  if(a.data){$('albArt').src=bestImage(a.data.images,460)||'';$('albName').textContent=a.data.name}
+  const list=(l.data&&l.data.items)||[];
+  $('albSub').textContent=list.length?list.length+' lanzamientos':' ';
+  f.main.textContent='';
+  const g=mk('div');g.id='albGrid';
+  list.forEach(x=>{
+    const b=albBtn('albC',null,()=>{const prev=albPrev;albAlbum(x.id,x).then(()=>{albPrev=()=>albArtist(uri,name)})});
+    const im=mk('img');im.alt='';im.loading='lazy';im.src=bestImage(x.images,300)||'';
+    b.append(im,mk('span',null,x.name));g.append(b);
+  });
+  f.main.append(g);
+  if(!list.length)albMsg('Spotify no entregó su discografía.');
+  f.acts.append(albBtn('albA','Reproducir artista',()=>albPlay({context_uri:uri},name)),albBtn('albA','Volver',back));
+  focus(f.acts.firstChild);
+}
+function albOpen(){
+  if(!now)return toast('Pon una canción de Spotify primero');
+  albFrom=document.activeElement;albSong=now;
+  $('saver').classList.add('albOn');$('alb').hidden=false;
+  albAlbum(uriId(now.album.uri),now.album);
+}
+function albClose(){
+  $('alb').hidden=true;$('saver').classList.remove('albOn');
+  focus(albFrom&&albFrom.offsetParent?albFrom:$('sPlay'));
+}
+function albBack(){
+  const m=$('albMenu');
+  if(m&&!m.hidden)return albMenuToggle();
+  if(albPrev){const go=albPrev;albPrev=null;return go()}
+  albClose();
+}
+$('sAlbBtn').onclick=$('ttAlbBtn').onclick=albOpen;
 document.addEventListener('keydown',wake,true);
 document.addEventListener('click',e=>{if($('stage').classList.contains('idle'))wake(e)},true);
 
@@ -1995,13 +2177,20 @@ Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),wait(1500)])
     b.style.setProperty('--bootInk','#fff');
   }
   b.classList.add('hello');chime();
-  await wait(2000);
+  await wait(3500);
   b.classList.add('gone');   // the words leave first
   await wait(380);
   b.classList.add('open');   // then the screen opens
   await wait(1000);
   b.remove();
 });
+if(/[?&]fps/.test(location.search)){
+  const f=document.createElement('div');f.style.cssText='position:fixed;right:24px;top:20px;z-index:120;font:700 34px monospace;color:#fff;background:#000;padding:4px 14px';
+  document.body.append(f);
+  let n=0,t=performance.now();
+  const c=x=>{n++;if(x-t>=1000){f.textContent=Math.round(n*1000/(x-t))+' fps';n=0;t=x}requestAnimationFrame(c)};
+  requestAnimationFrame(c);
+}
 /* Preview only: ?live reloads when the file changes, ?demo shows a sample song. Neither runs on the TV address. */
 if(/[?&]live/.test(location.search)){
   let seen=null;
