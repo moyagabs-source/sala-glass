@@ -159,11 +159,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* Music module with nothing playing: one clear invitation to press play */
 #mStart{display:none;width:100%;height:100%;border-radius:30px;text-align:left;grid-column:1/-1}
-#mStart{transition:background .22s ease}
-#mStart:focus,#mStart:hover{outline:0;background:rgba(255,255,255,.08)}
-#ePlay,#eArt{transition:transform .22s ease}
-#mStart:focus #ePlay,#mStart:hover #ePlay{transform:scale(1.07)}
-#mStart:focus #eArt,#mStart:hover #eArt{transform:scale(1.03)}
+#mStart:focus,#mStart:hover{outline:0}
 #nMusic.empty{grid-template-columns:minmax(0,1fr)}
 #nMusic.empty #mStart{display:block}
 #nMusic.empty #nCover,#nMusic.empty #mInfo{display:none}
@@ -492,6 +488,9 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 #line,#date,#hint,#sDate,#sArtist,#mid #mArtist,#wText,#navHint{font-weight:400}
 .nothing #sDate,.nothing #sArtist,.nothing #sTimes,.nothing #pills .pill,.nothing #railCap,.nLab,.nDay span,#eLab span{font-weight:400}
 #sPhoto{width:860px;height:860px;top:110px}
+/* Empty music block: when selected, the whole block grows a touch. */
+#nMusic.empty{transition:transform .22s ease}
+#nMusic.empty:focus-within,#nMusic.empty:hover{transform:scale(1.025)}
 /* Glass without blur: the same soft fill, defined by a thicker light outline. */
 html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty){border:2.5px solid rgba(255,255,255,.34);border-top-color:rgba(255,255,255,.5);box-shadow:none}
 /* One continuous progress line instead of twenty joined pieces. */
