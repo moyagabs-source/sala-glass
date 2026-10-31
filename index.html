@@ -163,6 +163,30 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .lite .pill:focus,.lite .pill:hover,.lite .theme:focus,.lite .theme:hover,.lite .clockopt:focus,.lite .clockopt:hover{transform:none}
 .lite .theme:focus,.lite .theme:hover,.lite .clockopt:focus,.lite .clockopt:hover{box-shadow:none;outline:4px solid #fff}
 
+/* Music */
+#lists{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px;min-height:112px}
+.pl{height:112px;border-radius:24px;display:flex;align-items:center;gap:18px;padding:0 18px 0 14px;background:rgba(255,255,255,.1);font-size:27px;font-weight:500;text-align:left}
+.pl img{width:84px;height:84px;border-radius:14px;flex:none;display:block;background:#2a2a2a}
+.pl span{min-width:0;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.pl:focus,.pl:hover{outline:4px solid #fff}
+#nMusic{position:absolute;inset:0;background:#0d0d0d;display:grid;grid-template-columns:232px minmax(0,1fr);column-gap:32px;padding:40px;z-index:1}
+#nCover{width:232px;height:232px;border-radius:24px;object-fit:cover;display:block;background:#222}
+#weather{position:relative;overflow:hidden}
+#weather #nMusic{background:linear-gradient(145deg,rgba(38,41,58,.97),rgba(20,22,34,.97));align-items:center;padding:36px 40px}
+#weather #mInfo{justify-content:center}
+#weather #mTitle{font-size:40px}
+#mInfo{display:flex;flex-direction:column;justify-content:flex-end;min-width:0}
+#mTitle{font-size:36px;font-weight:500;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mArtist{color:#a8acaa;margin-top:6px;font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mBar{display:flex;gap:5px;margin-top:18px}
+#mBar i{display:block;width:9px;height:9px;border-radius:50%;background:#3a3c3b}
+#mBar i.on{background:#f1f2f0}
+#mBar i.now{background:#d71921}
+#mBtns{display:flex;gap:12px;margin-top:18px}
+.mB{width:64px;height:64px;border-radius:50%;background:#232423;color:#f1f2f0;display:grid;place-items:center}
+.mB svg{width:26px;height:26px;fill:currentColor;display:block}
+.mB:focus,.mB:hover{background:#f1f2f0;color:#0d0d0d;outline:4px solid #d71921;outline-offset:3px}
+
 /* Nothing skin: flat monochrome modules, dot type and one red accent. Flat fills keep it the fastest theme. */
 #themes{grid-template-columns:repeat(7,1fr)}
 #nGrid{display:none}
@@ -274,6 +298,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
       <div id="pills">
         <button class="pill glass" data-f data-input data-go="HDMI 1">HDMI 1</button>
         <button class="pill glass" data-f data-input data-go="HDMI 2">HDMI 2</button>
+        <button class="pill glass" id="openMusic" data-f>Música</button>
         <button class="pill glass" id="settings" data-f data-go="Ajustes" data-key="KEY_SETTINGS">Ajustes</button>
         <button class="pill glass" id="edit" data-f>Personalizar</button>
       </div>
@@ -303,7 +328,21 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
       <div class="n" id="nDateT"><div class="nLab" id="nMonth"></div><div id="nDate"></div><div class="nLab" id="nDow"></div></div>
       <div class="n w" id="nClockT"><div id="nDial"></div><i id="nSec"></i></div>
       <div class="n" id="nTimeT"><i id="nColon"></i><div id="nTime"></div></div>
-      <div class="n" id="nHelloT"><div id="nDayBar"></div><div class="nLab" id="nDayLab"></div><div id="nHello"></div><div class="nLab" id="nLine"></div></div>
+      <div class="n" id="nHelloT"><div id="nDayBar"></div><div class="nLab" id="nDayLab"></div><div id="nHello"></div><div class="nLab" id="nLine"></div>
+        <div id="nMusic" hidden>
+          <img id="nCover" alt="">
+          <div id="mInfo">
+            <div id="mTitle"></div>
+            <div class="nLab" id="mArtist"></div>
+            <div id="mBar"></div>
+            <div id="mBtns">
+              <button class="mB" id="mPrev" data-f aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M6 5h2.4v14H6zM20 5.6v12.8L9.5 12z"/></svg></button>
+              <button class="mB" id="mPlay" data-f aria-label="Pausar"><svg viewBox="0 0 24 24"><path id="mIcon" d="M7 5h3.6v14H7zm6.4 0H17v14h-3.6z"/></svg></button>
+              <button class="mB" id="mNext" data-f aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M15.6 5H18v14h-2.4zM4 5.6v12.8L14.5 12z"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="n w" id="nWxT">
         <div id="nWxL"><div id="nTemp"></div><div><div id="nCond"></div><div class="nLab" id="nCity"></div></div></div>
         <div class="nLab" id="nStats"></div>
@@ -315,6 +354,14 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
     <div id="railBox">
       <div id="railCap">Apps recientes</div>
       <div id="railWrap"><div id="rail"></div></div>
+    </div>
+  </div>
+
+  <div id="mus" class="modal" hidden>
+    <div class="panel glass" role="dialog" aria-labelledby="musT">
+      <h2 id="musT">Tu música</h2>
+      <div id="lists"></div>
+      <div class="foot"><button class="pill" id="closeMus" data-f>Cerrar</button></div>
     </div>
   </div>
 
@@ -421,6 +468,7 @@ let layer=0,shown='';
 function setAmbient(id){
   const t=THEMES.find(x=>x.id===id),p=(t&&t.p)||dayPalette(),bg=ambient(p);
   document.documentElement.classList.toggle('nothing',id==='nothing');
+  $(id==='nothing'?'nHelloT':'weather').append($('nMusic'));  // one player: it sits where the theme has room
   if(id==='nothing')renderNothing();
   if(bg===shown)return;
   shown=bg;layer=1-layer;
@@ -431,7 +479,7 @@ function setAmbient(id){
 
 /* Nothing skin: only small parts move, on their own layers. */
 /* Glyph matrix scenes: each returns a brightness from 0 to 1 for one cell; x and y run from -12.5 to 12.5. */
-let glyphKind='cloud',glyphOn=false;
+let glyphKind='cloud',glyphOn=false,mPlaying=false;
 const GN=26,GC=12.5,GHOLD=7,GFADE=1.3;
 const isCloud=(x,y)=>Math.hypot(x+4,y+1)<=4.6||Math.hypot(x-1,y+3)<=5.6||Math.hypot(x-5.6,y)<=3.7||(y>=0&&y<=3.6&&Math.abs(x)<=9);
 const SCENES=[
@@ -482,8 +530,8 @@ function startGlyph(){
     if(!root.classList.contains('nothing')||$('stage').classList.contains('idle'))return;
     if(root.classList.contains('calm')){if(!still)draw(0,SCENES[0],SCENES[0],0);still=true;return}
     still=false;
-    const t=(performance.now()-t0)/1000,span=GHOLD+GFADE,n=Math.floor(t/span),p=t-n*span;
-    const a=SCENES[G_ORDER[n%G_ORDER.length]],b=SCENES[G_ORDER[(n+1)%G_ORDER.length]];
+    const t=(performance.now()-t0)/1000,span=GHOLD+GFADE,n=Math.floor(t/span),p=t-n*span,order=mPlaying?[1,1]:G_ORDER;
+    const a=SCENES[order[n%order.length]],b=SCENES[order[(n+1)%order.length]];
     draw(t,a,b,p<GHOLD?0:(p-GHOLD)/GFADE);
   },83);
 }
@@ -748,6 +796,90 @@ document.addEventListener('click',e=>{
   else if(b.dataset.app)send('/api/launch',{appId:b.dataset.app});
 });
 
+/* Music: the official Spotify player runs inside this page, so it needs the https address and stops if the page closes.
+   The token was handed to this TV once and lives only in its local storage. */
+const SP_KEY='sala-spotify',M_DOTS=26;
+let spTok=null,player=null,spDevice=null,mPos=0,mDur=0,mLit=-1,mTrack='';
+try{spTok=JSON.parse(localStorage.getItem(SP_KEY))}catch(e){}
+async function spToken(){
+  if(!spTok)throw new Error('sin permiso');
+  if(spTok.expires_at-Date.now()/1000>60)return spTok.access_token;
+  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({grant_type:'refresh_token',refresh_token:spTok.refresh_token,client_id:spTok.client_id})});
+  if(!r.ok)throw new Error('token '+r.status);
+  const n=await r.json();
+  spTok=Object.assign(spTok,n,{expires_at:Math.floor(Date.now()/1000)+n.expires_in});
+  try{localStorage.setItem(SP_KEY,JSON.stringify(spTok))}catch(e){}
+  return spTok.access_token;
+}
+const spApi=async(path,method,body)=>fetch('https://api.spotify.com/v1'+path,{method:method||'GET',
+  headers:{Authorization:'Bearer '+await spToken(),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+function musicBar(){
+  const lit=mDur?Math.min(M_DOTS-1,Math.floor(M_DOTS*mPos/mDur)):0;
+  if(lit===mLit)return;
+  mLit=lit;
+  [...$('mBar').children].forEach((d,i)=>{d.className=i<lit?'on':i===lit?'now':''});
+}
+function musicUI(s){
+  if(!s){
+    mPlaying=false;mTrack='';$('nMusic').hidden=true;$('line').textContent=phrase();
+    if(document.activeElement.classList.contains('mB'))focus($('rail').firstChild);
+    return;
+  }
+  mPlaying=!s.paused;mPos=s.pos;mDur=s.dur;mLit=-1;
+  $('nMusic').hidden=false;
+  if(!$('mBar').firstChild)for(let i=0;i<M_DOTS;i++)$('mBar').append(document.createElement('i'));
+  if(s.name!==mTrack){mTrack=s.name;$('mTitle').textContent=s.name;$('mArtist').textContent=s.artist;if(s.cover)$('nCover').src=s.cover}
+  $('mIcon').setAttribute('d',mPlaying?'M7 5h3.6v14H7zm6.4 0H17v14h-3.6z':'M7 4.6v14.8L19 12z');
+  $('mPlay').setAttribute('aria-label',mPlaying?'Pausar':'Reproducir');
+  $('line').textContent=(mPlaying?'♪ ':'En pausa: ')+s.name+' · '+s.artist;
+  musicBar();
+}
+setInterval(()=>{if(mPlaying&&mPos<mDur){mPos+=1;musicBar()}},1000);
+function startMusic(){
+  if(!ALONE||!spTok||player)return;
+  window.onSpotifyWebPlaybackSDKReady=()=>{
+    player=new Spotify.Player({name:'Sala Glass',getOAuthToken:cb=>spToken().then(cb).catch(()=>toast('Spotify pide autorizar otra vez')),volume:1});
+    ['initialization_error','authentication_error','account_error'].forEach(n=>player.addListener(n,()=>toast('Spotify no pudo conectarse')));
+    player.addListener('playback_error',()=>toast('No se pudo reproducir'));
+    player.addListener('ready',({device_id})=>{spDevice=device_id});
+    player.addListener('not_ready',()=>{spDevice=null});
+    player.addListener('player_state_changed',st=>{
+      if(!st)return musicUI(null);
+      const t=st.track_window.current_track;
+      musicUI({name:t.name,artist:t.artists.map(a=>a.name).join(', '),cover:(t.album.images[1]||t.album.images[0]||{}).url,pos:st.position/1000,dur:st.duration/1000,paused:st.paused});
+    });
+    player.connect();
+  };
+  const s=document.createElement('script');s.src='https://sdk.scdn.co/spotify-player.js';document.head.append(s);
+}
+$('mPrev').onclick=()=>player&&player.previousTrack();
+$('mNext').onclick=()=>player&&player.nextTrack();
+$('mPlay').onclick=()=>player&&player.togglePlay();
+let musBack=null;
+function closeMus(){$('mus').hidden=true;focus(document.body.contains(musBack)?musBack:$('openMusic'))}
+$('closeMus').onclick=closeMus;
+$('openMusic').onclick=async()=>{
+  if(!spTok||!spDevice)return toast(spTok?'Conectando con Spotify…':'Música disponible en la TV');
+  musBack=document.activeElement;$('mus').hidden=false;focus($('closeMus'));
+  try{
+    const l=(await (await spApi('/me/playlists?limit=12')).json()).items||[],w=$('lists');
+    w.textContent='';
+    l.filter(Boolean).forEach(p=>{
+      const b=document.createElement('button');b.className='pl';b.dataset.f='';
+      const im=(p.images||[]);if(im.length){const i=document.createElement('img');i.src=im[im.length-1].url;i.alt='';b.append(i)}
+      const s=document.createElement('span');s.textContent=p.name;b.append(s);
+      b.addEventListener('click',async()=>{
+        closeMus();toast('Reproduciendo '+p.name);
+        const r=await spApi('/me/player/play?device_id='+spDevice,'PUT',{context_uri:p.uri});
+        if(!r.ok)toast('No se pudo reproducir');
+      });
+      w.append(b);
+    });
+    if(w.firstChild)focus(w.firstChild);
+  }catch(e){toast('No se pudieron cargar tus playlists')}
+};
+
 /* Server: only present while the page is served from the PC. */
 async function loadServer(){
   if(ALONE){
@@ -781,7 +913,7 @@ async function loadServer(){
 }
 
 /* Remote */
-function layerEl(){return $('sheet').hidden?null:$('sheet')}
+function layerEl(){return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null}
 function items(){return [...(layerEl()||$('ui')).querySelectorAll('[data-f]')].filter(b=>b.offsetParent)}
 function move(dx,dy){
   const list=items(),a=document.activeElement;
@@ -802,7 +934,7 @@ document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
   if(k){e.preventDefault();move(k[0],k[1]);return}
   const open=layerEl();
-  if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();closeSheet()}
+  if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():closeMus()}
 });
 
 /* Rest mode: after a while with no input, only the clock stays; any key brings the rest back. */
@@ -834,6 +966,7 @@ setInterval(clock,5000);
 renderWeather(store.get('sala-wx-'+city)||SAMPLE);
 loadWeather();setInterval(loadWeather,1200000);
 loadServer();
+startMusic();
 focus($('rail').firstChild);
 setTimeout(checkSpeed,3000);
 </script>
