@@ -223,6 +223,8 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
 .lite .theme:focus,.lite .theme:hover,.lite .clockopt:focus,.lite .clockopt:hover{box-shadow:none;outline:4px solid #fff}
 
 /* Music */
+#wipe{position:absolute;inset:0;z-index:30;background:#000;opacity:0;pointer-events:none;transition:opacity .26s ease-in}
+#wipe.on{opacity:1}
 /* Arrow to the Game Zone */
 #gzArrow{position:absolute;left:50%;bottom:6px;margin-left:-41px;width:82px;height:60px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-soft,#fff);background:none}
 .nothing #gzArrow{color:var(--nInk)}
@@ -520,6 +522,7 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
       <div class="n" id="nWeekB"><div id="nWeekH" class="nLab"><span>Semana</span><span id="nWeekHi"></span></div><div id="nWeekT"></div></div>
     </div>
 
+    <div id="wipe"></div>
     <div id="railBox">
       <div id="railCap">Apps recientes</div>
       <div id="railWrap"><div id="rail"></div></div>
@@ -1325,7 +1328,7 @@ $('mStart').onclick=$('mList').onclick=()=>{
   spShow('liked');focus($('sp-liked'));
 };
 
-$('gzArrow').onclick=()=>{location.href='juegos.html'};
+$('gzArrow').onclick=()=>{$('wipe').classList.add('on');setTimeout(()=>{location.href='juegos.html'},280)};
 
 /* Server: only present while the page is served from the PC. */
 async function loadServer(){
