@@ -653,8 +653,8 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .ttM svg{width:17px;height:17px;fill:currentColor;display:block}
 .ttM.on{background:rgba(255,255,255,.2)}
 .ttM:focus,.ttM:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
-#ttGrainZone{position:absolute;left:380px;top:140px;width:1160px;height:760px;overflow:hidden}
-#ttGrain{position:absolute;left:-120px;top:-120px;width:700px;height:500px;transform-origin:0 0;background-image:var(--grainRoom);background-size:88px 88px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
+#ttGrainZone{position:absolute;inset:0;overflow:hidden}
+#ttGrain{position:absolute;left:-120px;top:-120px;width:1080px;height:660px;transform-origin:0 0;background-image:var(--grainRoom);background-size:88px 88px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
 @keyframes grainIn{from{opacity:0}to{opacity:1}}
 @keyframes filmGrain{0%{transform:translate3d(0,0,0) scale(2)}12.5%{transform:translate3d(-61px,37px,0) scale(2)}25%{transform:translate3d(43px,-83px,0) scale(2)}37.5%{transform:translate3d(-97px,-29px,0) scale(2)}50%{transform:translate3d(71px,59px,0) scale(2)}62.5%{transform:translate3d(-23px,101px,0) scale(2)}75%{transform:translate3d(113px,-47px,0) scale(2)}87.5%{transform:translate3d(-79px,-109px,0) scale(2)}}
 #ttFly{position:absolute;left:0;top:0}
@@ -1687,7 +1687,7 @@ const chime=()=>play(t=>{[[329.6,0],[493.9,.12],[659.3,.26],[987.8,.42]].forEach
 addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))tap()},true);
 
 /* Fine noise tiles for the grain layers, generated once at start. */
-[['--grain',5],['--grainPhoto',8],['--grainRoom',12.6]].forEach(q=>{
+[['--grain',5],['--grainPhoto',8],['--grainRoom',5]].forEach(q=>{
   const c=document.createElement('canvas');c.width=c.height=128;
   const g=c.getContext('2d'),im=g.createImageData(128,128);
   for(let i=0;i<im.data.length;i+=4){const v=Math.random()<.5?0:255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.floor(Math.random()*q[1])}
@@ -1826,7 +1826,7 @@ let ttNight=store.get('sala-night')===1;
 function ttLight(n){
   ttNight=n;store.set('sala-night',n?1:0);
   const im=$('ttRoomN');
-  if(!im.getAttribute('src'))im.src='room-night.jpg?v=1';   // ready before it is asked for, so the fade starts at once
+  if(!im.getAttribute('src'))im.src='room-night.jpg?v=2';   // ready before it is asked for, so the fade starts at once
   $('ttSun').classList.toggle('on',!n);$('ttMoon').classList.toggle('on',n);
   if(!n)return $('saver').classList.remove('ttNight');
   const show=()=>{if(ttNight)$('saver').classList.add('ttNight')};
@@ -1882,22 +1882,27 @@ function ttToggle(){
   if(ttBusy)return;
   if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
   const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
-  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=8';ttLight(ttNight);sv.classList.add('tt');lyrApply();
+  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=9';ttLight(ttNight);sv.classList.add('tt');lyrApply();
   const q=$('ttTop').getBoundingClientRect();
   const fly=document.createElement('div'),size=300;
   fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
-  const im=document.createElement('img');im.src=$('sCover').src;im.style.cssText='width:100px;height:100px;margin:-50px 0 0 -50px';fly.append(im);$('sTT').insertBefore(fly,$('ttGrain'));
+  const im=document.createElement('img');im.src=$('sCover').src;im.style.cssText='width:100px;height:100px;margin:-50px 0 0 -50px';fly.append(im);$('sTT').insertBefore(fly,$('ttGrainZone'));
   const x=(r.left-b.left)/k,y=(r.top-b.top)/k,cw=q.width/k,ch=q.height/k,tx=(q.left-b.left)/k+cw/2-size/2,ty=(q.top-b.top)/k+ch/2-size/2;
   fly.style.transformOrigin='50% 50%';
   fly.animate([
     {transform:`translate3d(${x}px,${y}px,0) scale(1)`,easing:'cubic-bezier(.3,0,.3,1)'},
     {transform:`translate3d(${x+(tx-x)*.5}px,${Math.min(y,ty)-190}px,0) scale(1.5)`,offset:.55,easing:'cubic-bezier(.4,0,.5,1)'},
     {transform:`translate3d(${tx}px,${ty}px,0) scale(${cw/size},${ch/size})`}
-  ],{duration:1400,fill:'forwards'}).onfinish=()=>{
-    sv.classList.add('ttSeat');ttBusy=false;
-    fly.animate([{opacity:1},{opacity:0}],{duration:520,fill:'forwards'}).onfinish=()=>fly.remove();
+  ],{duration:1400,fill:'forwards'}).onfinish=seat;
+  setTimeout(seat,1700);   // a busy TV can lose the animation's end: the record lands anyway
+  let landed=false;
+  function seat(){
+    if(landed)return;
+    landed=true;sv.classList.add('ttSeat');ttBusy=false;
+    fly.animate([{opacity:1},{opacity:0}],{duration:520,fill:'forwards'});
+    setTimeout(()=>fly.remove(),560);
     setTimeout(ttArm,180);
-  };
+  }
 }
 $('sTTBtn').onclick=ttToggle;
 $('ttSun').onclick=()=>ttLight(false);$('ttMoon').onclick=()=>ttLight(true);
