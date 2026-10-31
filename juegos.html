@@ -21,7 +21,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #logo small{display:block;margin-top:8px;font:800 28px "Doto",ui-monospace,monospace;letter-spacing:.2em;color:#ffd34d;text-shadow:0 2px 0 #000;animation:gzBlink 1.3s steps(2) infinite}
 @keyframes gzBlink{50%{opacity:.2}}
 .con{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:96px;text-align:center}
-.con::after{content:"";position:absolute;inset:0;background:#000;opacity:.42;transition:opacity .16s linear;z-index:3;pointer-events:none}
+.con::after{content:"";position:absolute;inset:0;background:#000;opacity:.3;transition:opacity .16s linear;z-index:3;pointer-events:none}
 .con.on::after{opacity:0}
 .con:focus{outline:none}
 .con>svg,.con>h2,.con>p{position:relative;z-index:2}
@@ -34,11 +34,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .con.on p{background:#fff;color:#0b0b14}
 #c-segaMD{background:radial-gradient(60% 46% at 50% 56%,rgba(255,40,50,.5),transparent 72%),linear-gradient(180deg,#14060c,#050508 62%,#2a0710)}
 #c-segaMD .ghost{color:rgba(255,50,60,.2)}
-#c-segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.75) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,60,70,.75) 0 3px,transparent 3px 60px)}
+#c-segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.42) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,60,70,.42) 0 4px,transparent 4px 150px)}
 #c-segaMD h2{color:#fff;text-shadow:5px 5px 0 #d8202a,10px 10px 0 #1c5fd0}
 #c-gba{background:radial-gradient(60% 46% at 50% 56%,rgba(140,110,255,.7),transparent 72%),linear-gradient(180deg,#1b1270,#0b0838 62%,#2c1b9c)}
 #c-gba .ghost{color:rgba(190,170,255,.2)}
-#c-gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.7) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,224,107,.7) 0 3px,transparent 3px 60px)}
+#c-gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.4) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,224,107,.4) 0 4px,transparent 4px 150px)}
 #c-gba h2{color:#ffe06b;text-shadow:5px 5px 0 #4a3bd0,10px 10px 0 #120c55}
 #scan{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 5px)}
 #foot{position:absolute;left:0;right:0;bottom:26px;text-align:center;font-size:24px;color:#e4e4ee;z-index:5;pointer-events:none}
@@ -51,8 +51,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #shelf.segaMD .ghost{color:rgba(255,50,60,.17)}
 #shelf.gba .ghost{color:rgba(190,170,255,.17)}
 #shelf .floor{bottom:-40px;height:1000px;transform:perspective(560px) rotateX(68deg)}
-#shelf.segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.75) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,60,70,.75) 0 3px,transparent 3px 60px)}
-#shelf.gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.7) 0 3px,transparent 3px 80px),repeating-linear-gradient(0deg,rgba(255,224,107,.7) 0 3px,transparent 3px 60px)}
+#shelf.segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.42) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,60,70,.42) 0 4px,transparent 4px 150px)}
+#shelf.gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.4) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,224,107,.4) 0 4px,transparent 4px 150px)}
 #top{position:absolute;left:80px;right:80px;top:36px;display:flex;align-items:center;gap:22px;z-index:5}
 #top svg{width:150px;height:auto;flex:none}
 #top h1{flex:1;margin:0;font:900 64px/1 "Big Shoulders Display",sans-serif;text-transform:uppercase}
@@ -98,7 +98,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #logo small{margin-top:16px;font:18px "Press Start 2P",monospace;letter-spacing:0;color:#fff;text-shadow:3px 3px 0 #000}
 #upArrow{margin:-12px auto 10px;color:#fff}
 .con{padding-bottom:88px}
-.con>svg{width:700px}
+.con>img.real{width:640px;height:auto;margin-bottom:26px;position:relative;z-index:2;transition:transform .16s ease-out}
+.con.on>img.real{transform:translate3d(0,-20px,0) scale(1.07)}
+#top img.real{width:124px;height:auto;display:block}
 .ghost{top:176px}
 .con h2{font:46px/1.1 "Press Start 2P",monospace;letter-spacing:0}
 #c-segaMD h2{text-shadow:4px 4px 0 #d8202a,8px 8px 0 #1c5fd0}
@@ -123,6 +125,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #nowT{font:44px/1.3 "Press Start 2P",monospace;padding:0 0 18px}
 #nowS{font:20px "Press Start 2P",monospace;letter-spacing:0}
 #empty{font:22px/1.8 "Press Start 2P",monospace;padding:0 240px}
+#floorWrap::after{content:"";position:absolute;left:0;right:0;top:0;height:62%;z-index:1}
+#shelf.segaMD #floorWrap::after{background:linear-gradient(180deg,#0a0508 0,rgba(10,5,8,.9) 45%,transparent)}
+#shelf.gba #floorWrap::after{background:linear-gradient(180deg,#1a1272 0,rgba(26,18,114,.9) 45%,transparent)}
+.con .floor{opacity:.75}
 </style>
 </head>
 <body>
@@ -131,11 +137,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
   <div id="logo"><svg id="upArrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>GAME ZONE<small>INSERT COIN · ELIGE CONSOLA</small></div>
   <div id="pick">
     <button class="con" id="c-segaMD" data-f aria-label="Sega Genesis"><span class="ghost">16 BIT</span><span class="floor"></span>
-      <svg viewBox="0 0 640 340" aria-hidden="true"><defs><linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4a55"/><stop offset=".22" stop-color="#26262e"/><stop offset="1" stop-color="#0e0e12"/></linearGradient><radialGradient id="gD" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#5a5a68"/><stop offset=".55" stop-color="#2a2a33"/><stop offset="1" stop-color="#121216"/></radialGradient></defs><ellipse cx="320" cy="318" rx="290" ry="16" fill="#000" opacity=".55"/><path d="M60 70h520q34 0 40 34l14 150q2 40-34 44H40q-36-4-34-44l14-150q6-34 40-34z" fill="url(#gB)" stroke="#6c6c7a" stroke-width="2"/><path d="M26 112q6-30 38-30h512q32 0 38 30z" fill="#fff" opacity=".07"/><path d="M12 262h616q-2 28-30 30H42q-28-2-30-30z" fill="#08080b"/><ellipse cx="320" cy="172" rx="170" ry="120" fill="#0c0c10"/><ellipse cx="320" cy="164" rx="158" ry="110" fill="url(#gD)" stroke="#73737f" stroke-width="2"/><ellipse cx="320" cy="164" rx="118" ry="78" fill="#17171d" stroke="#000" stroke-width="3"/><rect x="214" y="146" width="212" height="38" rx="6" fill="#000" stroke="#55555f" stroke-width="2"/><rect x="226" y="158" width="188" height="14" rx="2" fill="#2d2d36"/><text x="320" y="116" text-anchor="middle" font-family="Big Shoulders Display,sans-serif" font-weight="900" font-size="26" letter-spacing="3" fill="#f1c84b">16-BIT</text><g fill="#34343e"><rect x="70" y="112" width="86" height="8" rx="4"/><rect x="62" y="132" width="86" height="8" rx="4"/><rect x="54" y="152" width="86" height="8" rx="4"/></g><rect x="60" y="192" width="82" height="20" rx="10" fill="#0a0a0d" stroke="#44444e"/><rect x="70" y="196" width="34" height="12" rx="6" fill="#d8202a"/><circle cx="72" cy="240" r="7" fill="#ff5a4f"/><circle cx="72" cy="240" r="13" fill="#ff5a4f" opacity=".25"/><g stroke="#3c3c47" stroke-width="7" stroke-linecap="round"><path d="M500 110h76M508 132h76M516 154h76M524 176h76M532 198h76"/></g><circle cx="560" cy="240" r="12" fill="#0a0a0d" stroke="#5a5a66" stroke-width="3"/></svg>
+      <img class="real" src="consolas/genesis.png" alt="">
       <h2>Sega Genesis</h2><p id="n-segaMD"></p>
     </button>
     <button class="con" id="c-gba" data-f aria-label="Game Boy Advance"><span class="ghost">32 BIT</span><span class="floor"></span>
-      <svg viewBox="0 0 640 340" aria-hidden="true"><defs><linearGradient id="aB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d7bff"/><stop offset=".3" stop-color="#5a46e0"/><stop offset="1" stop-color="#2e2298"/></linearGradient><linearGradient id="aS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d7f2dc"/><stop offset="1" stop-color="#8dc4a2"/></linearGradient></defs><ellipse cx="320" cy="322" rx="280" ry="14" fill="#000" opacity=".5"/><path d="M120 24h400q58 0 82 56l28 96q14 58-38 92l-34 26q-18 12-46 12H128q-28 0-46-12l-34-26q-52-34-38-92l28-96q24-56 82-56z" fill="url(#aB)" stroke="#cfc7ff" stroke-width="3"/><path d="M92 46q14-12 34-12h388q20 0 34 12l14 22H78z" fill="#fff" opacity=".2"/><path d="M58 92q-16 30-30 80" stroke="#fff" stroke-opacity=".35" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="176" y="46" width="288" height="216" rx="14" fill="#141238" stroke="#0a0920" stroke-width="3"/><path d="M190 56h260l-90 196H190z" fill="#fff" opacity=".05"/><rect x="202" y="66" width="236" height="160" rx="3" fill="url(#aS)"/><g fill="#3f6a52"><rect x="222" y="196" width="196" height="12"/><rect x="250" y="172" width="24" height="24"/><rect x="326" y="148" width="24" height="48"/><rect x="376" y="124" width="24" height="24"/><rect x="290" y="96" width="16" height="16"/></g><rect x="202" y="66" width="236" height="80" fill="#fff" opacity=".12"/><circle cx="196" cy="246" r="5" fill="#ff5a4f"/><g fill="#141238"><rect x="86" y="118" width="26" height="82" rx="5"/><rect x="58" y="146" width="82" height="26" rx="5"/></g><circle cx="99" cy="159" r="7" fill="#2f2a66"/><circle cx="508" cy="184" r="23" fill="#141238"/><circle cx="508" cy="180" r="19" fill="#2a2470"/><circle cx="564" cy="146" r="23" fill="#141238"/><circle cx="564" cy="142" r="19" fill="#2a2470"/><g fill="#141238"><rect x="88" y="232" width="42" height="11" rx="5"/><rect x="88" y="254" width="42" height="11" rx="5"/></g><g fill="#141238"><circle cx="520" cy="250" r="3.500"/><circle cx="534" cy="244" r="3.500"/><circle cx="548" cy="238" r="3.500"/><circle cx="528" cy="262" r="3.500"/><circle cx="542" cy="256" r="3.500"/><circle cx="556" cy="250" r="3.500"/></g></svg>
+      <img class="real" src="consolas/gba.png" alt="">
       <h2>Game Boy Advance</h2><p id="n-gba"></p>
     </button>
   </div>
@@ -246,7 +252,7 @@ async function openShelf(id){
   $('pick').hidden=$('logo').hidden=$('foot').hidden=$('scan').hidden=true;
   const sh=$('shelf');sh.hidden=false;sh.className=id;sh.classList.remove('removing');
   $('edit').classList.remove('on');$('edit').textContent='Quitar juegos';
-  $('topIcon').replaceChildren($('c-'+id).querySelector('svg').cloneNode(true));
+  $('topIcon').replaceChildren($('c-'+id).querySelector('.real').cloneNode(true));
   $('sName').textContent=CONSOLES[id].n;
   $('sGhost').textContent=id==='gba'?'32 BIT':'16 BIT';
   const games=(await allGames()).filter(g=>g.core===id).sort((a,b)=>a.name.localeCompare(b.name)),w=$('grid');
@@ -277,11 +283,13 @@ function showGame(b){
   $('grid').style.transform='translate3d('+(960-b.offsetLeft-b.offsetWidth/2)+'px,0,0)';
 }
 function goBack(){
+  sfx('back');
   if(con)return showPick();
-  location.replace(HOME);
+  setTimeout(()=>location.replace(HOME),170);
 }
 function play(g){
   if(!g.data)return toast('Juego de ejemplo: carga uno tuyo para empezar');
+  sfx('start');
   playing=true;document.body.classList.add('playing');
   Object.assign(window,{
     EJS_player:'#game',EJS_core:g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
@@ -289,6 +297,24 @@ function play(g){
     EJS_Buttons:{playPause:false,restart:false,mute:false,settings:false,fullscreen:false,saveState:false,loadState:false,screenRecord:false,gamepad:false,cheat:false,volume:false,saveSavFiles:false,loadSavFiles:false,quickSave:false,quickLoad:false,screenshot:false,cacheManager:false,exitEmulation:false}
   });
   const s=document.createElement('script');s.src=EJS_DATA+'loader.js';s.onerror=()=>{toast('No se pudo cargar el emulador');setTimeout(()=>location.reload(),2000)};document.head.append(s);
+}
+
+/* 8-bit menu sounds, synthesized live: no audio files to download. Silent during a game. */
+let actx=null;
+const SFX={move:[[660,.04]],ok:[[523,.05],[784,.07]],back:[[523,.05],[330,.08]],start:[[523,.06],[659,.06],[784,.06],[1047,.12]]};
+function sfx(id){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended')actx.resume();
+    let t=actx.currentTime+.01;
+    SFX[id].forEach(n=>{
+      const o=actx.createOscillator(),g=actx.createGain();
+      o.type='square';o.frequency.value=n[0];
+      g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+n[1]);
+      o.connect(g).connect(actx.destination);o.start(t);o.stop(t+n[1]);
+      t+=n[1];
+    });
+  }catch(e){}
 }
 
 /* Remote and game controller share these moves in the menus. */
@@ -306,6 +332,7 @@ function move(dx,dy){
     if(s<bs){bs=s;best=b}
   });
   if(!best)return;
+  sfx('move');
   best.focus({preventScroll:true});
 }
 document.addEventListener('keydown',e=>{
@@ -333,7 +360,7 @@ addEventListener('gamepadconnected',()=>setInterval(()=>{
 },60));
 Object.keys(CONSOLES).forEach(k=>{
   const b=$('c-'+k);
-  b.onclick=()=>openShelf(k);
+  b.onclick=()=>{sfx('ok');openShelf(k)};
   b.addEventListener('mouseenter',()=>b.focus({preventScroll:true}));
   b.addEventListener('focus',()=>{conFocus='c-'+k;document.querySelectorAll('.con').forEach(c=>c.classList.toggle('on',c===b))});
 });
