@@ -45,7 +45,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 #top{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
 #hello{font-size:64px;font-weight:500;letter-spacing:-.025em;line-height:1.08}
-#line{font-size:32px;font-weight:300;color:var(--ink-soft);margin-top:10px}
+#line{font-size:32px;font-weight:300;color:var(--ink-soft);margin-top:10px;max-width:1100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #pills{display:flex;gap:14px;flex:none}
 .pill{height:62px;padding:0 28px;border-radius:31px;font-size:25px;font-weight:500;display:flex;align-items:center;white-space:nowrap;transition:transform .22s cubic-bezier(.2,.8,.2,1),background .22s}
 .pill:focus,.pill:hover{background:rgba(255,255,255,.88);color:#10131d;transform:scale(1.06)}
@@ -100,9 +100,15 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .idle #saver{display:block}
 .idle #ui{visibility:hidden}
 #sBg,#sShade{position:absolute;display:none}
-#sBg{left:-5%;top:-5%;width:110%;height:110%;object-fit:cover;will-change:transform;animation:sKen 36s ease-in-out infinite alternate}
-@keyframes sKen{from{transform:scale(1)}to{transform:scale(1.09)}}
-#sShade{inset:0;background:linear-gradient(0deg,rgba(0,0,0,.86),rgba(0,0,0,.2) 62%,rgba(0,0,0,.52))}
+/* Spotify's photos stop at 640px: shown at the height of the screen beside the music, never stretched across it */
+#sBg{right:0;top:0;width:1080px;height:1080px;object-fit:cover;transform-origin:70% 50%;will-change:transform;animation:sKen 36s ease-in-out infinite alternate}
+@keyframes sKen{from{transform:scale(1)}to{transform:scale(1.05)}}
+#sShade{inset:0;background:linear-gradient(90deg,#000 44%,rgba(0,0,0,.72) 62%,rgba(0,0,0,.08) 100%),linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,0) 46%,rgba(0,0,0,.42))}
+.nothing #sShade{background:radial-gradient(circle,transparent 1.7px,rgba(0,0,0,.72) 2.3px) 0 0/6px 6px,linear-gradient(90deg,#000 44%,rgba(0,0,0,.72) 62%,rgba(0,0,0,.08) 100%),linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,0) 46%,rgba(0,0,0,.42))}
+#sBtns{display:flex;gap:14px;margin-top:20px}
+.sB{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
+.sB svg{width:30px;height:30px;fill:currentColor;display:block}
+.sB:focus,.sB:hover{background:#fff;color:#0b0b0b}
 .sMusic{background:#000}
 .sMusic #sBg,.sMusic #sShade{display:block}
 #sClock{position:absolute;left:96px;bottom:96px}
@@ -111,7 +117,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .sMusic #sClock{left:auto;right:96px;bottom:auto;top:76px;text-align:right}
 .sMusic #sTime{font-size:104px;font-weight:300}
 .sMusic #sDate{font-size:30px;margin-top:6px}
-#sTrack{position:absolute;left:96px;right:96px;bottom:92px;display:grid;grid-template-columns:330px minmax(0,1fr);column-gap:50px;align-items:end}
+#sTrack{position:absolute;left:96px;width:1120px;bottom:88px;display:grid;grid-template-columns:330px minmax(0,1fr);column-gap:50px;align-items:end}
 #sCover{width:330px;height:330px;border-radius:30px;object-fit:cover;display:block;background:#222}
 #sName{font-size:70px;font-weight:500;letter-spacing:-.02em;line-height:1.08;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 #sArtist{font-size:36px;font-weight:300;margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -456,6 +462,11 @@ html:not(.nothing) #eClassic{display:flex;gap:32px}
         <div id="sArtist"></div>
         <div id="sLine"><div id="sProg"></div></div>
         <div id="sTimes"><span id="sPos"></span><span id="sDur"></span></div>
+        <div id="sBtns">
+          <button class="sB" id="sPrev" data-f aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M6 5h2.4v14H6zM20 5.6v12.8L9.5 12z"/></svg></button>
+          <button class="sB" id="sPlay" data-f aria-label="Pausar"><svg viewBox="0 0 24 24"><path id="sIcon" d="M7 5h3.6v14H7zm6.4 0H17v14h-3.6z"/></svg></button>
+          <button class="sB" id="sNext" data-f aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M15.6 5H18v14h-2.4zM4 5.6v12.8L14.5 12z"/></svg></button>
+        </div>
       </div>
     </div>
   </div>
@@ -673,7 +684,7 @@ function renderNothing(){
   $('nHello').textContent=greeting();
   $('hello').textContent=greeting();
   renderDayBar();
-  $('nLine').textContent=$('line').textContent;
+  $('nLine').textContent=phrase();  // the song already shows in the player here; keep this to one line
   if(!wx)return;
   const c=wx.current,k=kind(c.weather_code,c.is_day);
   $('nTemp').textContent=Math.round(c.temperature_2m)+'°';
@@ -1009,7 +1020,8 @@ function musicUI(s){
     mTrack=s.name;$('mTitle').textContent=s.name;$('mArtist').textContent=s.artist;$('sName').textContent=s.name;$('sArtist').textContent=s.artist;
     if(s.cover){$('nCover').src=s.cover;$('sCover').src=s.cover;$('sBg').src=s.cover}
   }
-  $('mIcon').setAttribute('d',mPlaying?'M7 5h3.6v14H7zm6.4 0H17v14h-3.6z':'M7 4.6v14.8L19 12z');
+  const ic=mPlaying?'M7 5h3.6v14H7zm6.4 0H17v14h-3.6z':'M7 4.6v14.8L19 12z';
+  $('mIcon').setAttribute('d',ic);$('sIcon').setAttribute('d',ic);
   $('mPlay').setAttribute('aria-label',mPlaying?'Pausar':'Reproducir');
   $('line').textContent=(mPlaying?'♪ ':'En pausa: ')+s.name+' · '+s.artist;
   musicBar();
@@ -1046,9 +1058,9 @@ function startMusic(){
   };
   const s=document.createElement('script');s.src='https://sdk.scdn.co/spotify-player.js';document.head.append(s);
 }
-$('mPrev').onclick=()=>player&&player.previousTrack();
-$('mNext').onclick=()=>player&&player.nextTrack();
-$('mPlay').onclick=()=>player&&player.togglePlay();
+$('mPrev').onclick=$('sPrev').onclick=()=>player&&player.previousTrack();
+$('mNext').onclick=$('sNext').onclick=()=>player&&player.nextTrack();
+$('mPlay').onclick=$('sPlay').onclick=()=>player&&player.togglePlay();
 let musBack=null;
 function closeMus(){$('mus').hidden=true;focus(musBack&&musBack.offsetParent?musBack:$('rail').firstChild)}
 $('closeMus').onclick=closeMus;
@@ -1106,7 +1118,10 @@ async function loadServer(){
 }
 
 /* Remote */
-function layerEl(){return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null}
+function layerEl(){
+  if($('stage').classList.contains('idle')&&mTrack)return $('saver');
+  return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null;
+}
 function items(){return [...(layerEl()||$('ui')).querySelectorAll('[data-f]')].filter(b=>b.offsetParent)}
 function move(dx,dy){
   const list=items(),a=document.activeElement;
@@ -1134,17 +1149,31 @@ document.addEventListener('keydown',e=>{
 const REST_MS=60000;
 let restTimer;
 function wake(e){
-  if($('stage').classList.contains('idle')&&e){e.preventDefault();e.stopImmediatePropagation()}
-  $('stage').classList.remove('idle');
+  const idle=$('stage').classList.contains('idle');
+  if(idle&&e){
+    /* with music the screensaver has its own controls: only Back leaves it */
+    const backKey=e.key==='Escape'||e.keyCode===8||e.keyCode===461;
+    if(mTrack&&e.type==='keydown'&&!backKey)return;
+    if(e.type==='click'&&e.target.closest('#sBtns'))return;
+    e.preventDefault();e.stopImmediatePropagation();
+    $('stage').classList.remove('idle');
+    focus(saverBack&&saverBack.offsetParent?saverBack:$('rail').firstChild);
+  }
   clearTimeout(restTimer);
   restTimer=setTimeout(()=>{
     if(layerEl())return wake();
-    renderSaver();$('stage').classList.add('idle');
+    enterSaver();
   },REST_MS);
+}
+let saverBack=null;
+function enterSaver(){
+  saverBack=document.activeElement;
+  renderSaver();$('stage').classList.add('idle');
+  if(mTrack)focus($('sPlay'));
 }
 document.addEventListener('keydown',wake,true);
 document.addEventListener('click',e=>{if($('stage').classList.contains('idle'))wake(e)},true);
-$('saverBtn').onclick=()=>{renderSaver();$('stage').classList.add('idle')};
+$('saverBtn').onclick=enterSaver;
 
 /* If the TV cannot keep the background moving smoothly, stop it by itself and stay fast. */
 function checkSpeed(){
@@ -1186,7 +1215,7 @@ if(/[?&]demo/.test(location.search)){
   hasMusic=true;
   musicUI({name:'Canción de ejemplo',artist:'Artista de ejemplo',cover:c.toDataURL(),pos:92,dur:249,paused:false});
 }
-if(/[?&]saver/.test(location.search)){renderSaver();$('stage').classList.add('idle')}
+if(/[?&]saver/.test(location.search))enterSaver();
 setTimeout(checkSpeed,3000);
 </script>
 
