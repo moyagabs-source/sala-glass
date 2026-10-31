@@ -32,27 +32,27 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .con h2{margin:0;font:900 112px/1 "Big Shoulders Display",sans-serif;letter-spacing:.01em;text-transform:uppercase}
 .con p{display:inline-block;margin:14px 0 0;padding:8px 24px;border-radius:24px;background:rgba(0,0,0,.5);font-size:27px;font-weight:600}
 .con.on p{background:#fff;color:#0b0b14}
-#c-segaMD{background:radial-gradient(60% 46% at 50% 56%,rgba(255,40,50,.5),transparent 72%),linear-gradient(180deg,#14060c,#050508 62%,#2a0710)}
-#c-segaMD .ghost{color:rgba(255,50,60,.2)}
-#c-segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.42) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,60,70,.42) 0 4px,transparent 4px 150px)}
-#c-segaMD h2{color:#fff;text-shadow:5px 5px 0 #d8202a,10px 10px 0 #1c5fd0}
-#c-gba{background:radial-gradient(60% 46% at 50% 56%,rgba(140,110,255,.7),transparent 72%),linear-gradient(180deg,#1b1270,#0b0838 62%,#2c1b9c)}
-#c-gba .ghost{color:rgba(190,170,255,.2)}
-#c-gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.4) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,224,107,.4) 0 4px,transparent 4px 150px)}
-#c-gba h2{color:#ffe06b;text-shadow:5px 5px 0 #4a3bd0,10px 10px 0 #120c55}
+#c-gb{background:radial-gradient(60% 46% at 50% 56%,rgba(90,220,110,.45),transparent 72%),linear-gradient(180deg,#0c2413,#050508 62%,#123a1d)}
+#c-gb .ghost{color:rgba(255,50,60,.2)}
+#c-gb .floor{background:repeating-linear-gradient(90deg,rgba(120,240,140,.36) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(120,240,140,.36) 0 4px,transparent 4px 150px)}
+#c-gb h2{color:#fff;text-shadow:5px 5px 0 #1f7a37,10px 10px 0 #0a2a12}
+#c-nes{background:radial-gradient(60% 46% at 50% 56%,rgba(240,50,60,.55),transparent 72%),linear-gradient(180deg,#3a0810,#16040a 62%,#6e1420)}
+#c-nes .ghost{color:rgba(190,170,255,.2)}
+#c-nes .floor{background:repeating-linear-gradient(90deg,rgba(255,120,120,.36) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,120,120,.36) 0 4px,transparent 4px 150px)}
+#c-nes h2{color:#ffffff;text-shadow:5px 5px 0 #b3202c,10px 10px 0 #2a060c}
 #scan{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 5px)}
 #foot{position:absolute;left:0;right:0;bottom:26px;text-align:center;font-size:24px;color:#e4e4ee;z-index:5;pointer-events:none}
 
 /* Game row: same world as the picker. Covers stand on the neon floor; only the row slides, on one layer. */
 #shelf{position:absolute;inset:0;overflow:hidden}
-#shelf.segaMD{background:radial-gradient(52% 44% at 50% 50%,rgba(255,40,50,.5),transparent 74%),linear-gradient(180deg,#14060c,#050508 62%,#2a0710)}
-#shelf.gba{background:radial-gradient(52% 44% at 50% 50%,rgba(140,110,255,.7),transparent 74%),linear-gradient(180deg,#1b1270,#0b0838 62%,#2c1b9c)}
+#shelf.gb{background:radial-gradient(52% 44% at 50% 50%,rgba(90,220,110,.45),transparent 74%),linear-gradient(180deg,#0c2413,#050508 62%,#123a1d)}
+#shelf.nes{background:radial-gradient(52% 44% at 50% 50%,rgba(240,50,60,.55),transparent 74%),linear-gradient(180deg,#3a0810,#16040a 62%,#6e1420)}
 #shelf .ghost{top:96px;font-size:520px;color:rgba(255,255,255,.07)}
-#shelf.segaMD .ghost{color:rgba(255,50,60,.17)}
-#shelf.gba .ghost{color:rgba(190,170,255,.17)}
+#shelf.gb .ghost{color:rgba(120,240,140,.15)}
+#shelf.nes .ghost{color:rgba(255,120,120,.15)}
 #shelf .floor{bottom:-40px;height:1000px;transform:perspective(560px) rotateX(68deg)}
-#shelf.segaMD .floor{background:repeating-linear-gradient(90deg,rgba(255,60,70,.42) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,60,70,.42) 0 4px,transparent 4px 150px)}
-#shelf.gba .floor{background:repeating-linear-gradient(90deg,rgba(255,224,107,.4) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,224,107,.4) 0 4px,transparent 4px 150px)}
+#shelf.gb .floor{background:repeating-linear-gradient(90deg,rgba(120,240,140,.36) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(120,240,140,.36) 0 4px,transparent 4px 150px)}
+#shelf.nes .floor{background:repeating-linear-gradient(90deg,rgba(255,120,120,.36) 0 4px,transparent 4px 170px),repeating-linear-gradient(0deg,rgba(255,120,120,.36) 0 4px,transparent 4px 150px)}
 #top{position:absolute;left:80px;right:80px;top:36px;display:flex;align-items:center;gap:22px;z-index:5}
 #top svg{width:150px;height:auto;flex:none}
 #top h1{flex:1;margin:0;font:900 64px/1 "Big Shoulders Display",sans-serif;text-transform:uppercase}
@@ -66,17 +66,17 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .box{position:relative;display:block;height:400px;aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:#222;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
 .box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .art{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;font:900 44px/1.02 "Big Shoulders Display",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
-.segaMD .art{background:linear-gradient(180deg,#d8202a 0 7%,#111 7% 9%,#1c5fd0 9% 16%,transparent 16%),#101016}
-.gba .art{background:radial-gradient(circle,rgba(255,255,255,.2) 2px,transparent 2.5px) 0 0/16px 16px,linear-gradient(160deg,#6d57ff,#2a1fa0);color:#ffe06b}
+.gb .art{background:linear-gradient(180deg,#7fbf4d 0 12%,transparent 12%),#16301c}
+.nes .art{background:radial-gradient(circle,rgba(255,255,255,.2) 2px,transparent 2.5px) 0 0/16px 16px,linear-gradient(160deg,#c02534,#3a0810);color:#ffffff}
 .game:hover,.game:focus{outline:none;opacity:1;transform:scale(1.28);z-index:2}
 .game:focus .box,.game:hover .box{box-shadow:0 0 0 5px #fff}
-.segaMD .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #d8202a}
-.gba .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #ffe06b}
+.gb .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #d8202a}
+.nes .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #ffffff}
 .removing .game:focus .box{box-shadow:0 0 0 5px #fff,0 0 0 11px #e0483e}
 #now{position:absolute;left:0;right:0;bottom:64px;text-align:center;z-index:5;padding:0 80px}
 #nowT{margin:0;font:900 96px/1 "Big Shoulders Display",sans-serif;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px 12px}
-.segaMD #nowT{color:#fff;text-shadow:4px 4px 0 #d8202a,8px 8px 0 #1c5fd0}
-.gba #nowT{color:#ffe06b;text-shadow:4px 4px 0 #4a3bd0,8px 8px 0 #120c55}
+.gb #nowT{color:#fff;text-shadow:4px 4px 0 #1f7a37,8px 8px 0 #0a2a12}
+.nes #nowT{color:#ffffff;text-shadow:4px 4px 0 #b3202c,8px 8px 0 #2a060c}
 #nowS{font:800 30px "Doto",ui-monospace,monospace;letter-spacing:.16em;color:#ffd34d;text-shadow:0 2px 0 #000;animation:gzBlink 1.3s steps(2) infinite}
 .removing #nowS{color:#ff8a82}
 #empty{width:1920px;align-self:center;text-align:center;font-size:36px;line-height:1.35;padding:0 300px}
@@ -103,8 +103,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #top img.real{width:124px;height:auto;display:block}
 .ghost{top:176px}
 .con h2{font:46px/1.1 "Press Start 2P",monospace;letter-spacing:0}
-#c-segaMD h2{text-shadow:4px 4px 0 #d8202a,8px 8px 0 #1c5fd0}
-#c-gba h2{text-shadow:4px 4px 0 #4a3bd0,8px 8px 0 #120c55}
+#c-gb h2{text-shadow:4px 4px 0 #1f7a37,8px 8px 0 #0a2a12}
+#c-nes h2{text-shadow:4px 4px 0 #b3202c,8px 8px 0 #2a060c}
 .con p{margin-top:22px;padding:10px 18px;border-radius:0;font:17px "Press Start 2P",monospace;box-shadow:0 0 0 4px #000}
 #foot{bottom:30px;font:16px "Press Start 2P",monospace}
 #top{top:66px}
@@ -118,16 +118,16 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .art{font:20px/1.3 "Press Start 2P",monospace}
 .game:focus,.game:hover{transform:scale(1.22)}
 #floorWrap{position:absolute;left:0;right:0;top:716px;bottom:0;overflow:hidden;perspective:260px;perspective-origin:50% 0;border-top:4px solid #fff;z-index:1}
-#shelf.segaMD #floorWrap{border-color:#ff5a62}
-#shelf.gba #floorWrap{border-color:#ffe06b}
+#shelf.gb #floorWrap{border-color:#7dff8a}
+#shelf.nes #floorWrap{border-color:#ffffff}
 #shelf #floorWrap .floor{left:-150%;right:-150%;top:auto;bottom:0;height:2600px;transform-origin:50% 100%;transform:rotateX(82deg)}
 #now{bottom:58px}
 #nowT{font:44px/1.3 "Press Start 2P",monospace;padding:0 0 18px}
 #nowS{font:20px "Press Start 2P",monospace;letter-spacing:0}
 #empty{font:22px/1.8 "Press Start 2P",monospace;padding:0 240px}
 #floorWrap::after{content:"";position:absolute;left:0;right:0;top:0;height:62%;z-index:1}
-#shelf.segaMD #floorWrap::after{background:linear-gradient(180deg,#0a0508 0,rgba(10,5,8,.9) 45%,transparent)}
-#shelf.gba #floorWrap::after{background:linear-gradient(180deg,#1a1272 0,rgba(26,18,114,.9) 45%,transparent)}
+#shelf.gb #floorWrap::after{background:linear-gradient(180deg,#0c2413 0,rgba(12,36,19,.9) 45%,transparent)}
+#shelf.nes #floorWrap::after{background:linear-gradient(180deg,#3a0810 0,rgba(58,8,16,.9) 45%,transparent)}
 .con .floor{opacity:.75}
 /* TV: no scanlines, tube shadow, 3D floor or animated layers. A plain line replaces the floor. */
 .lite #scan,.lite #shelfScan,.lite .floor,.lite #app::after{display:none}
@@ -158,8 +158,12 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #grill{width:216px;height:300px;background:repeating-linear-gradient(0deg,#050506 0 11px,#3b3740 11px 22px);border-radius:8px}
 #panel span{font:17px "Press Start 2P",monospace;color:#ffd34d}
 #panel u{width:30px;height:30px;border-radius:50%;background:#ff3b34;box-shadow:0 0 16px #ff3b34}
-.playing #game{inset:auto;left:calc(180px*var(--s));top:calc(90px*var(--s));width:calc(1232px*var(--s));height:calc(900px*var(--s));background:#000;overflow:hidden}
-.lite.playing #game{width:calc(410.667px*var(--s));height:calc(300px*var(--s));transform:scale(3);transform-origin:0 0}
+.playing #game{display:flex;inset:auto;left:calc(180px*var(--s));top:calc(90px*var(--s));width:calc(1232px*var(--s));height:calc(900px*var(--s));background:#000;overflow:hidden}
+.playing #game{justify-content:center;align-items:center}
+#game canvas{display:block;height:100%!important;width:auto!important;image-rendering:pixelated}
+.con>img.real{width:auto;max-width:640px;height:auto;max-height:470px}
+#c-gb>img.real{max-height:500px}
+#top img.real{width:auto;max-width:124px;max-height:88px}
 </style>
 </head>
 <body>
@@ -167,13 +171,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
   <div id="hud"><span>1UP <b>000000</b></span><span>HI-SCORE <b>999990</b></span><span>CREDIT <b>01</b></span></div>
   <div id="logo"><svg id="upArrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>GAME ZONE<small>INSERT COIN · ELIGE CONSOLA</small></div>
   <div id="pick">
-    <button class="con" id="c-segaMD" data-f aria-label="Sega Genesis"><span class="ghost">16 BIT</span><span class="floor"></span>
-      <img class="real" src="consola-genesis.png" alt="">
-      <h2>Sega Genesis</h2><p id="n-segaMD"></p>
+    <button class="con" id="c-gb" data-f aria-label="Game Boy"><span class="ghost">8 BIT</span><span class="floor"></span>
+      <img class="real" src="consola-gb.png" alt="">
+      <h2>Game Boy</h2><p id="n-gb"></p>
     </button>
-    <button class="con" id="c-gba" data-f aria-label="Game Boy Advance"><span class="ghost">32 BIT</span><span class="floor"></span>
-      <img class="real" src="consola-gba.png" alt="">
-      <h2>Game Boy Advance</h2><p id="n-gba"></p>
+    <button class="con" id="c-nes" data-f aria-label="NES"><span class="ghost">8 BIT</span><span class="floor"></span>
+      <img class="real" src="consola-nes.png" alt="">
+      <h2>NES</h2><p id="n-nes"></p>
     </button>
   </div>
   <div id="scan"></div>
@@ -193,7 +197,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
     <div id="shelfScan"></div>
   </div>
 </div>
-<input id="file" type="file" multiple accept=".md,.gen,.smd,.bin,.gba,.zip">
+<input id="file" type="file" multiple accept=".gb,.gbc,.nes">
 <div id="tv" aria-hidden="true">
   <div id="cab"></div><div id="bezel"></div>
   <div id="panel"><b class="knob"></b><b class="knob"></b><i id="grill"></i><span>GAME ZONE</span><u></u></div>
@@ -204,18 +208,19 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 <div id="fade"></div>
 
 <script>
-/* Your own games: picked from a USB once, kept in this TV's browser storage, never uploaded anywhere.
-   The emulator (EmulatorJS with Genesis Plus GX and mGBA) loads from its CDN only when a game starts, so this page stays light. */
-const EJS_DATA='https://cdn.emulatorjs.org/4.2.3/data/';
+/* Your own games, kept in this TV's browser storage and never uploaded here.
+   Each console uses its own small emulator, loaded only when a game starts: binjgb (MIT) and JSNES (Apache-2.0). */
+const BINJGB='https://cdn.jsdelivr.net/gh/binji/binjgb@16621111ed0ee73bcc45c912a823bcebedcffc0f/docs/';
+const JSNES='https://cdn.jsdelivr.net/npm/jsnes@2.1.0/dist/jsnes.min.js';
 const COVERS='https://raw.githubusercontent.com/libretro-thumbnails/';
 const CONSOLES={
-  segaMD:{n:'Sega Genesis',repo:'Sega_-_Mega_Drive_-_Genesis'},
-  gba:{n:'Game Boy Advance',repo:'Nintendo_-_Game_Boy_Advance'}
+  gb:{n:'Game Boy',repo:'Nintendo_-_Game_Boy'},
+  nes:{n:'NES',repo:'Nintendo_-_Nintendo_Entertainment_System'}
 };
 const DEMO=/[?&]demo/.test(location.search);
 const $=id=>document.getElementById(id);
 const HOME='./'+(/github\.io$/.test(location.hostname)?'':'?tv=1&live=1&demo=1');
-let playing=false,tt=0,con=null,removing=false,conFocus='c-segaMD';
+let playing=false,tt=0,con=null,removing=false,conFocus='c-gb';
 if(/github\.io$/.test(location.hostname)||/[?&]lite/.test(location.search))document.documentElement.classList.add('lite');   // the TV gets the same design without its heavy layers
 function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080),t='scale('+k+')';$('app').style.transform=t;$('tv').style.transform=t;document.documentElement.style.setProperty('--s',k)}   // the frame and the game share one scale
 addEventListener('resize',fit);fit();
@@ -231,7 +236,7 @@ const tx=async(mode,fn)=>{
   const s=(await db).transaction('roms',mode).objectStore('roms'),r=fn(s);
   return new Promise((ok,no)=>{r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
 };
-const demoGames=[['Mi juego uno','segaMD'],['Mi juego dos','segaMD'],['Mi juego tres','segaMD'],['Aventura de prueba','gba'],['Carrera de prueba','gba']].map(g=>({name:g[0],core:g[1]}));
+const demoGames=[['Mi juego uno','gb'],['Mi juego dos','gb'],['Aventura de prueba','nes'],['Carrera de prueba','nes']].map(g=>({name:g[0],core:g[1]}));
 /* Private Drive: the permission arrives once in the address fragment, stays only on this TV and sees only
    the files uploaded by Sala Glass. No public links are involved. */
 const DRIVE_KEY='sala-drive';
@@ -252,7 +257,7 @@ async function dToken(){
 }
 const dFetch=async url=>fetch(url,{headers:{Authorization:'Bearer '+await dToken()}});
 const DEMO_DRIVE=[{id:'d1',name:'Juego en Drive.md'},{id:'d2',name:'Otro juego en Drive.gba'}];
-const coreByName=n=>/\.gba$/i.test(n)?'gba':/\.(md|gen|smd|bin)$/i.test(n)?'segaMD':null;
+const coreByName=n=>/\.(gb|gbc)$/i.test(n)?'gb':/\.nes$/i.test(n)?'nes':null;
 async function driveList(){
   if(DEMO&&!dTok)return DEMO_DRIVE;
   const r=await dFetch('https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q:"trashed=false and mimeType!='application/vnd.google-apps.folder'",fields:'files(id,name,size)',pageSize:200}));
@@ -287,19 +292,7 @@ async function showDrive(){
 }
 const allGames=async()=>DEMO?demoGames.concat(await tx('readonly',s=>s.getAll())):tx('readonly',s=>s.getAll());
 
-/* A zip says what it holds in plain text near its start; a .bin is a Genesis dump. */
-async function coreOf(file){
-  const ext=(file.name.split('.').pop()||'').toLowerCase();
-  if(ext==='gba')return 'gba';
-  if(['md','gen','smd','bin'].includes(ext))return 'segaMD';
-  if(ext==='zip'){
-    const head=new TextDecoder('latin1').decode(await file.slice(0,400).arrayBuffer()).toLowerCase();
-    if(/\.(cue|iso|chd|pbp)/.test(head)||file.size>16e6)return null;   // disc games (PlayStation) are not supported here
-    if(head.includes('.gba'))return 'gba';
-    if(/\.(md|gen|smd|bin)/.test(head))return 'segaMD';
-  }
-  return null;
-}
+const coreOf=async f=>coreByName(f.name);
 async function addFiles(files){
   let n=0,last=null;
   for(const f of files){
@@ -345,7 +338,7 @@ async function openShelf(id){
   $('edit').classList.remove('on');$('edit').textContent='Quitar juegos';
   $('topIcon').replaceChildren($('c-'+id).querySelector('.real').cloneNode(true));
   $('sName').textContent=CONSOLES[id].n;
-  $('sGhost').textContent=id==='gba'?'32 BIT':'16 BIT';
+  $('sGhost').textContent='8 BIT';
   const games=(await allGames()).filter(g=>g.core===id).sort((a,b)=>a.name.localeCompare(b.name)),w=$('grid');
   $('sCount').textContent=games.length+(games.length===1?' juego':' juegos');
   $('edit').hidden=!games.length;
@@ -379,39 +372,100 @@ function goBack(){
   if(con)return showPick();
   $('fade').classList.add('out');requestAnimationFrame(()=>requestAnimationFrame(()=>{$('fade').style.opacity=1}));setTimeout(()=>location.replace(HOME),280);
 }
-function play(g){
+/* In-game controls: the same names drive both emulators. OK also acts as Start for the first seconds, to get past title screens. */
+let pad=()=>{},padSave=()=>{},playStart=0,frames=0;
+const KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',Enter:'a',' ':'a',z:'a',x:'b','1':'select','2':'start',s:'start'};
+const script=u=>new Promise((ok,no)=>{const t=document.createElement('script');t.src=u;t.onload=ok;t.onerror=no;document.head.append(t)});
+async function play(g){
   if(!g.data)return toast('Juego de ejemplo: carga uno tuyo para empezar');
   sfx('start');
-  playing=true;document.body.classList.add('playing');
-  Object.assign(window,{
-    EJS_player:'#game',EJS_core:g.core==='segaMD'?'picodrive':g.core,EJS_gameName:g.name,EJS_gameUrl:URL.createObjectURL(new File([g.data],g.name+'.'+g.ext)),
-    EJS_pathtodata:EJS_DATA,EJS_startOnLoaded:true,EJS_color:'#ffd34d',EJS_language:'es-ES',EJS_threads:false,
-    /* Speed first: lighter builds, no video effects, and skip drawing frames rather than slow the game down. */
-    EJS_defaultOptions:{webgl2Enabled:'disabled',shader:'disabled',rewindEnabled:'disabled',picodrive_renderer:'fast',picodrive_sound_rate:'22050',picodrive_frameskip:'auto',mgba_frameskip:'fixed_interval',mgba_frameskip_interval:'1',mgba_idle_optimization:'Detect and Remove'},
-    EJS_Buttons:{playPause:false,restart:false,mute:false,settings:false,fullscreen:false,saveState:false,loadState:false,screenRecord:false,gamepad:false,cheat:false,volume:false,saveSavFiles:false,loadSavFiles:false,quickSave:false,quickLoad:false,screenshot:false,cacheManager:false,exitEmulation:false}
-  });
-  meter(g.name);
-  const s=document.createElement('script');s.src=EJS_DATA+'loader.js';s.onerror=()=>{toast('No se pudo cargar el emulador');setTimeout(()=>location.reload(),2000)};document.head.append(s);
+  playing=true;document.body.classList.add('playing');playStart=Date.now();
+  try{
+    const rom=new Uint8Array(await g.data.arrayBuffer());
+    await (g.core==='gb'?playGB:playNES)(g,rom);
+    meter(g);
+  }catch(e){toast('No se pudo abrir el juego');setTimeout(()=>location.reload(),2000)}
 }
+async function playGB(g,rom){
+  await script(BINJGB+'binjgb.js');
+  const m=await Binjgb({locateFile:f=>BINJGB+f});
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  actx.resume().catch(()=>{});
+  const size=(rom.byteLength+0x7fff)&~0x7fff,romPtr=m._malloc(size);
+  new Uint8Array(m.HEAP8.buffer,romPtr,size).fill(0).set(rom);
+  const AF=4096,e=m._emulator_new_simple(romPtr,size,actx.sampleRate,AF,0);
+  if(!e)throw new Error('rom');
+  m._emulator_set_builtin_palette(e,79);
+  const key='gz-save-'+g.name,withRam=cb=>{
+    const fd=m._ext_ram_file_data_new(e),r=cb(fd,new Uint8Array(m.HEAP8.buffer,m._get_file_data_ptr(fd),m._get_file_data_size(fd)));
+    m._file_data_delete(fd);return r;
+  };
+  try{
+    const old=JSON.parse(localStorage.getItem(key));
+    if(old)withRam((fd,b)=>{if(b.length===old.length){b.set(old);m._emulator_read_ext_ram(e,fd)}});
+  }catch(err){}
+  let dirty=false;
+  padSave=()=>{if(dirty){dirty=false;try{localStorage.setItem(key,JSON.stringify(withRam((fd,b)=>{m._emulator_write_ext_ram(e,fd);return Array.from(b)})))}catch(err){}}};
+  setInterval(padSave,5000);addEventListener('pagehide',padSave);
+  pad=(n,on)=>{const f={up:'_set_joyp_up',down:'_set_joyp_down',left:'_set_joyp_left',right:'_set_joyp_right',a:'_set_joyp_A',b:'_set_joyp_B',start:'_set_joyp_start',select:'_set_joyp_select'}[n];if(f)m[f](e,on?1:0)};
+  const c=document.createElement('canvas');c.width=160;c.height=144;c.style.aspectRatio='160/144';$('game').append(c);
+  const ctx=c.getContext('2d',{alpha:false});
+  const img=()=>new ImageData(new Uint8ClampedArray(m.HEAP8.buffer,m._get_frame_buffer_ptr(e),m._get_frame_buffer_size(e)),160,144);
+  const audio=()=>new Uint8Array(m.HEAP8.buffer,m._get_audio_buffer_ptr(e),m._get_audio_buffer_capacity(e));
+  let at=0,last=0,left=0;
+  const push=()=>{
+    const now=actx.currentTime;at=at||now+.1;
+    if(at<now){at=now+.1;return}
+    const a=audio(),b=actx.createBuffer(2,AF,actx.sampleRate),l=b.getChannelData(0),r=b.getChannelData(1);
+    for(let i=0;i<AF;i++){l[i]=a[2*i]*.5/255;r[i]=a[2*i+1]*.5/255}
+    const n=actx.createBufferSource();n.buffer=b;n.connect(actx.destination);n.start(at);at+=AF/actx.sampleRate;
+  };
+  const loop=t=>{
+    requestAnimationFrame(loop);
+    const sec=t/1000,d=Math.min(Math.max(sec-(last||sec),0),5/60);last=sec;
+    const until=m._emulator_get_ticks_f64(e)+d*4194304-left;
+    for(;;){
+      const ev=m._emulator_run_until_f64(e,until);
+      if(ev&1){frames++;ctx.putImageData(img(),0,0)}
+      if(ev&2)push();
+      if(ev&4)break;
+    }
+    left=(m._emulator_get_ticks_f64(e)-until)|0;
+    if(m._emulator_was_ext_ram_updated(e))dirty=true;
+  };
+  requestAnimationFrame(loop);
+}
+async function playNES(g,rom){
+  await script(JSNES);
+  const Button=jsnes.Controller,b=new jsnes.Browser({container:$('game'),onError:()=>toast('El juego tuvo un error')});
+  let data='';for(let i=0;i<rom.length;i+=8192)data+=String.fromCharCode.apply(null,rom.subarray(i,i+8192));
+  b.loadROM(data);
+  const names={up:Button.BUTTON_UP,down:Button.BUTTON_DOWN,left:Button.BUTTON_LEFT,right:Button.BUTTON_RIGHT,a:Button.BUTTON_A,b:Button.BUTTON_B,start:Button.BUTTON_START,select:Button.BUTTON_SELECT};
+  pad=(n,on)=>{if(names[n]!==undefined)b.nes[on?'buttonDown':'buttonUp'](1,names[n])};
+  const f=b.nes.frame.bind(b.nes);b.nes.frame=()=>{frames++;return f()};
+}
+function press(k,on){
+  const n=KEYS[k];if(!n)return false;
+  pad(n,on);
+  if(n==='a'&&Date.now()-playStart<9000)pad('start',on);
+  return true;
+}
+addEventListener('keyup',e=>{if(playing&&press(e.key,false))e.preventDefault()},true);
 
 /* Measured speed of the running game, in the corner, while we tune it for the TV. */
-function meter(name){
-  let last=0;const samples=[];
+function meter(g){
+  const samples=[];
   setInterval(()=>{
-    const m=window.EJS_emulator&&EJS_emulator.gameManager;
-    if(!m||!EJS_emulator.started)return;
-    const n=m.getFrameNum();
-    $('fps').textContent=(n-last)+' FPS';
-    if(last)samples.push(n-last);
-    last=n;
-    if(samples.length===40)report(name,samples);
+    $('fps').textContent=frames+' FPS';
+    samples.push(frames);frames=0;
+    if(samples.length===12||samples.length===40)report(g,samples);
   },1000);
 }
 
 /* The TV saves its own speed numbers to the private Drive, so tuning relies on the real hardware, not on the PC. */
-async function report(name,samples){
+async function report(g,samples){
   if(!dTok)return;
-  const meta={name:'medicion-tv.json',mimeType:'application/json'},data={game:name,core:EJS_emulator.getCore(),when:new Date().toISOString(),ua:navigator.userAgent,screen:[innerWidth,innerHeight,devicePixelRatio],samples};
+  const meta={name:'medicion-tv.json',mimeType:'application/json'},data={game:g.name,core:g.core,when:new Date().toISOString(),ua:navigator.userAgent,screen:[innerWidth,innerHeight,devicePixelRatio],samples};
   const b='salaglass',body='--'+b+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(data)+'\r\n--'+b+'--';
   try{await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+await dToken(),'Content-Type':'multipart/related; boundary='+b},body})}catch(e){}
 }
@@ -456,16 +510,22 @@ function move(dx,dy){
 }
 document.addEventListener('keydown',e=>{
   const back=e.key==='Escape'||e.keyCode===8||e.keyCode===461;
-  if(back){e.preventDefault();e.stopImmediatePropagation();playing?location.reload():goBack();return}
-  if(playing)return;
+  if(back){e.preventDefault();e.stopImmediatePropagation();if(playing){padSave();location.reload()}else goBack();return}
+  if(playing){if(press(e.key,true))e.preventDefault();return}
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
   if(k){e.preventDefault();move(k[0],k[1])}
 },true);
 const was={};
 addEventListener('gamepadconnected',()=>setInterval(()=>{
   const p=[...navigator.getGamepads()].find(Boolean);if(!p)return;
-  /* B + Start leaves a game: the emulator keeps every other button */
-  if(playing){if(p.buttons[1]&&p.buttons[1].pressed&&p.buttons[9]&&p.buttons[9].pressed)location.reload();return}
+  /* In a game every button is sent to the console; B + Start leaves. */
+  if(playing){
+    const on=i=>!!(p.buttons[i]&&p.buttons[i].pressed);
+    if(on(1)&&on(9)){padSave();return location.reload()}
+    const st={a:on(0),b:on(1),select:on(8),start:on(9),up:on(12)||p.axes[1]<-.6,down:on(13)||p.axes[1]>.6,left:on(14)||p.axes[0]<-.6,right:on(15)||p.axes[0]>.6};
+    Object.keys(st).forEach(k=>{if(st[k]!==was[k]){pad(k,st[k]);was[k]=st[k]}});
+    return;
+  }
   const b=i=>!!(p.buttons[i]&&p.buttons[i].pressed);
   const now={ok:b(0),back:b(1),u:b(12)||p.axes[1]<-.6,d:b(13)||p.axes[1]>.6,l:b(14)||p.axes[0]<-.6,r:b(15)||p.axes[0]>.6};
   Object.keys(now).forEach(k=>{
@@ -501,6 +561,7 @@ $('edit').onclick=()=>{
   $('nowS').textContent=removing?'OK PARA QUITAR':'PRESS OK TO START';
 };
 $('file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+allGames().then(all=>all.filter(g=>g.data&&!CONSOLES[g.core]).forEach(g=>tx('readwrite',x=>x.delete(g.name))));   // old Genesis and GBA games leave the TV
 const last=sess.get('gz-con');
 if(CONSOLES[last]&&performance.getEntriesByType('navigation')[0].type==='reload')openShelf(last);else showPick();
 </script>
