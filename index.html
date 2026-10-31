@@ -697,11 +697,45 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .lite .pill:focus,.lite .pill:hover{transform:scale(1.05)}
 .mB,.sB,#mid .mB{transition:transform .2s cubic-bezier(.22,.8,.24,1),background .16s ease,color .16s ease}
 .lite #mid .mB:focus,.lite #mid .mB:hover,.lite .mB:focus,.lite .mB:hover,.sB:focus,.sB:hover{transform:scale(1.1)}
+/* Roulette: the wheel and ball only animate transforms, so the TV moves them without repainting. */
+#rlArrow{position:absolute;left:6px;top:50%;margin-top:-41px;width:60px;height:82px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:4px;color:var(--ink-soft,#fff);background:none;opacity:.38;transition:opacity .15s linear}
+.nothing #rlArrow{color:var(--nInk)}
+#rlArrow:hover{opacity:1}
+#rlArrow svg{width:13px;height:26px}
+#rl{position:absolute;inset:0;z-index:10;color:#fff;background:radial-gradient(1250px 950px at 31% 50%,#14493a,#0a241c 62%,#050f0c);transition:transform .42s cubic-bezier(.22,.8,.24,1)}
+#rl[hidden]{display:none}
+#rl.out{transform:translateX(-100%)}
+.nothing #rl{background:#0c0c0c}
+#rlBowl{position:absolute;left:160px;top:110px;width:860px;height:860px}
+#rlWheel{position:absolute;left:260px;top:210px;width:660px;height:660px;will-change:transform}
+#rlShine{position:absolute;left:260px;top:210px;width:660px;height:660px;border-radius:50%;background:radial-gradient(circle at 37% 28%,rgba(255,255,255,.15),rgba(255,255,255,0) 52%)}
+#rlOrbit{position:absolute;left:160px;top:110px;width:860px;height:860px;will-change:transform}
+#rlBall{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff 0,#eeeae2 42%,#a9a39a 100%);box-shadow:0 3px 6px rgba(0,0,0,.55);will-change:transform}
+#rlSide{position:absolute;left:1130px;top:0;bottom:0;width:640px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+#rlNum{font-size:230px;line-height:1;font-weight:300;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-height:230px}
+.nothing #rlNum{font-family:"Doto",ui-monospace,monospace;font-weight:700}
+#rlNum.pop{animation:rlPop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes rlPop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+#rlCol{display:flex;align-items:center;gap:18px;font-size:52px;font-weight:500;margin-top:14px;min-height:64px}
+#rlDot{width:34px;height:34px;border-radius:50%;background:transparent}
+#rlDot[style*="#"],#rlDot[style*="rgb"]{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+#rlHist i{box-shadow:0 0 0 1.5px rgba(255,255,255,.28)}
+#rlMeta{font-size:30px;color:rgba(255,255,255,.68);margin-top:12px;min-height:40px}
+#rlSpin{margin-top:46px;height:92px;padding:0 66px;border-radius:46px;background:rgba(255,255,255,.14);color:#fff;font:500 36px var(--font);transition:transform .2s ease,background .2s ease,color .2s ease;outline:0}
+#rlSpin:focus,#rlSpin:hover{background:#fff;color:#10231c;transform:scale(1.05)}
+#rlSpin:disabled{opacity:.45}
+#rlHist{display:flex;gap:10px;margin-top:46px;min-height:58px}
+#rlHist i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:500 25px var(--font);font-style:normal}
+#rlHint{position:absolute;right:56px;bottom:44px;font-size:24px;color:rgba(255,255,255,.55);background:none}
 #gzArrow,#svArrow{transition:opacity .2s ease,transform .2s cubic-bezier(.22,.8,.24,1)}
 #gzArrow:focus,#svArrow:focus{transform:scale(1.08)}
 /* Empty music block: when selected, the whole block grows a touch. */
 #nMusic.empty{transition:transform .22s ease}
 #nMusic.empty:focus-within,#nMusic.empty:hover{transform:scale(1.025)}
+/* Nothing: the widgets answer the remote like the boombox, even though they open nothing. */
+.n{transition:transform .22s ease;outline:0}
+.n:focus,.n:hover,.nothing #nMusic:focus-within,.nothing #nMusic:hover{transform:scale(1.025)}
+.nothing #nMusic{transition:transform .22s ease}
 /* Glass without blur: the same soft fill, defined by a thicker light outline. */
 html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty){border:2.5px solid rgba(255,255,255,.34);border-top-color:rgba(255,255,255,.5);box-shadow:none}
 /* One continuous progress line instead of twenty joined pieces. */
@@ -787,6 +821,21 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
     </div>
 
     <div id="wipe"></div>
+    <div id="rl" class="out" hidden>
+      <canvas id="rlBowl" width="860" height="860"></canvas>
+      <canvas id="rlWheel" width="660" height="660"></canvas>
+      <div id="rlShine"></div>
+      <div id="rlOrbit"><div id="rlBall"></div></div>
+      <div id="rlSide">
+        <div id="rlNum"></div>
+        <div id="rlCol"><span id="rlDot"></span><span id="rlName">Hagan juego</span></div>
+        <div id="rlMeta"></div>
+        <button id="rlSpin" data-f>Girar</button>
+        <div id="rlHist"></div>
+      </div>
+      <button id="rlHint">Volver con →</button>
+    </div>
+    <button id="rlArrow" aria-label="Abrir ruleta"><svg viewBox="0 0 12 24"><path d="M10 3L2 12l8 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button id="svArrow" data-f aria-label="Activar salvapantallas"><svg viewBox="0 0 24 12"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 18"><path fill-rule="evenodd" fill="currentColor" d="M3 1h18q2 0 2 2v12q0 2-2 2H3q-2 0-2-2V3q0-2 2-2zm1 3v10h16l-5-6-4 4-3-2.500z"/><circle cx="8" cy="7" r="2" fill="currentColor"/></svg></button>
     <div id="railBox">
       <div id="railCap">Apps recientes</div>
@@ -1736,17 +1785,92 @@ addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-f]'))t
   document.documentElement.style.setProperty(q[0],'url('+c.toDataURL()+')');
 });
 
+/* Roulette: a real European wheel. The result is decided first; wheel and ball then land on it together. */
+const RL_ORDER=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+const RL_RED=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+const RL_STEP=360/RL_ORDER.length,RL_MS=7000,RL_RIM=372,RL_POCKET=258;
+const rlColor=n=>n===0?['Verde','#0f8a56']:RL_RED.includes(n)?['Rojo','#c0242f']:['Negro','#17171b'];
+let rlDrawn=false,rlBusy=false,rlFrom=null,rlW=0,rlB=0,rlR=RL_RIM,rlPast=[];
+function rlDraw(){
+  rlDrawn=true;
+  const g=$('rlBowl').getContext('2d'),C=430,wood=g.createRadialGradient(C,C,330,C,C,430);
+  wood.addColorStop(0,'#2a170c');wood.addColorStop(.72,'#5c3518');wood.addColorStop(1,'#2e1a0d');
+  g.fillStyle=wood;g.beginPath();g.arc(C,C,430,0,7);g.fill();
+  g.fillStyle='#17110c';g.beginPath();g.arc(C,C,396,0,7);g.fill();
+  g.strokeStyle='#c9a35a';g.lineWidth=3;g.beginPath();g.arc(C,C,396,0,7);g.stroke();
+  const w=$('rlWheel').getContext('2d'),c=330,rad=RL_STEP*Math.PI/180;
+  RL_ORDER.forEach((n,i)=>{
+    const a=i*rad-Math.PI/2,col=rlColor(n)[1];
+    w.fillStyle=col;w.beginPath();w.moveTo(c,c);w.arc(c,c,328,a-rad/2,a+rad/2);w.closePath();w.fill();
+    w.strokeStyle='#c9a35a';w.lineWidth=1.5;w.beginPath();w.moveTo(c+Math.cos(a-rad/2)*232,c+Math.sin(a-rad/2)*232);w.lineTo(c+Math.cos(a-rad/2)*328,c+Math.sin(a-rad/2)*328);w.stroke();
+    w.save();w.translate(c,c);w.rotate(a+Math.PI/2);w.fillStyle='#fff';w.font='600 27px Geist,sans-serif';w.textAlign='center';w.textBaseline='middle';w.fillText(n,0,-306);w.restore();
+  });
+  w.fillStyle='rgba(0,0,0,.34)';w.beginPath();w.arc(c,c,284,0,7);w.fill();
+  w.strokeStyle='#c9a35a';w.lineWidth=2.5;[284,328].forEach(r=>{w.beginPath();w.arc(c,c,r,0,7);w.stroke()});
+  const cone=w.createRadialGradient(c-40,c-50,20,c,c,232);
+  cone.addColorStop(0,'#59402a');cone.addColorStop(.6,'#35210f');cone.addColorStop(1,'#1a0f07');
+  w.fillStyle=cone;w.beginPath();w.arc(c,c,232,0,7);w.fill();w.strokeStyle='#c9a35a';w.lineWidth=2.5;w.stroke();
+  const gold=w.createRadialGradient(c-14,c-16,4,c,c,50);
+  gold.addColorStop(0,'#f6e2ae');gold.addColorStop(.6,'#c9a35a');gold.addColorStop(1,'#6f5428');
+  w.fillStyle=gold;w.beginPath();w.arc(c,c,48,0,7);w.fill();
+}
+const rlPlace=()=>{$('rlWheel').style.transform='rotate('+rlW+'deg)';$('rlOrbit').style.transform='rotate('+rlB+'deg)';$('rlBall').style.transform='translateY(-'+rlR+'px)'};
+function rlOpen(){
+  if(!rlDrawn)rlDraw();
+  rlPlace();rlFrom=document.activeElement;$('rl').hidden=false;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$('rl').classList.remove('out')));
+  tick();focus($('rlSpin'));
+}
+function rlClose(){
+  if(rlBusy)return;
+  $('rl').classList.add('out');tick();
+  setTimeout(()=>{$('rl').hidden=true;focus(document.body.contains(rlFrom)&&rlFrom.offsetParent?rlFrom:$('rail').firstChild)},420);
+}
+function rlSpin(){
+  if(rlBusy)return;
+  rlBusy=true;$('rlSpin').disabled=true;
+  const i=Math.floor(Math.random()*RL_ORDER.length),n=RL_ORDER[i];
+  $('rlNum').textContent='';$('rlMeta').textContent='';$('rlDot').style.background='transparent';$('rlName').textContent='No va más';
+  const w1=rlW+720+Math.random()*360,land=w1+i*RL_STEP,b1=land-360*Math.ceil((land-(rlB-1800))/360);
+  const turn=(el,a,b,ease)=>el.animate([{transform:'rotate('+a+'deg)'},{transform:'rotate('+b+'deg)'}],{duration:RL_MS,easing:ease,fill:'forwards'});
+  const y=r=>({transform:'translateY(-'+r+'px)'});
+  turn($('rlWheel'),rlW,w1,'cubic-bezier(.16,.62,.16,1)');
+  turn($('rlOrbit'),rlB,b1,'cubic-bezier(.2,.66,.12,1)');
+  /* the ball rides the rim, falls off it and bounces over a few pockets before settling */
+  const P=RL_POCKET,hops=[[0,rlR],[.06,RL_RIM],[.55,RL_RIM],[.64,P+8],[.7,P+36],[.77,P],[.82,P+20],[.88,P],[.92,P+7],[.97,P],[1,P]];
+  $('rlBall').animate(hops.map(h=>Object.assign({offset:h[0]},y(h[1]))),{duration:RL_MS,fill:'forwards'});
+  rlW=w1;rlB=b1;rlR=P;
+  setTimeout(()=>{
+    [$('rlWheel'),$('rlOrbit'),$('rlBall')].forEach(el=>el.getAnimations().forEach(a=>a.cancel()));
+    rlPlace();rlShow(n);rlBusy=false;$('rlSpin').disabled=false;
+    if(!$('rl').hidden)focus($('rlSpin'));
+  },RL_MS+60);
+}
+function rlShow(n){
+  const c=rlColor(n),el=$('rlNum');
+  el.classList.remove('pop');void el.offsetWidth;el.textContent=n;el.classList.add('pop');
+  $('rlName').textContent=c[0];$('rlDot').style.background=c[1];
+  $('rlMeta').textContent=n?[n%2?'Impar':'Par',n<19?'Falta':'Pasa',['1ª','2ª','3ª'][Math.ceil(n/12)-1]+' docena'].join('  ·  '):'El cero se lleva la mesa';
+  rlPast=[n,...rlPast].slice(0,9);
+  $('rlHist').innerHTML=rlPast.map(v=>'<i style="background:'+rlColor(v)[1]+'">'+v+'</i>').join('');
+  tick();
+}
+$('rlSpin').onclick=rlSpin;$('rlHint').onclick=rlClose;$('rlArrow').onclick=rlOpen;
+
 /* Remote */
 function layerEl(){
+  if(!$('rl').hidden)return $('rl');
   if(!$('alb').hidden)return $('alb');
   if($('stage').classList.contains('idle')&&mTrack)return $('saver');
   return !$('sheet').hidden?$('sheet'):!$('mus').hidden?$('mus'):null;
 }
 function items(){return [...(layerEl()||$('ui')).querySelectorAll('[data-f]')].filter(b=>b.offsetParent)}
+document.querySelectorAll('#nGrid .n').forEach(n=>{n.dataset.f='';n.tabIndex=0});
 /* Remote: a target counts if it reaches past the current edge in that direction, so a tall cover beside the
    buttons is reachable. The nearest row or column wins first; alignment only decides inside it. */
 let navLast=null;
 function move(dx,dy){
+  if(!$('rl').hidden){if(dx>0)rlClose();return}
   const list=items(),a=document.activeElement;
   if(!list.includes(a))return focus(list[0]);
   if(dx&&a===$('sSeek'))return toast('Pulsa OK para mover la canción');
@@ -1766,6 +1890,7 @@ function move(dx,dy){
     if(s<bs){bs=s;best=b}
   });
   if(best){navLast={from:a,to:best,dx,dy};tick();focus(best)}
+  else if(dx<0&&!layerEl())rlOpen();
 }
 document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
@@ -1773,7 +1898,7 @@ document.addEventListener('keydown',e=>{
   if(k&&e.key==='ArrowUp'&&document.activeElement===$('svArrow')){e.preventDefault();enterSaver();return}
   if(k){e.preventDefault();move(k[0],k[1]);return}
   const open=layerEl();
-  if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():spBack()}
+  if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():open.id==='rl'?rlClose():spBack()}
 });
 
 /* Rest mode: after a while with no input, only the clock stays; any key brings the rest back. */
