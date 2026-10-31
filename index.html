@@ -1891,27 +1891,38 @@ function lyrPick(list,dur){
   const near=(list||[]).filter(x=>!x.instrumental&&(x.syncedLyrics||x.plainLyrics)&&Math.abs(x.duration-dur)<=6);
   return near.find(x=>x.syncedLyrics)||near[0]||null;
 }
-function lyrLoad(){
+function lyrLoad(quiet){
   const key=mTrack+'|'+mFirst;
-  if(!mTrack||lyrFor===key)return;
-  lyrFor=key;lyrShow(['Buscando la letra…'],null,'msg now');
+  if(!mTrack||(lyrFor===key&&!quiet))return;
+  lyrFor=key;
+  if(!quiet)lyrShow(['Buscando la letra…'],null,'msg now');
   const clean=mTrack.replace(/\s+-\s+.*$/,'').replace(/\s*\((feat|ft|with|con)\b.*?\)/i,'').trim();
+  const live=()=>lyrFor===key&&(lyrOn||ttOn)&&mTrack+'|'+mFirst===key;
+  const again=ms=>setTimeout(()=>{if(live())lyrLoad(true)},ms);
+  const spread=rows=>lyrShow(rows,rows.map((q,i)=>mDur*(.07+.86*i/rows.length)));
+  /* Backup when LRCLIB fails: lyrics.ovh has no timing, so its lines are spread across the song. */
+  const backup=()=>fetch('https://api.lyrics.ovh/v1/'+encodeURIComponent(mFirst)+'/'+encodeURIComponent(clean)).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{
+    const rows=(j.lyrics||'').split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!/^\[.*\]$/.test(l));
+    if(!rows.length)throw 0;
+    if(lyrFor===key)spread(rows);
+  });
   fetch('https://lrclib.net/api/search?track_name='+encodeURIComponent(clean)+'&artist_name='+encodeURIComponent(mFirst)).then(r=>{if(!r.ok)throw 0;return r.json()}).then(list=>{
     if(lyrFor!==key)return;
     const x=lyrPick(list,mDur);
-    if(!x)return lyrShow(['Esta canción no tiene letra disponible'],null,'msg now');
+    if(!x)return backup().catch(()=>{if(lyrFor===key)lyrShow(['Esta canción no tiene letra disponible'],null,'msg now')});
     if(x.syncedLyrics){
       const rows=x.syncedLyrics.split('\n').map(l=>{const m=l.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/);return m&&[+m[1]*60+ +m[2],m[3].trim()]}).filter(Boolean);
       lyrShow(rows.map(q=>q[1]),rows.map(q=>q[0]));
-    }else{
-      const rows=x.plainLyrics.split('\n').map(l=>l.trim()).filter(Boolean);
-      lyrShow(rows,rows.map((q,i)=>i/rows.length*mDur));
-    }
+    }else spread(x.plainLyrics.split('\n').map(l=>l.trim()).filter(Boolean));
   }).catch(()=>{
     if(lyrFor!==key)return;
-    lyrFor='';lyrShow(['No se pudo buscar la letra'],null,'msg now');
-    /* a dropped request must not leave the song without words: try again while it plays */
-    setTimeout(()=>{if((lyrOn||ttOn)&&mTrack+'|'+mFirst===key)lyrLoad()},30000);
+    /* while LRCLIB is down, keep the backup on screen and look now and then for the timed version */
+    if(quiet&&lyrTimes.length)return again(120000);
+    backup().then(()=>again(120000)).catch(()=>{
+      if(lyrFor!==key)return;
+      lyrShow(['No se pudo buscar la letra'],null,'msg now');
+      again(30000);
+    });
   });
 }
 function ttSay(n,clear){
