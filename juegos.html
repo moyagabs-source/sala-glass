@@ -129,6 +129,16 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 #shelf.segaMD #floorWrap::after{background:linear-gradient(180deg,#0a0508 0,rgba(10,5,8,.9) 45%,transparent)}
 #shelf.gba #floorWrap::after{background:linear-gradient(180deg,#1a1272 0,rgba(26,18,114,.9) 45%,transparent)}
 .con .floor{opacity:.75}
+/* TV: no scanlines, tube shadow, 3D floor or animated layers. A plain line replaces the floor. */
+.lite #scan,.lite #shelfScan,.lite .floor,.lite #app::after{display:none}
+.lite #floorWrap::after{display:none}
+.lite #grid,.lite .game,.lite .con>img.real,.lite .con::after{transition:none}
+.lite #grid{will-change:auto}
+.lite #logo small,.lite #nowS,.lite #upArrow{animation:none}
+.lite .ghost{display:none}
+.lite .con.on>img.real{transform:none}
+.lite .game:focus,.lite .game:hover{transform:none}
+.lite .game:focus .box{outline:6px solid #fff}
 </style>
 </head>
 <body>
@@ -137,11 +147,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
   <div id="logo"><svg id="upArrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M3 10l9-8 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>GAME ZONE<small>INSERT COIN · ELIGE CONSOLA</small></div>
   <div id="pick">
     <button class="con" id="c-segaMD" data-f aria-label="Sega Genesis"><span class="ghost">16 BIT</span><span class="floor"></span>
-      <img class="real" src="consolas/genesis.png" alt="">
+      <img class="real" src="consola-genesis.png" alt="">
       <h2>Sega Genesis</h2><p id="n-segaMD"></p>
     </button>
     <button class="con" id="c-gba" data-f aria-label="Game Boy Advance"><span class="ghost">32 BIT</span><span class="floor"></span>
-      <img class="real" src="consolas/gba.png" alt="">
+      <img class="real" src="consola-gba.png" alt="">
       <h2>Game Boy Advance</h2><p id="n-gba"></p>
     </button>
   </div>
@@ -179,6 +189,7 @@ const DEMO=/[?&]demo/.test(location.search);
 const $=id=>document.getElementById(id);
 const HOME='./'+(/github\.io$/.test(location.hostname)?'':'?tv=1&live=1&demo=1');
 let playing=false,tt=0,con=null,removing=false,conFocus='c-segaMD';
+if(/github\.io$/.test(location.hostname)||/[?&]lite/.test(location.search))document.documentElement.classList.add('lite');   // the TV gets the same design without its heavy layers
 function fit(){$('app').style.transform='scale('+Math.min(innerWidth/1920,innerHeight/1080)+')'}
 addEventListener('resize',fit);fit();
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -305,15 +316,17 @@ const SFX={move:[[660,.04]],ok:[[523,.05],[784,.07]],back:[[523,.05],[330,.08]],
 function sfx(id){
   try{
     actx=actx||new (window.AudioContext||window.webkitAudioContext)();
-    if(actx.state==='suspended')actx.resume();
-    let t=actx.currentTime+.01;
-    SFX[id].forEach(n=>{
-      const o=actx.createOscillator(),g=actx.createGain();
-      o.type='square';o.frequency.value=n[0];
-      g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+n[1]);
-      o.connect(g).connect(actx.destination);o.start(t);o.stop(t+n[1]);
-      t+=n[1];
-    });
+    const go=()=>{
+      let t=actx.currentTime+.01;
+      SFX[id].forEach(n=>{
+        const o=actx.createOscillator(),g=actx.createGain();
+        o.type='square';o.frequency.value=n[0];
+        g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+n[1]);
+        o.connect(g).connect(actx.destination);o.start(t);o.stop(t+n[1]);
+        t+=n[1];
+      });
+    };
+    actx.state==='running'?go():actx.resume().then(go).catch(()=>{});   // the TV starts audio asleep: wake it, then play
   }catch(e){}
 }
 
@@ -365,7 +378,15 @@ Object.keys(CONSOLES).forEach(k=>{
   b.addEventListener('focus',()=>{conFocus='c-'+k;document.querySelectorAll('.con').forEach(c=>c.classList.toggle('on',c===b))});
 });
 $('backCon').onclick=goBack;
-$('add').onclick=()=>$('file').click();
+/* Tells apart "the TV opened its file window" from "this browser has none": without this the button looks dead. */
+$('add').onclick=()=>{
+  let opened=false;
+  const seen=()=>{opened=true};
+  addEventListener('blur',seen,{once:true});
+  $('file').click();
+  toast('Abriendo USB…');
+  setTimeout(()=>{removeEventListener('blur',seen);if(!opened&&!document.hidden)toast('Esta TV no abrió el selector de archivos')},3500);
+};
 $('edit').onclick=()=>{
   removing=!removing;$('shelf').classList.toggle('removing',removing);$('edit').classList.toggle('on',removing);
   $('edit').textContent=removing?'Terminar':'Quitar juegos';
