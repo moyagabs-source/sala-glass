@@ -655,8 +655,9 @@ html{text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased}
 .ttM:focus,.ttM:hover{background:rgba(255,255,255,.9);color:#1a1a1a}
 #sSeek{position:absolute;left:0;right:0;top:-16px;height:37px;background:none;box-shadow:none;z-index:2}
 #sLine::after{transition:left 1s linear,transform .15s ease}
-#sLine:focus-within::after{transform:scale(1.7)}
+#sLine:focus-within::after{transform:scale(1.5)}
 #sLine:focus-within{box-shadow:0 0 0 2px rgba(255,255,255,.28)}
+#sLine.held::after{transform:scale(2.2);box-shadow:0 0 0 5px rgba(255,255,255,.35);transition:left .1s linear,transform .15s ease}
 #ttGrainZone{position:absolute;inset:0;overflow:hidden}
 #ttGrain{position:absolute;left:-120px;top:-120px;width:1080px;height:660px;transform-origin:0 0;background-image:var(--grainRoom);background-size:88px 88px;will-change:transform,opacity;animation:filmGrain .8s steps(1) infinite,grainIn 2.8s ease-in}
 @keyframes grainIn{from{opacity:0}to{opacity:1}}
@@ -1427,7 +1428,7 @@ function musicUI(s){
     return;
   }
   $('nMusic').classList.remove('empty');
-  mPlaying=!s.paused;mPos=s.pos;mDur=s.dur;mLit=-1;mBase=s.pos;mAt=performance.now();mFirst=s.artist.split(', ')[0];
+  mPlaying=!s.paused;if(!seekHeld)mPos=s.pos;mDur=s.dur;mLit=-1;mBase=s.pos;mAt=performance.now();mFirst=s.artist.split(', ')[0];
   $('saver').classList.toggle('sPaused',!mPlaying);
   $('nMusic').hidden=false;$('stage').classList.add('music');
   if(!$('mBar').firstChild)for(let i=0;i<M_DOTS;i++)$('mBar').append(document.createElement('i'));
@@ -1442,7 +1443,7 @@ function musicUI(s){
   $('line').textContent=(mPlaying?'♪ ':'En pausa: ')+s.name+' · '+s.artist;
   musicBar();
 }
-setInterval(()=>{if(mPlaying&&mPos<mDur){mPos+=1;musicBar()}},1000);
+setInterval(()=>{if(mPlaying&&mPos<mDur&&!seekHeld){mPos+=1;musicBar()}},1000);
 function startMusic(){
   if(!ALONE||!spTok||player)return;
   window.onSpotifyWebPlaybackSDKReady=()=>{
@@ -1478,20 +1479,29 @@ function startMusic(){
   const s=document.createElement('script');s.src='https://sdk.scdn.co/spotify-player.js';document.head.append(s);
 }
 /* Back: past 3 seconds, or with nothing before it, the song starts over; otherwise it goes to the previous one. */
-/* Moving through the song: the bar answers at once, the jump reaches Spotify when the presses stop. */
-let seekTo=null,seekT=0;
-function seekSet(t){
-  t=Math.max(0,Math.min(mDur-1,t));
-  seekTo=t;mPos=t;mBase=t;mAt=performance.now();lyrAt=-2;musicBar();
-  clearTimeout(seekT);
-  seekT=setTimeout(()=>{if(player)player.seek(Math.round(seekTo*1000)).catch(()=>{});seekTo=null},260);
+/* Moving through the song: OK or a click takes the handle, which then only moves on screen.
+   A second one lets go and the song jumps there; Back leaves it where it was. */
+let seekHeld=false,seekFrom=0;
+function seekShow(t){mPos=Math.max(0,Math.min(mDur-1,t));musicBar();$('sPos').textContent=fmtT(mPos)}
+function seekMouse(e){const r=$('sLine').getBoundingClientRect();seekShow(mDur*(e.clientX-r.left)/r.width)}
+function seekTake(){
+  seekHeld=true;seekFrom=mPos;$('sLine').classList.add('held');
+  document.addEventListener('mousemove',seekMouse);
 }
-const seekBy=d=>seekSet((seekTo==null?mPos:seekTo)+d);
-$('sSeek').onclick=e=>{
-  if(!e.detail)return;   // Enter on the remote stays put; only a real pointer click picks a spot
-  const r=$('sLine').getBoundingClientRect();
-  seekSet(mDur*(e.clientX-r.left)/r.width);
-};
+function seekDrop(apply){
+  seekHeld=false;$('sLine').classList.remove('held');
+  document.removeEventListener('mousemove',seekMouse);
+  if(!apply)return seekShow(seekFrom);
+  mBase=mPos;mAt=performance.now();lyrAt=-2;
+  if(player)player.seek(Math.round(mPos*1000)).catch(()=>{});
+}
+$('sSeek').onclick=()=>seekHeld?seekDrop(true):seekTake();
+function seekKey(e){
+  e.preventDefault();e.stopImmediatePropagation();
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight')seekShow(mPos+(e.key==='ArrowLeft'?-5:5));
+  else if(e.key==='Enter')seekDrop(true);
+  else if(e.key==='Escape'||e.keyCode===8||e.keyCode===461)seekDrop(false);
+}
 async function spPrev(){
   if(!player)return;
   const st=await player.getCurrentState();
@@ -1739,13 +1749,14 @@ let navLast=null;
 function move(dx,dy){
   const list=items(),a=document.activeElement;
   if(!list.includes(a))return focus(list[0]);
+  if(dx&&a===$('sSeek'))return toast('Pulsa OK para mover la canción');
   if(navLast&&navLast.to===a&&navLast.dx===-dx&&navLast.dy===-dy&&list.includes(navLast.from)){
     const b=navLast.from;navLast=null;tick();return focus(b);
   }
   const r=a.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,M=8;
   let best=null,bs=1e12;
   list.forEach(b=>{
-    if(b===a)return;
+    if(b===a||(dx&&b.id==='sSeek'))return;
     const q=b.getBoundingClientRect();
     const past=dy<0?q.top<r.top-M:dy>0?q.bottom>r.bottom+M:dx<0?q.left<r.left-M:q.right>r.right+M;
     if(!past)return;
@@ -1760,7 +1771,6 @@ document.addEventListener('keydown',e=>{
   const k={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
   if(k&&e.key==='ArrowDown'&&document.activeElement===$('gzArrow')){e.preventDefault();$('gzArrow').click();return}
   if(k&&e.key==='ArrowUp'&&document.activeElement===$('svArrow')){e.preventDefault();enterSaver();return}
-  if(k&&k[0]&&document.activeElement===$('sSeek')){e.preventDefault();seekBy(k[0]*10);return}
   if(k){e.preventDefault();move(k[0],k[1]);return}
   const open=layerEl();
   if((e.key==='Escape'||e.keyCode===8)&&open){e.preventDefault();open.id==='sheet'?closeSheet():spBack()}
@@ -1771,6 +1781,7 @@ const REST_MS=60000;
 let restTimer;
 function wake(e){
   const idle=$('stage').classList.contains('idle');
+  if(seekHeld&&e&&e.type==='keydown')return seekKey(e);
   if(idle&&e&&!$('alb').hidden){
     if(e.type==='keydown'&&(e.key==='Escape'||e.keyCode===8||e.keyCode===461)){e.preventDefault();e.stopImmediatePropagation();albBack()}
     return;
