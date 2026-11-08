@@ -856,6 +856,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
 <path d="M-2.300 -7.500V0A2.300 .9 0 0 0 2.300 0V-7.500Z" fill="url(#tPin)"/><ellipse cx="0" cy="-7.500" rx="2.300" ry="1.100" fill="url(#tPinTop)"/></svg>
       </div>
       <svg id="ttShadow" class="ttA" width="1" height="1" aria-hidden="true"><path d="M0 0C32 -3 62 5 94 2" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round" opacity=".42"/></svg>
+      <svg id="ttNeedle" class="ttA" width="1" height="1" aria-hidden="true"><path d="M0 0L-1 7" stroke="#d6d0c4" stroke-width="1" stroke-linecap="round"/><circle cx="-1" cy="7" r=".8" fill="#000"/></svg>
       <svg id="ttHeadSh" class="ttA" width="1" height="1" aria-hidden="true"><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="#000" opacity=".75"/></svg>
       <svg id="ttArm" class="ttA" width="1" height="1" aria-hidden="true"><defs>
 <linearGradient id="tTube" gradientUnits="userSpaceOnUse" x1="0" y1="-2" x2="0" y2="3"><stop offset="0" stop-color="#060605"/><stop offset=".42" stop-color="#262421"/><stop offset=".6" stop-color="#6f675a"/><stop offset=".76" stop-color="#37342f"/><stop offset="1" stop-color="#0d0d0c"/></linearGradient>
@@ -866,10 +867,10 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
       <svg id="ttHeadBase" class="ttA" width="1" height="1" aria-hidden="true"><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="#060605"/><rect x="12" y="-5.500" width="22" height="11" rx="1.500" fill="#14130f"/></svg>
       <svg id="ttHeadMid" class="ttA" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tHeadSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0d0c0b"/><stop offset=".5" stop-color="#3a342b"/><stop offset=".72" stop-color="#6b5a43"/><stop offset="1" stop-color="#181613"/></linearGradient></defs><path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="url(#tHeadSide)"/></svg>
       <svg id="ttHead" class="ttA" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tHeadTop" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#191816"/><stop offset=".45" stop-color="#46423b"/><stop offset=".62" stop-color="#7c7468"/><stop offset=".8" stop-color="#37342f"/><stop offset="1" stop-color="#121210"/></linearGradient></defs>
+<path d="M21 -2L25 -20" stroke="#0c0c0b" stroke-width="2.600" stroke-linecap="round"/><path d="M21.600 -3L25 -19" stroke="#79736a" stroke-width=".8"/>
 <path d="M-3 -5.500L33 -7.500Q40 -7.500 40 -2.500V2.500Q40 7.500 33 7.500L-3 5.500Z" fill="url(#tHeadTop)" stroke="#080807" stroke-width="1"/><path d="M-1 -4.500L33 -6.300Q38.700 -6.300 38.700 -2.500V2.500Q38.700 6.300 33 6.300L-1 4.500" fill="none" stroke="#fff0d6" stroke-opacity=".28" stroke-width=".7"/><ellipse cx="22" cy="-1" rx="13" ry="3.600" fill="#ffd9a6" opacity=".1"/>
 <rect x="9" y="-4.800" width="13" height="2" rx="1" fill="#0a0a09"/><rect x="9" y="2.800" width="13" height="2" rx="1" fill="#0a0a09"/><circle cx="29" cy="-3.800" r="1.100" fill="#b9a26c"/><circle cx="29" cy="3.800" r="1.100" fill="#b9a26c"/>
-<path d="M27 -7.500L31 -22" stroke="#0c0c0b" stroke-width="2.600" stroke-linecap="round"/><path d="M27.600 -8.500L31 -21" stroke="#79736a" stroke-width=".8"/></svg>
-      <svg id="ttNeedle" class="ttA" width="1" height="1" aria-hidden="true"><path d="M0 0L-1 7" stroke="#d6d0c4" stroke-width="1" stroke-linecap="round"/><circle cx="-1" cy="7" r=".8" fill="#000"/></svg>
+</svg>
       <svg id="ttJoint" width="1" height="1" aria-hidden="true"><defs><linearGradient id="tBear"><stop offset="0" stop-color="#050505"/><stop offset=".32" stop-color="#4c4842"/><stop offset=".48" stop-color="#23211e"/><stop offset="1" stop-color="#040404"/></linearGradient></defs>
 <ellipse cx="0" cy="2.200" rx="12.500" ry="4.200" fill="#000" opacity=".4"/>
 <path d="M-9.500 -7V0.500A9.500 3.300 0 0 0 9.500 .5V-7Z" fill="url(#tBear)"/>
@@ -879,7 +880,7 @@ html:not(.nothing).lite #weather,html:not(.nothing).lite #mid #nMusic:not(.empty
       <button class="albHit" id="ttAlbBtn" data-f aria-label="Abrir álbum"></button>
       <div id="ttLyr"><div id="ttLine"></div><div id="ttNext"></div></div>
       <div id="ttGrainZone"><i id="ttGrain"></i></div>
-      <div id="ttMode"><button class="ttM on" id="ttSun" data-f aria-label="Luz de día"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.500v3M12 18.500v3M2.500 12h3M18.500 12h3M5.300 5.300l2.100 2.100M16.600 16.600l2.100 2.100M5.300 18.700l2.100-2.100M16.600 7.400l2.100-2.100" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="ttM" id="ttMoon" data-f aria-label="Luz de noche"><svg viewBox="0 0 24 24"><path d="M20.500 14.300A8.600 8.600 0 1 1 9.700 3.500a7 7 0 0 0 10.800 10.800z"/></svg></button></div>
+      
     </div>
     <div class="grain"></div>
     <div id="sClock"><div id="sTime"></div><div id="sDate"></div></div>
@@ -2019,13 +2020,11 @@ function ttFrame(u){
   setTimeout(()=>{ttDraw();c.style.opacity=1},400);
 }
 /* Turntable. The record leaves the sleeve, rises and lands on the platter; the arm then follows the song across it. */
-let ttNight=store.get('sala-night')===1;
+let ttNight=true;
 function ttLight(n){
-  ttNight=n;store.set('sala-night',n?1:0);
+  ttNight=true;
   const im=$('ttRoomN');
-  if(!im.getAttribute('src'))im.src='room-night.jpg?v=4';   // ready before it is asked for, so the fade starts at once
-  $('ttSun').classList.toggle('on',!n);$('ttMoon').classList.toggle('on',n);
-  if(!n)return $('saver').classList.remove('ttNight');
+  if(!im.getAttribute('src'))im.src='room-night.jpg?v=6';   // ready before it is asked for, so the fade starts at once
   const show=()=>{if(ttNight)$('saver').classList.add('ttNight')};
   if(im.complete&&im.naturalWidth)return show();
   im.onload=show;
@@ -2079,7 +2078,7 @@ function ttToggle(){
   if(ttBusy)return;
   if(ttOn){ttOn=false;sv.classList.remove('tt','ttSeat');ttArm();lyrApply();return}
   const r=$('sSlide').getBoundingClientRect(),b=sv.getBoundingClientRect(),k=$('stage').offsetWidth?b.width/1920:1;
-  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room.jpg?v=11';ttLight(ttNight);sv.classList.add('tt');lyrApply();
+  ttBusy=true;ttOn=true;ttWords=true;$('ttRoom').src='room-night.jpg?v=6';ttLight(ttNight);sv.classList.add('tt');lyrApply();
   const q=$('ttTop').getBoundingClientRect();
   const fly=document.createElement('div'),size=300;
   fly.id='ttFly';fly.className='ttRec';fly.style.width=fly.style.height=size+'px';
@@ -2102,7 +2101,7 @@ function ttToggle(){
   }
 }
 $('sTTBtn').onclick=ttToggle;
-$('ttSun').onclick=()=>ttLight(false);$('ttMoon').onclick=()=>ttLight(true);
+
 let deckBusy=false,deckNext='';
 function deckCover(u){if(deckBusy)deckNext=u;else if($('sCover').getAttribute('src')!==u)$('sCover').src=u}
 function deckSwap(u){
